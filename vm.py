@@ -433,23 +433,26 @@ def assemble_file(filename, debug = False):
 
 
 if __name__ == '__main__':
-    dis = disassemble('docs/challenge.bin', True)
-    with open('docs/challenge-details-clean.out','w') as f:
-       f.write('\n'.join(dis))
+    #dis = disassemble('docs/challenge.bin', True)
+    #with open('docs/challenge-details-clean.out','w') as f:
+    #   f.write('\n'.join(dis))
     
 
-    test = assemble_file('docs/challenge-details.out')   
-
+    test = assemble_file('docs/challenge-working.out')   
+    #dis = disassemble_data(test, True)
+    #with open('docs/challenge-current.out','w') as f:
+       #f.write('\n'.join(dis))
     c = Computer()
     #c.load_program_from_file('docs/challenge.bin')
     c.load_program_from_data(test)
 
 
     for next_address in c.run():
-        #print('{:04X}'.format(next_address),end=' ')
+        #print('{:04X}'.format(next_address))
         if c.output_buffer != '':
             print(c.output_buffer,end='')
             c.output_buffer = ''
         pass#print("PC: {:04X}".format(next_address))
+
 
     
