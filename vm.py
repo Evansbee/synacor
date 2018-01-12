@@ -439,9 +439,9 @@ if __name__ == '__main__':
     
 
     test = assemble_file('docs/challenge-working.out')   
-    #dis = disassemble_data(test, True)
-    #with open('docs/challenge-current.out','w') as f:
-       #f.write('\n'.join(dis))
+    dis = disassemble_data(test, True)
+    with open('docs/challenge-current.out','w') as f:
+        f.write('\n'.join(dis))
     c = Computer()
     #c.load_program_from_file('docs/challenge.bin')
     c.load_program_from_data(test)

@@ -1,6 +1,6 @@
 ## Todo
 
-Make computer take a binary array in (instead of loading from file)
-Test what happens if you muck with the asm file a bit, if we make addresses off by 1, does it screw everything up?
+Need to keep the file in place, it seems, too many places where memory addresses are hard coded. can we fix?
+
 
 
