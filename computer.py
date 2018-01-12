@@ -45,7 +45,7 @@ class Computer:
         self.assembly_cache = []
         self.memory_to_assembly = []
 
-        self.memory = array('H',[0] * 2**15)
+        self.memory = array('H')#,[0] * 2**15)
         self.stack = []
         self.call_stack = []
         self.cycles = 0
@@ -74,27 +74,22 @@ class Computer:
     
     def load_program_from_file(self, binfile):
         with open(binfile,'rb') as f:
-            data = f.read()
-            i = 0
-            while len(data) > 0:
-                self.memory[i] = int.from_bytes(data[:2],byteorder='little')
-                i += 1
-                data = data[2:]
-
+            try:
+                self.memory.fromfile(f,2**16)
+            except EOFError:
+                pass
             if self.debugging:
                 self.pre_process_image()
 
+    def load_program_from_data(self, data):
+        self.memory = data
+        if self.debugging:
+            self.pre_process_image()
       
     def pre_process_image(self):
         self.assembly_cache = []
         self.memory_to_assembly = []
     
-    
-    def load_program_from_data(self, bindata):
-        for i, data in enumerate(bindata):
-            self.memory[i] = data
-        if self.debugging:
-                self.pre_process_image()
 
     def is_opcode(opcode):
         return opcode >= 0 and opcode < len(mnemonic)
@@ -104,7 +99,13 @@ class Computer:
     
     def process_instruction(self):
         op = self.memory[self.pc]
-        args = array('H', [self.memory[self.pc + x + 1] for x in range(ARGCOUNT[op])])
+        try:
+            args = array('H', [self.memory[self.pc + x + 1] for x in range(ARGCOUNT[op])])
+        except IndexError:
+            print("PC:",self.pc)
+            print("OP:",op)
+            print("FUCKED")
+            exit()
         self.pc += (1 + ARGCOUNT[op])
         
         if op == 0: #halt

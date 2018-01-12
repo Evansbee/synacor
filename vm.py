@@ -8,6 +8,9 @@
 
 
 from computer import Computer
+from sys import exit
+from array import array
+
 
 def load_binary_data(computer, bindata):
     for i, data in enumerate(bindata):
@@ -141,22 +144,23 @@ def disassemble(program_file, verbose = False):
     # 00HHHH  |  HHHH HHHH HHHH HHHH  |  asm__opa, opb, opc 
     assembly_code = []
     with open(program_file,'rb') as f:
-        labels = {0: 'start'}
-        data = f.read()
-        preprocessor = data
-        addr = 0
         
+        data  = array('H')
+        try:
+            data.fromfile(f,2**16)
+        except EOFError:
+            pass
+        labels = {0: 'start'}
+        addr = 0
+        file_size = len(data)
         #populate label table
-        while len(preprocessor) > 0:
-            actual_values = [int.from_bytes(preprocessor[0:2],byteorder='little')]
-            preprocessor = preprocessor[2:]
+        while addr < file_size:
+            actual_values = [data[addr]]
             addr += 1
             if actual_values[0] in op_code_map:
                 for _ in range(op_code_map[actual_values[0]]['args']):
-                    actual_values += [int.from_bytes(preprocessor[0:2],byteorder='little')]
-                    preprocessor = preprocessor[2:]
+                    actual_values += [data[addr]]
                     addr += 1
-                    
                 if op_code_map[actual_values[0]]['inst'] == 'jmp' and not is_reg(actual_values[1]):
                     labels[actual_values[1]] = "jmp_{:04X}".format(actual_values[1])
                 elif op_code_map[actual_values[0]]['inst'] == 'jt' and not is_reg(actual_values[2]):
@@ -168,28 +172,26 @@ def disassemble(program_file, verbose = False):
                 elif op_code_map[actual_values[0]]['inst'] == 'rmem' and not is_reg(actual_values[2]):
                     labels[actual_values[2]] = "mem_{:04X}".format(actual_values[2])
                 elif op_code_map[actual_values[0]]['inst'] == 'wmem' and not is_reg(actual_values[1]):
-                    print('Added Label: ' + "mem_{:04X}".format(actual_values[1]))
                     labels[actual_values[1]] = "mem_{:04X}".format(actual_values[1])
                     
         addr = 0
-        while len(data) > 0:
+        while addr < file_size:
             start_address = addr
             if start_address in labels:
                 if verbose:
                     assembly_code += ['{:06X}  |  {:21}|  {}'.format(start_address,'','')]
+                    assembly_code += ['{:06X}  |  {:21}|  @{:04X}'.format(start_address,'',start_address)]
                     assembly_code += ['{:06X}  |  {:21}|  {}:'.format(start_address,'',labels[start_address])]
                     assembly_code += ['{:06X}  |  {:21}|  {}'.format(start_address,'','')] 
                 else:
                     assembly_code += ['{}:'.format(labels[start_address])]
                     
                     
-            actual_values = [int.from_bytes(data[0:2],byteorder='little')]
-            data = data[2:]
+            actual_values = [data[addr]]
             addr += 1
             if actual_values[0] in op_code_map:
                 for _ in range(op_code_map[actual_values[0]]['args']):
-                    actual_values += [int.from_bytes(data[0:2],byteorder='little')]
-                    data = data[2:]
+                    actual_values += [data[addr]]
                     addr += 1
                 if verbose:
                     line = '{:06X}  |  '.format(start_address)
@@ -292,20 +294,24 @@ def assemble_line(tokens, labels): #takes a token and converts to a string of by
         elif tok.startswith('.'):
             addition = 0
             if '+' in tok:
-                
                 thing = tok.split('+')    
                 label = thing[0].lstrip('.')
                 addition = int(thing[1])
-
-                print(tokens,label,addition)
+            elif '-' in tok:
+                thing = tok.split('-')    
+                label = thing[0].lstrip('.')
+                addition = -int(thing[1])
             else:
                 label = tok.lstrip('.')
             
             if label in labels:
                 assembled_bytes += [labels[label] + addition]
             else:
+                print(label)
+                print(labels)
                 print("failed to assemble:",tokens)
                 assembled_bytes += [0]
+                exit()
         elif tok == "'": #work around bug, the parsers pulls the space on -> out ' '
             assembled_bytes += [ord(' ')]  
         elif tok == "'\\n'": #work around bug, the parsers pulls the space on -> out ' '
@@ -320,16 +326,27 @@ def assemble_line(tokens, labels): #takes a token and converts to a string of by
 import re
 def tokenize(line):
     parsed = dict()
+    parsed['type'] = 'instruction'
     parsed['label'] = ''
     parsed['instruction'] = ''
     parsed['args'] = []
     parsed['comment'] = ''
     parsed['size'] = 0
-    
+    if '|' in line:
+        line = line.split('|')[-1].rstrip().lstrip()
+        if line == '':
+            return None
+
+
+    if line.startswith('@'):
+        parsed['type'] = 'position'
+        parsed['args'] = [line[1:]]
+        return parsed
+
     make_tokens = re.compile(r'''\;[\w\s]*$|^\s*\w+\:|[\w\+\-\.]+|\'.\'|\'\\n\'''',re.VERBOSE).findall
     tokens = make_tokens(line)
     if tokens and tokens[0].endswith(':'):
-        parsed['label'] = tokens[0][:-1]
+        parsed['label'] = tokens[0][:-1].lstrip()
         tokens = tokens[1:]
 
     if tokens and tokens[0] in instruction_info :
@@ -357,6 +374,7 @@ def tokenize(line):
         print("Failed to tokenize:",line)
         print(line.split())
         print(tokens)
+        exit()
 
     return parsed
     
@@ -368,39 +386,63 @@ def assemble_file(filename, debug = False):
         
         tokenized_lines = []
         current_address = 0
+        current_offset = 0
         labels = dict()
         for asm_line in asm_lines:
             
             tl = tokenize(asm_line)
-            if tl['label']:
-                labels[tl['label']] = current_address 
-            tokenized_lines += [tl]
             
-            current_address += tl['size']        
-        binary_data = [assemble_line(tl,labels) for tl in tokenized_lines]
-        return sum(binary_data, [])
+            if tl:
+                if tl['type'] == 'position':
+                    current_offset = int(tl['args'][0],16)
+                    current_address = 0
+
+                
+                if tl['label']:
+                    labels[tl['label']] = current_address + current_offset
+                tokenized_lines += [tl]
+                current_address += tl['size']    
+        
+        binary_data = []
+        for tok_line in tokenized_lines:
+            #print('len:',len(binary_data),'tokenizing:',tok_line)
+
+            if tok_line['type'] == 'position':
+                fill_to = int(tok_line['args'][0],16)
+                if fill_to < len(binary_data):
+                    print("Can't achieve positional statement",tok_line,'size',len(binary_data))
+                    print(tokenized_lines[:5])
+                    exit()
+                if fill_to == len(binary_data):
+                    continue
+                else:
+                    binary_data += [21] * (fill_to - len(binary_data))
+
+            else:
+                binary_data += assemble_line(tok_line,labels)
+
+
+        return binary_data#sum(binary_data, [])
     
 #_ = assemble_file('dump.out')   
         
 
 
 if __name__ == '__main__':
-    #dis = disassemble('docs/challenge.bin', False)
-    #print(dis)
-    #with open('docs/challenge.out','w') as f:
-    #    f.write('\n'.join(dis))
+    dis = disassemble('docs/challenge.bin', True)
+    with open('docs/challenge-details-clean.out','w') as f:
+       f.write('\n'.join(dis))
     
 
-    _ = assemble_file('docs/challenge.out')   
-
-    
+    test = assemble_file('docs/challenge-details.out')   
 
     c = Computer()
-    c.load_program_from_file('docs/challenge.bin')
-
+    #c.load_program_from_file('docs/challenge.bin')
+    c.load_program_from_data(test)
 
 
     for next_address in c.run():
+        #print('{:04X}'.format(next_address),end=' ')
         if c.output_buffer != '':
             print(c.output_buffer,end='')
             c.output_buffer = ''

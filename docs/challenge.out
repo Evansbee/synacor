@@ -1,6 +1,6 @@
 start:
-nop   
-nop   
+nop
+nop
 out    'W'
 out    'e'
 out    'l'
@@ -359,7 +359,7 @@ eq     r1 r0 02C4
 jt     r1 .jmp_0509
 eq     r1 r0 02C2
 jf     r1 .jmp_0509
-set    r0 0507
+set    r0 [.jmp_0509-2]
 call   r0
 jmp    .jmp_0509
 jmp_02DB:
