@@ -259,10 +259,18 @@ class Computer:
         while addr < file_size:
             token = dict()
             token['start_address'] = addr
-            actual_values = [data[addr]]
-            addr += 1
+        
+            if token['start_address'] in labels:
+                token['label'] = labels[token['start_address']]
+                del(labels[token['start_address']])
+            else:
+                token['label'] = ''            
 
-            if actual_values[0] in MNEUMONICS:
+
+            if data[addr] in MNEUMONICS and Computer.valid_instruction(data[addr:1+addr+ARGCOUNT[data[addr]]]):
+                
+                actual_values = [data[addr]]
+                addr += 1
                 token['op'] = MNEUMONICS[actual_values[0]]
                 for _ in range(ARGCOUNT[actual_values[0]]):
                     actual_values += [data[addr]]
@@ -273,21 +281,54 @@ class Computer:
                 token['raw'] = actual_values
                 token['size'] = len(actual_values)
                 token['processed_args'] = []
+                token['comment'] = ''
+
                 for arg in token['args']:
                     token['processed_args'] += [Computer.reg_or_value_string(arg)]
-                                
-                if token['start_address'] in labels:
-                    token['label'] = labels[token['start_address']]
-                else:
-                    token['label'] = ''
+
+                def update_label(addr, prefix, token, offset):
+                    if token['start_address'] < addr:
+                        labels[addr] = "{}_{:04X}".format(prefix,addr)
+                        token['processed_args'][offset] = ".{}_{:04X}".format(prefix,addr)
+                    elif addr in disassembly and disassembly[addr]['label'] == '':
+                        disassembly[addr]['label'] = "{}_{:04X}".format(prefix,addr)
+                        token['processed_args'][offset] = ".{}_{:04X}".format(prefix,addr)
+                    elif addr not in disassembly:
+                        pass
+                    else:
+                        token['processed_args'][offset] = "." + disassembly[addr]['label']
+
+                if token['op'] == 'jmp' and not Computer.isreg(actual_values[1]):
+                    update_label(actual_values[1],'jmp',token, 0)
+                elif (token['op'] == 'jt' or token['op'] == 'jf' ) and not Computer.isreg(actual_values[2]):
+                    update_label(actual_values[2],'jmp',token, 1)
+                elif token['op'] == 'call' and not Computer.isreg(actual_values[1]):
+                    update_label(actual_values[1],'sub',token, 0)
+                elif token['op'] == 'rmem' and not Computer.isreg(actual_values[2]):
+                    update_label(actual_values[2],'mem',token, 1)
+                elif token['op'] == 'wmem' and not Computer.isreg(actual_values[1]):
+                    update_label(actual_values[1],'mem',token, 0)
+                elif token['op'] == 'out' and actual_values[1] < 255:
+                    if actual_values[1] == 10:
+                        token['processed_args'][0] = r"'\n'"
+                    else:
+                        token['processed_args'][0] = r"'{}'".format(chr(actual_values[1]))
+
+
                 #check valid
-                disassembly[token['start_address']] = token
+                if Computer.valid_instruction(actual_values):
+                    disassembly[token['start_address']] = token
+                else:
+                    print("DROPPING",token)
+                
             else:
+                actual_values = [data[addr]]
+                addr += 1
                 token['op'] = 'db'
                 token['args'] = actual_values
                 token['raw'] = actual_values
                 token['size'] = 1
                 token['processed_args'] = ['{:04x}'.format(actual_values[0])]
-                token['label'] = ''
+                token['comment'] = ''
                 disassembly[token['start_address']] = token
         return disassembly

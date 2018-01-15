@@ -138,120 +138,6 @@ op_code_map = {
         21: {'inst':'nop',  'args':0, 'arg_types': [],'help':'no operation'},
     }
 
-
-
-def disassemble_data(data, verbose = False):
-    assembly_code = []
-    labels = {0: 'start'}
-    addr = 0
-    file_size = len(data)
-    #populate label table
-    while addr < file_size:
-        actual_values = [data[addr]]
-        addr += 1
-        if actual_values[0] in op_code_map:
-            for _ in range(op_code_map[actual_values[0]]['args']):
-                actual_values += [data[addr]]
-                addr += 1
-            if op_code_map[actual_values[0]]['inst'] == 'jmp' and not is_reg(actual_values[1]):
-                labels[actual_values[1]] = "jmp_{:04X}".format(actual_values[1])
-            elif op_code_map[actual_values[0]]['inst'] == 'jt' and not is_reg(actual_values[2]):
-                labels[actual_values[2]] = "jmp_{:04X}".format(actual_values[2])
-            elif op_code_map[actual_values[0]]['inst'] == 'jf' and not is_reg(actual_values[2]):
-                labels[actual_values[2]] = "jmp_{:04X}".format(actual_values[2])
-            elif op_code_map[actual_values[0]]['inst'] == 'call' and not is_reg(actual_values[1]):
-                labels[actual_values[1]] = "sub_{:04X}".format(actual_values[1])
-            elif op_code_map[actual_values[0]]['inst'] == 'rmem' and not is_reg(actual_values[2]):
-                labels[actual_values[2]] = "mem_{:04X}".format(actual_values[2])
-            elif op_code_map[actual_values[0]]['inst'] == 'wmem' and not is_reg(actual_values[1]):
-                labels[actual_values[1]] = "mem_{:04X}".format(actual_values[1])
-                
-    addr = 0
-    while addr < file_size:
-        start_address = addr
-        if start_address in labels:
-            if verbose:
-                assembly_code += ['{:06X}  |  {:21}|  {}'.format(start_address,'','')]
-                assembly_code += ['{:06X}  |  {:21}|  @{:04X}'.format(start_address,'',start_address)]
-                assembly_code += ['{:06X}  |  {:21}|  {}:'.format(start_address,'',labels[start_address])]
-                assembly_code += ['{:06X}  |  {:21}|  {}'.format(start_address,'','')] 
-            else:
-                assembly_code += ['{}:'.format(labels[start_address])]
-                
-                
-        actual_values = [data[addr]]
-        addr += 1
-        if actual_values[0] in op_code_map:
-            for _ in range(op_code_map[actual_values[0]]['args']):
-                actual_values += [data[addr]]
-                addr += 1
-            if verbose:
-                line = '{:06X}  |  '.format(start_address)
-                values = ' '.join(['{:04X}'.format(x) for x in actual_values])
-                line += '{:21}|  '.format(values)
-            else:
-                line = ''
-            
-            if len(actual_values) > 1:
-                #here's where we do some label magic...
-                operands = ' '.join(get_value_string(x) for x in actual_values[1:])
-                if op_code_map[actual_values[0]]['inst'] == 'jmp' and not is_reg(actual_values[1]) and actual_values[1] in labels:
-                        line += '{:6} .{}'.format('jmp',labels[actual_values[1]]) 
-                elif op_code_map[actual_values[0]]['inst'] == 'jt' and not is_reg(actual_values[2])  and actual_values[2] in labels:
-                    line += '{:6} {} .{}'.format('jt', get_value_string(actual_values[1]), labels[actual_values[2]])
-                elif op_code_map[actual_values[0]]['inst'] == 'jf' and not is_reg(actual_values[2])  and actual_values[2] in labels:
-                    line += '{:6} {} .{}'.format('jf', get_value_string(actual_values[1]),labels[actual_values[2]]) 
-                elif op_code_map[actual_values[0]]['inst'] == 'call' and not is_reg(actual_values[1])  and actual_values[1] in labels:
-                    line += '{:6} .{}'.format('call',labels[actual_values[1]]) 
-                elif op_code_map[actual_values[0]]['inst'] == 'rmem' and not is_reg(actual_values[2])  and actual_values[2] in labels:
-                    line += '{:6} {} .{}'.format('rmem',get_value_string(actual_values[1]),labels[actual_values[2]]) 
-                elif op_code_map[actual_values[0]]['inst'] == 'wmem' and not is_reg(actual_values[1]) and actual_values[1] in labels:
-                    line += '{:6} .{} {}'.format('wmem',labels[actual_values[1]], get_value_string(actual_values[2])) 
-                elif op_code_map[actual_values[0]]['inst'] == 'out' and not is_reg(actual_values[1]):
-                    if chr(actual_values[1]) != '\n':
-                        if actual_values[1] < 0xFF:
-                            line += '{:6} \'{}\''.format('out',chr(actual_values[1])) 
-                        else:
-                            line += '{:6} {:04X}'.format('out',actual_values[1]) 
-                    else:
-                        line += '{:6} \'{}\''.format('out',r'\n')
-                            
-                else:
-                    line += '{:6} {}'.format(op_code_map[actual_values[0]]['inst'],operands)
-            else:
-                line += '{:6}'.format(op_code_map[actual_values[0]]['inst'])
-            
-        else:
-            line = ''
-            if verbose:
-                line = '{:06X}  |  '.format(start_address)
-                values = ' '.join(['{:04X}'.format(x) for x in actual_values])
-                line += '{:21}|  '.format(values)
-            line += 'db     {:04x}'.format(actual_values[0])
-    
-        assembly_code += [line]
-    return assembly_code
-
-def disassemble(program_file, verbose = False):
-    
-    # 00HHHH  |  HHHH HHHH HHHH HHHH  |  asm__opa, opb, opc 
-    assembly_code = []
-    with open(program_file,'rb') as f:
-        
-        data  = array('H')
-        try:
-            data.fromfile(f,2**16)
-        except EOFError:
-            pass
-        return disassemble_data(data,verbose)
-    return assembly_code
-            
-            
-
-            
-           
-
-
 # ### Notes on ASM Format
 # out 'long string' will be broken into individual outs
 # label: jmp 12343 will be how labels are defined
@@ -397,7 +283,7 @@ def assemble_file(filename, debug = False):
         for asm_line in asm_lines:
             
             tl = tokenize(asm_line)
-            
+            print(tl)
             if tl:
                 if tl['type'] == 'position':
                     current_offset = int(tl['args'][0],16)
@@ -446,11 +332,8 @@ if __name__ == '__main__':
                 print('@{:04X} {:>12} {:6} {}'.format(x['start_address'],x['label']+':',x['op'],' '.join(x['processed_args'])))
             else:
                 print('@{:04X} {:>12} {:6} {}'.format(x['start_address'],'',x['op'],' '.join(x['processed_args'])))
-    elif len(sys.argv) > 1 and sys.argv[1] == 'assemble':
-        test = assemble_file('docs/challenge-working.out')   
-        dis = disassemble_data(test, True)
-        with open('docs/challenge-current.out','w') as f:
-            f.write('\n'.join(dis))
+    elif len(sys.argv) > 2 and sys.argv[1] == 'assemble':
+        test = assemble_file(sys.argv[2])   
     else:
         test = assemble_file('docs/challenge-working.out')   
         c = Computer()
