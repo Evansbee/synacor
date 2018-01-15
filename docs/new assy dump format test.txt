@@ -12,13 +12,29 @@
 					out 'hello world'				# 0013 00?? 0013 00?? 0013 00?? 0013 00?? 00?? 00?? 00?? 00?? 00?? 00?? 00??
 					
 					
-					
+>000375	start:		call .sub_06BB					# 0011 06BB
+>		end:		rmem   r0 .mem_17B4				# 000F 8000 17B4
+					nop								# 0015
+>					nop								# 0015
+					set r0 [.mem_17B4+1]			# ???? ????
+010000	mem:		db 0157							# 0157
+					out 'hello world'				# 0013 00?? 0013 00?? 0013 00?? 0013 00?? 00?? 00?? 00?? 00?? 00?? 00?? 00??				
 					
 address, subname
+
+>  makes a breakpoint (dumps a BP file)
 
 
 need a look ahead and look behind
 
 
+
+
+formats
+
+.bin => binary file (can be run)
+.loc => location file for subroutine names
+.asm => asm dump
+.brk => breakpoint list
 
 

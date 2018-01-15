@@ -439,25 +439,29 @@ if __name__ == '__main__':
     #with open('docs/challenge-details-clean.out','w') as f:
     #   f.write('\n'.join(dis))
     
-    if sys.argv[1] == 'disassemble':
+    if len(sys.argv) > 1 and sys.argv[1] == 'disassemble':
         diasm = Computer.DisassembleFile('docs/challenge.bin')
         for _,x in diasm.items():
             if x['label'] != '':
                 print('@{:04X} {:>12} {:6} {}'.format(x['start_address'],x['label']+':',x['op'],' '.join(x['processed_args'])))
             else:
                 print('@{:04X} {:>12} {:6} {}'.format(x['start_address'],'',x['op'],' '.join(x['processed_args'])))
-    elif sys.argv[1] == 'assemble':
+    elif len(sys.argv) > 1 and sys.argv[1] == 'assemble':
         test = assemble_file('docs/challenge-working.out')   
         dis = disassemble_data(test, True)
         with open('docs/challenge-current.out','w') as f:
             f.write('\n'.join(dis))
+    else:
+        test = assemble_file('docs/challenge-working.out')   
         c = Computer()
         #c.load_program_from_file('docs/challenge.bin')
         c.load_program_from_data(test)
 
 
         for next_address in c.run():
-            #print('{:04X}'.format(next_address))
+
+            #sys.stdout.write('\r{:04X}'.format(next_address))
+            #sys.stdout.flush()
             if c.output_buffer != '':
                 print(c.output_buffer,end='')
                 c.output_buffer = ''
