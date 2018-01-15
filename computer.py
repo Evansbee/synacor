@@ -1,4 +1,5 @@
 from array import array
+from collections import OrderedDict
 
 OPCODES = {
     'halt':0,
@@ -70,7 +71,13 @@ class Computer:
         return val - 32768
     
     def isreg(val):
-        return arg >= 32768 and arg <= 32775
+        return val >= 32768 and val <= 32775
+
+    def reg_or_value_string(val):
+        if Computer.isreg(val):
+            return 'r{}  '.format(Computer.reg(val))
+        else:
+            return '{:04X}'.format(val)
     
     def load_program_from_file(self, binfile):
         with open(binfile,'rb') as f:
@@ -229,3 +236,58 @@ class Computer:
             return False
         return False #no reach
         
+
+    def DisassembleFile(program_file, verbose = False):
+    
+    # 00HHHH  |  HHHH HHHH HHHH HHHH  |  asm__opa, opb, opc 
+
+        with open(program_file,'rb') as f:
+            
+            data  = array('H')
+            try:
+                data.fromfile(f,2**16)
+            except EOFError:
+                pass
+            return Computer.Disassemble(data,verbose)
+        return []
+
+    def Disassemble(data, verbose = False):
+        disassembly = OrderedDict()
+        file_size = len(data)
+        addr = 0
+        labels = {0:'init'}
+        while addr < file_size:
+            token = dict()
+            token['start_address'] = addr
+            actual_values = [data[addr]]
+            addr += 1
+
+            if actual_values[0] in MNEUMONICS:
+                token['op'] = MNEUMONICS[actual_values[0]]
+                for _ in range(ARGCOUNT[actual_values[0]]):
+                    actual_values += [data[addr]]
+                    addr += 1
+            
+
+                token['args'] = actual_values[1:]
+                token['raw'] = actual_values
+                token['size'] = len(actual_values)
+                token['processed_args'] = []
+                for arg in token['args']:
+                    token['processed_args'] += [Computer.reg_or_value_string(arg)]
+                                
+                if token['start_address'] in labels:
+                    token['label'] = labels[token['start_address']]
+                else:
+                    token['label'] = ''
+                #check valid
+                disassembly[token['start_address']] = token
+            else:
+                token['op'] = 'db'
+                token['args'] = actual_values
+                token['raw'] = actual_values
+                token['size'] = 1
+                token['processed_args'] = ['{:04x}'.format(actual_values[0])]
+                token['label'] = ''
+                disassembly[token['start_address']] = token
+        return disassembly

@@ -10,7 +10,7 @@
 from computer import Computer
 from sys import exit
 from array import array
-
+import sys
 
 def load_binary_data(computer, bindata):
     for i, data in enumerate(bindata):
@@ -138,6 +138,8 @@ op_code_map = {
         21: {'inst':'nop',  'args':0, 'arg_types': [],'help':'no operation'},
     }
 
+
+
 def disassemble_data(data, verbose = False):
     assembly_code = []
     labels = {0: 'start'}
@@ -212,7 +214,7 @@ def disassemble_data(data, verbose = False):
                         else:
                             line += '{:6} {:04X}'.format('out',actual_values[1]) 
                     else:
-                        line += '{:6} \'{}\''.format('out','\\n')
+                        line += '{:6} \'{}\''.format('out',r'\n')
                             
                 else:
                     line += '{:6} {}'.format(op_code_map[actual_values[0]]['inst'],operands)
@@ -437,22 +439,29 @@ if __name__ == '__main__':
     #with open('docs/challenge-details-clean.out','w') as f:
     #   f.write('\n'.join(dis))
     
+    if sys.argv[1] == 'disassemble':
+        diasm = Computer.DisassembleFile('docs/challenge.bin')
+        for _,x in diasm.items():
+            if x['label'] != '':
+                print('@{:04X} {:>12} {:6} {}'.format(x['start_address'],x['label']+':',x['op'],' '.join(x['processed_args'])))
+            else:
+                print('@{:04X} {:>12} {:6} {}'.format(x['start_address'],'',x['op'],' '.join(x['processed_args'])))
+    elif sys.argv[1] == 'assemble':
+        test = assemble_file('docs/challenge-working.out')   
+        dis = disassemble_data(test, True)
+        with open('docs/challenge-current.out','w') as f:
+            f.write('\n'.join(dis))
+        c = Computer()
+        #c.load_program_from_file('docs/challenge.bin')
+        c.load_program_from_data(test)
 
-    test = assemble_file('docs/challenge-working.out')   
-    dis = disassemble_data(test, True)
-    with open('docs/challenge-current.out','w') as f:
-        f.write('\n'.join(dis))
-    c = Computer()
-    #c.load_program_from_file('docs/challenge.bin')
-    c.load_program_from_data(test)
 
-
-    for next_address in c.run():
-        #print('{:04X}'.format(next_address))
-        if c.output_buffer != '':
-            print(c.output_buffer,end='')
-            c.output_buffer = ''
-        pass#print("PC: {:04X}".format(next_address))
+        for next_address in c.run():
+            #print('{:04X}'.format(next_address))
+            if c.output_buffer != '':
+                print(c.output_buffer,end='')
+                c.output_buffer = ''
+            pass#print("PC: {:04X}".format(next_address))
 
 
     
