@@ -54,8 +54,8 @@
 @008F                ret    
 
                      ; -- nop --
-;printf?
->@0094     sub_0094:  push   r0
+;printf
+@0094     sub_0094:  push   r0
 @0096                push   r3
 @0098                push   r4
 @009A                push   r5
@@ -311,7 +311,7 @@
 
 
 
-;decrypt?
+;decrypt
 @084D     sub_084D:  push   r1
 @084F                push   r2
 @0851                and    r2 r0 r1

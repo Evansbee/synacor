@@ -380,7 +380,7 @@ class Computer:
 
         
 
-        make_tokens = re.compile(r'''\;[\w\s-]*$|[\w]+\:|[\w\+\-\.]+|\'.+\'|\'\\n\'|@[0-9a-fA-F]{4}|^>''',re.VERBOSE).findall
+        make_tokens = re.compile(r'''\;[\w\s\-]*$|[\w]+\:|[\w\+\-\.]+|\'.+\'|\'\\n\'|@[0-9a-fA-F]{4}|^>''',re.VERBOSE).findall
         tokens = make_tokens(line)
 
 
