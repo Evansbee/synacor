@@ -1,708 +1,100 @@
-@0000         init:  nop    
-@0001                nop    
-@0002                out    'W'
-@0004                out    'e'
-@0006                out    'l'
-@0008                out    'c'
-@000A                out    'o'
-@000C                out    'm'
-@000E                out    'e'
-@0010                out    ' '
-@0012                out    't'
-@0014                out    'o'
-@0016                out    ' '
-@0018                out    't'
-@001A                out    'h'
-@001C                out    'e'
-@001E                out    ' '
-@0020                out    'S'
-@0022                out    'y'
-@0024                out    'n'
-@0026                out    'a'
-@0028                out    'c'
-@002A                out    'o'
-@002C                out    'r'
-@002E                out    ' '
-@0030                out    'C'
-@0032                out    'h'
-@0034                out    'a'
-@0036                out    'l'
-@0038                out    'l'
-@003A                out    'e'
-@003C                out    'n'
-@003E                out    'g'
-@0040                out    'e'
-@0042                out    '!'
-@0044                out    '\n'
-@0046                out    'P'
-@0048                out    'l'
-@004A                out    'e'
-@004C                out    'a'
-@004E                out    's'
-@0050                out    'e'
-@0052                out    ' '
-@0054                out    'r'
-@0056                out    'e'
-@0058                out    'c'
-@005A                out    'o'
-@005C                out    'r'
-@005E                out    'd'
-@0060                out    ' '
-@0062                out    'y'
-@0064                out    'o'
-@0066                out    'u'
-@0068                out    'r'
-@006A                out    ' '
-@006C                out    'p'
-@006E                out    'r'
-@0070                out    'o'
-@0072                out    'g'
-@0074                out    'r'
-@0076                out    'e'
-@0078                out    's'
-@007A                out    's'
-@007C                out    ' '
-@007E                out    'b'
-@0080                out    'y'
-@0082                out    ' '
-@0084                out    'p'
-@0086                out    'u'
-@0088                out    't'
-@008A                out    't'
-@008C                out    'i'
-@008E                out    'n'
-@0090                out    'g'
-@0092                out    ' '
-@0094                out    'c'
-@0096                out    'o'
-@0098                out    'd'
-@009A                out    'e'
-@009C                out    's'
-@009E                out    ' '
-@00A0                out    'l'
-@00A2                out    'i'
-@00A4                out    'k'
-@00A6                out    'e'
-@00A8                out    '\n'
-@00AA                out    't'
-@00AC                out    'h'
-@00AE                out    'i'
-@00B0                out    's'
-@00B2                out    ' '
-@00B4                out    'o'
-@00B6                out    'n'
-@00B8                out    'e'
-@00BA                out    ' '
-@00BC                out    'i'
-@00BE                out    'n'
-@00C0                out    't'
-@00C2                out    'o'
-@00C4                out    ' '
-@00C6                out    't'
-@00C8                out    'h'
-@00CA                out    'e'
-@00CC                out    ' '
-@00CE                out    'c'
-@00D0                out    'h'
-@00D2                out    'a'
-@00D4                out    'l'
-@00D6                out    'l'
-@00D8                out    'e'
-@00DA                out    'n'
-@00DC                out    'g'
-@00DE                out    'e'
-@00E0                out    ' '
-@00E2                out    'w'
-@00E4                out    'e'
-@00E6                out    'b'
-@00E8                out    's'
-@00EA                out    'i'
-@00EC                out    't'
-@00EE                out    'e'
-@00F0                out    ':'
-@00F2                out    ' '
-@00F4                out    'n'
-@00F6                out    'f'
-@00F8                out    'i'
-@00FA                out    'Y'
-@00FC                out    'A'
-@00FE                out    'T'
-@0100                out    'R'
-@0102                out    'l'
-@0104                out    'I'
-@0106                out    'W'
-@0108                out    'a'
-@010A                out    'N'
-@010C                out    '\n'
-@010E                out    '\n'
-@0110                out    'E'
-@0112                out    'x'
-@0114                out    'e'
-@0116                out    'c'
-@0118                out    'u'
-@011A                out    't'
-@011C                out    'i'
-@011E                out    'n'
-@0120                out    'g'
-@0122                out    ' '
-@0124                out    's'
-@0126                out    'e'
-@0128                out    'l'
-@012A                out    'f'
-@012C                out    '-'
-@012E                out    't'
-@0130                out    'e'
-@0132                out    's'
-@0134                out    't'
-@0136                out    '.'
-@0138                out    '.'
-@013A                out    '.'
-@013C                out    '\n'
-@013E                out    '\n'
-@0140                jmp    .jmp_015B
-@0142                out    'j'
-@0144                out    'm'
-@0146                out    'p'
-@0148                out    ' '
-@014A                out    'f'
-@014C                out    'a'
-@014E                out    'i'
-@0150                out    'l'
-@0152                out    's'
-@0154                out    '\n'
-@0156                halt   
-@0157                nop    
-@0158                nop    
-@0159                nop    
-@015A                nop    
-@015B     jmp_015B:  nop    
-@015C                nop    
-@015D                nop    
-@015E                nop    
-@015F                nop    
-@0160                jmp    .jmp_0166
-@0162                jmp    .jmp_0170
-@0164                jmp    .jmp_018D
-@0166     jmp_0166:  jmp    .jmp_01E4
-@0168                jmp    .jmp_01A8
-@016A                jmp    .jmp_01C5
-@016C                nop    
-@016D                nop    
-@016E                nop    
-@016F                nop    
-@0170     jmp_0170:  out    'j'
-@0172                out    'm'
-@0174                out    'p'
-@0176                out    ' '
-@0178                out    'l'
-@017A                out    'a'
-@017C                out    'n'
-@017E                out    'd'
-@0180                out    's'
-@0182                out    ' '
-@0184                out    '-'
-@0186                out    '2'
-@0188                out    '\n'
-@018A                halt   
-@018B                nop    
-@018C                nop    
-@018D     jmp_018D:  out    'j'
-@018F                out    'm'
-@0191                out    'p'
-@0193                out    ' '
-@0195                out    'l'
-@0197                out    'a'
-@0199                out    'n'
-@019B                out    'd'
-@019D                out    's'
-@019F                out    ' '
-@01A1                out    '-'
-@01A3                out    '1'
-@01A5                out    '\n'
-@01A7                halt   
-@01A8     jmp_01A8:  nop    
-@01A9                nop    
-@01AA                out    'j'
-@01AC                out    'm'
-@01AE                out    'p'
-@01B0                out    ' '
-@01B2                out    'l'
-@01B4                out    'a'
-@01B6                out    'n'
-@01B8                out    'd'
-@01BA                out    's'
-@01BC                out    ' '
-@01BE                out    '+'
-@01C0                out    '1'
-@01C2                out    '\n'
-@01C4                halt   
-@01C5     jmp_01C5:  nop    
-@01C6                nop    
-@01C7                nop    
-@01C8                nop    
-@01C9                out    'j'
-@01CB                out    'm'
-@01CD                out    'p'
-@01CF                out    ' '
-@01D1                out    'l'
-@01D3                out    'a'
-@01D5                out    'n'
-@01D7                out    'd'
-@01D9                out    's'
-@01DB                out    ' '
-@01DD                out    '+'
-@01DF                out    '2'
-@01E1                out    '\n'
-@01E3                halt   
-@01E4     jmp_01E4:  jt     0000 .jmp_0432
-@01E7                jf     0001 .jmp_0432
-@01EA                jt     0001 .jmp_01EF
-@01ED                jmp    .jmp_0432
-@01EF     jmp_01EF:  jf     0000 .jmp_01F4
-@01F2                jmp    .jmp_0432
-@01F4     jmp_01F4:  jt     r0 .jmp_0445
-@01F7                jt     r1 .jmp_0445
-@01FA                jt     r2 .jmp_0445
-@01FD                jt     r3 .jmp_0445
-@0200                jt     r4 .jmp_0445
-@0203                jt     r5 .jmp_0445
-@0206                jt     r6 .jmp_0445
-@0209                jt     r7 .jmp_0445
-@020C                set    r0 0001
-@020F                jf     r0 .jmp_045E
-@0212                set    r0 0000
-@0215                jt     r0 .jmp_045E
-@0218                add    r0 0001 0001
-@021C                jt     r0 .jmp_0234
-@021F                out    'n'
-@0221                out    'o'
-@0223                out    ' '
-@0225                out    'a'
-@0227                out    'd'
-@0229                out    'd'
-@022B                out    ' '
-@022D                out    'o'
-@022F                out    'p'
-@0231                out    '\n'
-@0233                halt   
-@0234     jmp_0234:  eq     r1 r0 0002
-@0238                jt     r1 .jmp_024E
-@023B                out    'n'
-@023D                out    'o'
-@023F                out    ' '
-@0241                out    'e'
-@0243                out    'q'
-@0245                out    ' '
-@0247                out    'o'
-@0249                out    'p'
-@024B                out    '\n'
-@024D                halt   
-@024E     jmp_024E:  push   r0
-@0250                push   r1
-@0252                pop    r0
-@0254                pop    r1
-@0256                eq     r2 r1 0002
-@025A                jf     r2 .jmp_0486
-@025D                eq     r2 r0 0001
-@0261                jf     r2 .jmp_0486
-@0264                gt     r2 r1 r0
-@0268                jf     r2 .jmp_0473
-@026B                gt     r2 r0 r1
-@026F                jt     r2 .jmp_0473
-@0272                gt     r2 002A 002A
-@0276                jt     r2 .jmp_0473
-@0279                and    r0 70F0 4CAA
-@027D                eq     r1 r0 40A0
-@0281                jf     r1 .jmp_0499
-@0284                or     r1 70F0 4CAA
-@0288                eq     r0 r1 7CFA
-@028C                jt     r0 .jmp_02AC
-@028F                out    'n'
-@0291                out    'o'
-@0293                out    ' '
-@0295                out    'b'
-@0297                out    'i'
-@0299                out    't'
-@029B                out    'w'
-@029D                out    'i'
-@029F                out    's'
-@02A1                out    'e'
-@02A3                out    ' '
-@02A5                out    'o'
-@02A7                out    'r'
-@02A9                out    '\n'
-@02AB                halt   
-@02AC     jmp_02AC:  not    r0 0000
-@02AF                eq     r1 r0 7FFF
-@02B3                jf     r1 .jmp_04B8
-@02B6                not    r0 5555
-@02B9                eq     r1 r0 2AAA
-@02BD                jf     r1 .jmp_04B8
-@02C0                call   .sub_0505
-@02C2                jmp    .jmp_0509
-@02C4     jmp_02C4:  pop    r0
-@02C6                eq     r1 r0 02C4
-@02CA                jt     r1 .jmp_0509
-@02CD                eq     r1 r0 02C2
-@02D1                jf     r1 .jmp_0509
-@02D4                set    r0 0507
-@02D7                call   r0
-@02D9                jmp    .jmp_0509
-@02DB     jmp_02DB:  pop    r0
-@02DD                eq     r1 r0 02DB
-@02E1                jt     r1 .jmp_0509
-@02E4                eq     r1 r0 02D9
-@02E8                jf     r1 .jmp_0509
-@02EB                add    r0 7FFF 7FFF
-@02EF                eq     r1 r0 7FFE
-@02F3                jf     r1 .jmp_0520
-@02F6                eq     r1 7FFE r0
-@02FA                jf     r1 .jmp_0520
-@02FD                add    r0 4000 4000
-@0301                jt     r0 .jmp_0520
-@0304                add    r0 4000 4000
-@0308                jt     r0 .jmp_0520
-@030B                mul    r0 0006 0009
-@030F                eq     r1 r0 002A
-@0313                jt     r1 .jmp_0565
-@0316                eq     r1 r0 0036
-@031A                jf     r1 .jmp_0586
-@031D                mul    r0 3039 7D7B
-@0321                eq     r1 r0 0063
-@0325                jf     r1 .jmp_0520
-@0328                mod    r0 0006 0003
-@032C                eq     r1 r0 0000
-@0330                jf     r1 .jmp_059D
-@0333                mod    r0 0046 0006
-@0337                eq     r1 r0 0004
-@033B                jf     r1 .jmp_059D
-@033E                mul    r0 7FFE 000F
-@0342                eq     r1 r0 7FE2
-@0346                jf     r1 .jmp_0520
-@0349                jmp    .jmp_034D
-@034B     mem_034B:  db     4e20
-@034C                db     2710
-@034D     jmp_034D:  rmem   r0 .mem_034B
-@0350                eq     r1 r0 4E20
-@0354                jf     r1 .jmp_04D7
-@0357                add    r2 034B 0001
-@035B                rmem   r0 r2
-@035E                eq     r1 r0 2710
-@0362                jf     r1 .jmp_04D7
-@0365                set    r0 034B
-@0368                wmem   r0 7530
-@036B                rmem   r2 r0
-@036E                eq     r1 r2 7530
-@0372                jf     r1 .jmp_04EE
-@0375                call   .sub_06BB
-@0377                rmem   r0 .mem_17B4
-@037A                eq     r1 r0 000B
-@037E                jf     r1 .jmp_04D7
-@0381                add    r2 17B4 0001
-@0385                rmem   r0 r2
-@0388                eq     r1 r0 0074
-@038C                jf     r1 .jmp_04D7
-@038F                wmem   r2 0054
-@0392                rmem   r0 r2
-@0395                eq     r1 r0 0074
-@0399                jt     r1 .jmp_04EE
-@039C                eq     r1 r0 0054
-@03A0                jf     r1 .jmp_04EE
-@03A3                wmem   .mem_03A9 0015
-@03A6                wmem   .mem_03A9+1 0007
-@03A9     mem_03A9:  jmp    .jmp_03AD
-@03AB                out    03D2
-@03AD     jmp_03AD:  out    'w'
-@03AF                out    'm'
-@03B1                out    'e'
-@03B3                out    'm'
-@03B5                out    ' '
-@03B7                out    'o'
-@03B9                out    'p'
-@03BB                out    'w'
-@03BD                out    'r'
-@03BF                out    'i'
-@03C1                out    't'
-@03C3                out    'e'
-@03C5                out    ' '
-@03C7                out    'f'
-@03C9                out    'a'
-@03CB                out    'i'
-@03CD                out    'l'
-@03CF                out    '\n'
-@03D1                halt   
-@03D2                add    r1 000A 17C0
-@03D6                add    r1 r1 0001
-@03DA                rmem   r2 .mem_17E4
-@03DD                add    r2 r2 17E4
-@03E1                set    r0 17E4
-@03E4                add    r0 r0 0001
-@03E8     jmp_03E8:  gt     r3 r0 r2
-@03EC                jt     r3 .jmp_03FF
-@03EF                rmem   r4 r0
-@03F2                wmem   r1 r4
-@03F5                add    r0 r0 0001
-@03F9                add    r1 r1 0001
-@03FD                jmp    .jmp_03E8
-@03FF     jmp_03FF:  rmem   r0 .mem_17C0
-@0402                rmem   r1 .mem_17D3
-@0405                add    r0 r0 r1
-@0409                add    r0 r0 0001
-@040D                wmem   .mem_17C0 r0
-@0410                wmem   .mem_17D3 002C
-@0413                set    r0 17C0
-@0416                call   .sub_05EE
-@0418                push   r0
-@041A                push   r1
-@041C                push   r2
-@041E                set    r0 68E3
-@0421                set    r1 05FB
-@0424                add    r2 2269 0893
->@0428                call   .sub_05B2
-@042A                pop    r2
-@042C                pop    r1
-@042E                pop    r0
-@0430                jmp    .jmp_0AAE
-@0432     jmp_0432:  out    'n'
-@0434                out    'o'
-@0436                out    ' '
-@0438                out    'j'
-@043A                out    't'
-@043C                out    '/'
-@043E                out    'j'
-@0440                out    'f'
-@0442                out    '\n'
-@0444                halt   
-@0445     jmp_0445:  out    'n'
-@0447                out    'o'
-@0449                out    'n'
-@044B                out    'z'
-@044D                out    'e'
-@044F                out    'r'
-@0451                out    'o'
-@0453                out    ' '
-@0455                out    'r'
-@0457                out    'e'
-@0459                out    'g'
-@045B                out    '\n'
-@045D                halt   
-@045E     jmp_045E:  out    'n'
-@0460                out    'o'
-@0462                out    ' '
-@0464                out    's'
-@0466                out    'e'
-@0468                out    't'
-@046A                out    ' '
-@046C                out    'o'
-@046E                out    'p'
-@0470                out    '\n'
-@0472                halt   
-@0473     jmp_0473:  out    'n'
-@0475                out    'o'
-@0477                out    ' '
-@0479                out    'g'
-@047B                out    't'
-@047D                out    ' '
-@047F                out    'o'
-@0481                out    'p'
-@0483                out    '\n'
-@0485                halt   
-@0486     jmp_0486:  out    'n'
-@0488                out    'o'
-@048A                out    ' '
-@048C                out    's'
-@048E                out    't'
-@0490                out    'a'
-@0492                out    'c'
-@0494                out    'k'
-@0496                out    '\n'
-@0498                halt   
-@0499     jmp_0499:  out    'n'
-@049B                out    'o'
-@049D                out    ' '
-@049F                out    'b'
-@04A1                out    'i'
-@04A3                out    't'
-@04A5                out    'w'
-@04A7                out    'i'
-@04A9                out    's'
-@04AB                out    'e'
-@04AD                out    ' '
-@04AF                out    'a'
-@04B1                out    'n'
-@04B3                out    'd'
-@04B5                out    '\n'
-@04B7                halt   
-@04B8     jmp_04B8:  out    'n'
-@04BA                out    'o'
-@04BC                out    ' '
-@04BE                out    'b'
-@04C0                out    'i'
-@04C2                out    't'
-@04C4                out    'w'
-@04C6                out    'i'
-@04C8                out    's'
-@04CA                out    'e'
-@04CC                out    ' '
-@04CE                out    'n'
-@04D0                out    'o'
-@04D2                out    't'
-@04D4                out    '\n'
-@04D6                halt   
-@04D7     jmp_04D7:  out    'n'
-@04D9                out    'o'
-@04DB                out    ' '
-@04DD                out    'r'
-@04DF                out    'm'
-@04E1                out    'e'
-@04E3                out    'm'
-@04E5                out    ' '
-@04E7                out    'o'
-@04E9                out    'p'
-@04EB                out    '\n'
-@04ED                halt   
-@04EE     jmp_04EE:  out    'n'
-@04F0                out    'o'
-@04F2                out    ' '
-@04F4                out    'w'
-@04F6                out    'm'
-@04F8                out    'e'
-@04FA                out    'm'
-@04FC                out    ' '
-@04FE                out    'o'
-@0500                out    'p'
-@0502                out    '\n'
-@0504                halt   
-@0505     sub_0505:  jmp    .jmp_02C4
-@0507                jmp    .jmp_02DB
-@0509     jmp_0509:  out    'n'
-@050B                out    'o'
-@050D                out    ' '
-@050F                out    'c'
-@0511                out    'a'
-@0513                out    'l'
-@0515                out    'l'
-@0517                out    ' '
-@0519                out    'o'
-@051B                out    'p'
-@051D                out    '\n'
-@051F                halt   
-@0520     jmp_0520:  out    'n'
-@0522                out    'o'
-@0524                out    ' '
-@0526                out    'm'
-@0528                out    'o'
-@052A                out    'd'
-@052C                out    'u'
-@052E                out    'l'
-@0530                out    'o'
-@0532                out    ' '
-@0534                out    'm'
-@0536                out    'a'
-@0538                out    't'
-@053A                out    'h'
-@053C                out    ' '
-@053E                out    'd'
-@0540                out    'u'
-@0542                out    'r'
-@0544                out    'i'
-@0546                out    'n'
-@0548                out    'g'
-@054A                out    ' '
-@054C                out    'a'
-@054E                out    'd'
-@0550                out    'd'
-@0552                out    ' '
-@0554                out    'o'
-@0556                out    'r'
-@0558                out    ' '
-@055A                out    'm'
-@055C                out    'u'
-@055E                out    'l'
-@0560                out    't'
-@0562                out    '\n'
-@0564                halt   
-@0565     jmp_0565:  out    'n'
-@0567                out    'o'
-@0569                out    't'
-@056B                out    ' '
-@056D                out    'h'
-@056F                out    'i'
-@0571                out    't'
-@0573                out    'c'
-@0575                out    'h'
-@0577                out    'h'
-@0579                out    'i'
-@057B                out    'k'
-@057D                out    'i'
-@057F                out    'n'
-@0581                out    'g'
-@0583                out    '\n'
-@0585                halt   
-@0586     jmp_0586:  out    'n'
-@0588                out    'o'
-@058A                out    ' '
-@058C                out    'm'
-@058E                out    'u'
-@0590                out    'l'
-@0592                out    't'
-@0594                out    ' '
-@0596                out    'o'
-@0598                out    'p'
-@059A                out    '\n'
-@059C                halt   
-@059D     jmp_059D:  out    'n'
-@059F                out    'o'
-@05A1                out    ' '
-@05A3                out    'm'
-@05A5                out    'o'
-@05A7                out    'd'
-@05A9                out    ' '
-@05AB                out    'o'
-@05AD                out    'p'
-@05AF                out    '\n'
-@05B1                halt   
-@05B2     sub_05B2:  push   r0
-@05B4                push   r3
-@05B6                push   r4
-@05B8                push   r5
-@05BA                push   r6
-@05BC                set    r6 r0
-@05BF                set    r5 r1
-@05C2                rmem   r4 r0
-@05C5                set    r1 0000
-@05C8     jmp_05C8:  add    r3 0001 r1
-@05CC                gt     r0 r3 r4
-@05D0                jt     r0 .jmp_05E3
-@05D3                add    r3 r3 r6
-@05D7                rmem   r0 r3
-@05DA                call   r5
-@05DC                add    r1 r1 0001
-@05E0                jt     r1 .jmp_05C8
-@05E3     jmp_05E3:  pop    r6
-@05E5                pop    r5
-@05E7                pop    r4
-@05E9                pop    r3
-@05EB                pop    r0
-@05ED                ret    
-@05EE     sub_05EE:  push   r1
-@05F0                set    r1 05F8
-@05F3                call   .sub_05B2
-@05F5                pop    r1
-@05F7                ret    
-@05F8                out    r0
-@05FA                ret    
-@05FB                push   r1
-@05FD                set    r1 r2
-@0600                call   .sub_084D
-@0602                out    r0
-@0604                pop    r1
-@0606                ret    
+@0000         init:  call   .sub_06BB
+@0002                rmem   r0 .mem_17B4
+@0005                set    r2 17B5
+@0008                rmem   r0 r2
+@000B                eq     r1 r0 0074
+@000F                wmem   r2 0054
+@0012                rmem   r0 r2
+@0015                eq     r1 r0 0074
+@0019                eq     r1 r0 0054
+@001D                set    r1 17CA
+@0020                add    r1 r1 0001
+@0024                rmem   r2 .mem_17E4
+@0027                add    r2 r2 17E4
+@002B                set    r0 17E4
+@002E                add    r0 r0 0001
+@0032     jmp_0032:  gt     r3 r0 r2
+@0036                jt     r3 .jmp_0049
+@0039                rmem   r4 r0
+@003C                wmem   r1 r4
+@003F                add    r0 r0 0001
+@0043                add    r1 r1 0001
+@0047                jmp    .jmp_0032
+@0049     jmp_0049:  rmem   r0 .mem_17C0
+@004C                rmem   r1 .mem_17D3
+@004F                add    r0 r0 r1
+@0053                add    r0 r0 0001
+@0057                wmem   .mem_17C0 r0
+@005A                wmem   .mem_17D3 002C
+@005D                set    r0 17C0
+@0060                call   .sub_0080
+@0062                push   r0
+@0064                push   r1
+@0066                push   r2
+@0068                set    r0 68E3
+@006B                set    r1 00D3
+@006E                add    r2 2269 0893
+@0072                call   .sub_0094
+@0074                pop    r2
+@0076                pop    r1
+@0078                pop    r0
+@007A                jmp    .jmp_0AAE
+
+                     ; -- nop --
+
+@0080     sub_0080:  push   r1
+@0082                set    r1 008D
+@0085                call   .sub_0094
+@0087                pop    r1
+@0089                ret    
+
+                     ; -- nop --
+
+@008D                out    r0
+@008F                ret    
+
+                     ; -- nop --
+;printf?
+>@0094     sub_0094:  push   r0
+@0096                push   r3
+@0098                push   r4
+@009A                push   r5
+@009C                push   r6
+@009E                set    r6 r0
+@00A1                set    r5 r1
+@00A4                rmem   r4 r0
+@00A7                set    r1 0000
+@00AA     jmp_00AA:  add    r3 0001 r1
+@00AE                gt     r0 r3 r4
+@00B2                jt     r0 .jmp_00C5
+@00B5                add    r3 r3 r6
+@00B9                rmem   r0 r3
+@00BC                call   r5
+@00BE                add    r1 r1 0001
+@00C2                jt     r1 .jmp_00AA
+@00C5     jmp_00C5:  pop    r6
+@00C7                pop    r5
+@00C9                pop    r4
+@00CB                pop    r3
+@00CD                pop    r0
+@00CF                ret    
+
+                     ; -- nop --
+
+@00D3                push   r1
+@00D5                set    r1 r2
+@00D8                call   .sub_084D
+@00DA                out    r0
+@00DC                pop    r1
+@00DE                ret    
+
+                     ; -- nop --
+
 @0607     sub_0607:  push   r1
 @0609                push   r3
 @060B                rmem   r3 r0
 @060E                jf     r3 .jmp_061B
-@0611                call   .sub_05B2
+@0611                call   .sub_0094
 @0613                jt     r1 .jmp_061B
 @0616                set    r0 r2
 @0619                jmp    .jmp_061E
@@ -761,7 +153,7 @@
 @069C                jf     r2 .jmp_06AA
 @069F                set    r2 r1
 @06A2                set    r1 0653
-@06A5                call   .sub_05B2
+@06A5                call   .sub_0094
 @06A7                jf     r1 .jmp_06AF
 @06AA     jmp_06AA:  set    r0 0001
 @06AD                jmp    .jmp_06B2
@@ -863,7 +255,7 @@
 @07BC                jf     r3 .jmp_0758
 @07BF                push   r0
 @07C1                set    r0 17F1
-@07C4                call   .sub_05EE
+@07C4                call   .sub_0080
 @07C6                pop    r0
 @07C8                pop    r6
 @07CA                pop    r5
@@ -913,7 +305,13 @@
 @0846                pop    r2
 @0848                pop    r1
 @084A                pop    r0
-@084C                ret    
+@084C                ret   
+
+
+
+
+
+;decrypt?
 @084D     sub_084D:  push   r1
 @084F                push   r2
 @0851                and    r2 r0 r1
@@ -970,6 +368,13 @@
 @08E4     jmp_08E4:  pop    r2
 @08E6                pop    r1
 @08E8                ret    
+
+
+
+
+
+
+
 @08E9     sub_08E9:  push   r1
 @08EB                gt     r1 r0 000E
 @08EF                jt     r1 .jmp_0905
@@ -1400,7 +805,7 @@
 @0AAB                halt   
 @0AAC     mem_0AAC:  db     090d
 @0AAD     mem_0AAD:  halt   
->@0AAE     jmp_0AAE:  push   r0
+@0AAE     jmp_0AAE:  push   r0
 @0AB0                push   r1
 @0AB2                push   r2
 @0AB4                push   r3
@@ -1425,9 +830,9 @@
 @0AEC                push   r1
 @0AEE                push   r2
 @0AF0                set    r0 6B16
-@0AF3                set    r1 05FB
+@0AF3                set    r1 00D3
 @0AF6                add    r2 01FA 2072
-@0AFA                call   .sub_05B2
+@0AFA                call   .sub_0094
 @0AFC                pop    r2
 @0AFE                pop    r1
 @0B00                pop    r0
@@ -1495,16 +900,16 @@
 @0BAE                jf     r1 .jmp_0BBE
 @0BB1                add    r1 r0 0001
 @0BB5                rmem   r0 r1
-@0BB8                call   .sub_05EE
+@0BB8                call   .sub_0080
 @0BBA                out    '\n'
 @0BBC                jmp    .jmp_0CA6
 @0BBE     jmp_0BBE:  push   r0
 @0BC0                push   r1
 @0BC2                push   r2
 @0BC4                set    r0 6B28
-@0BC7                set    r1 05FB
+@0BC7                set    r1 00D3
 @0BCA                add    r2 474D 12A7
-@0BCE                call   .sub_05B2
+@0BCE                call   .sub_0094
 @0BD0                pop    r2
 @0BD2                pop    r1
 @0BD4                pop    r0
@@ -1516,7 +921,7 @@
 @0BE1                out    ' '
 @0BE3                add    r0 r0 0000
 @0BE7                rmem   r0 r0
-@0BEA                call   .sub_05EE
+@0BEA                call   .sub_0080
 @0BEC                out    ' '
 @0BEE                out    '='
 @0BF0                out    '='
@@ -1536,7 +941,7 @@
 @0C15                add    r0 r0 0001
 @0C19                add    r0 r0 r1
 @0C1D                rmem   r0 r0
-@0C20     jmp_0C20:  call   .sub_05EE
+@0C20     jmp_0C20:  call   .sub_0080
 @0C22                out    '\n'
 @0C24                pop    r0
 @0C26                push   r0
@@ -1546,9 +951,9 @@
 @0C2F                push   r1
 @0C31                push   r2
 @0C33                set    r0 6B3F
-@0C36                set    r1 05FB
+@0C36                set    r1 00D3
 @0C39                add    r2 1369 1C82
-@0C3D                call   .sub_05B2
+@0C3D                call   .sub_0094
 @0C3F                pop    r2
 @0C41                pop    r1
 @0C43                pop    r0
@@ -1591,7 +996,7 @@
 @0C98                add    r0 r0 0002
 @0C9C                rmem   r0 r0
 @0C9F                set    r1 16B6
-@0CA2                call   .sub_05B2
+@0CA2                call   .sub_0094
 @0CA4                pop    r0
 @0CA6     jmp_0CA6:  pop    r2
 @0CA8                pop    r1
@@ -1620,9 +1025,9 @@
 @0CE8                push   r1
 @0CEA                push   r2
 @0CEC                set    r0 6B5A
-@0CEF                set    r1 05FB
+@0CEF                set    r1 00D3
 @0CF2                add    r2 5470 1309
-@0CF6                call   .sub_05B2
+@0CF6                call   .sub_0094
 @0CF8                pop    r2
 @0CFA                pop    r1
 @0CFC                pop    r0
@@ -1635,9 +1040,9 @@
 @0D09                push   r1
 @0D0B                push   r2
 @0D0D                set    r0 6B8C
-@0D10                set    r1 05FB
+@0D10                set    r1 00D3
 @0D13                add    r2 24B2 0AC2
-@0D17                call   .sub_05B2
+@0D17                call   .sub_0094
 @0D19                pop    r2
 @0D1B                pop    r1
 @0D1D                pop    r0
@@ -1649,9 +1054,9 @@
 @0D28                push   r1
 @0D2A                push   r2
 @0D2C                set    r0 6D85
-@0D2F                set    r1 05FB
+@0D2F                set    r1 00D3
 @0D32                add    r2 01BC 1E2A
-@0D36                call   .sub_05B2
+@0D36                call   .sub_0094
 @0D38                pop    r2
 @0D3A                pop    r1
 @0D3C                pop    r0
@@ -1675,9 +1080,9 @@
 @0D69                push   r1
 @0D6B                push   r2
 @0D6D                set    r0 6D96
-@0D70                set    r1 05FB
+@0D70                set    r1 00D3
 @0D73                add    r2 0952 0498
-@0D77                call   .sub_05B2
+@0D77                call   .sub_0094
 @0D79                pop    r2
 @0D7B                pop    r1
 @0D7D                pop    r0
@@ -1686,9 +1091,9 @@
 @0D83                push   r1
 @0D85                push   r2
 @0D87                set    r0 6D9E
-@0D8A                set    r1 05FB
+@0D8A                set    r1 00D3
 @0D8D                add    r2 0D2E 0E49
-@0D91                call   .sub_05B2
+@0D91                call   .sub_0094
 @0D93                pop    r2
 @0D95                pop    r1
 @0D97                pop    r0
@@ -1709,9 +1114,9 @@
 @0DBB                push   r1
 @0DBD                push   r2
 @0DBF                set    r0 6DBA
-@0DC2                set    r1 05FB
+@0DC2                set    r1 00D3
 @0DC5                add    r2 0462 0206
-@0DC9                call   .sub_05B2
+@0DC9                call   .sub_0094
 @0DCB                pop    r2
 @0DCD                pop    r1
 @0DCF                pop    r0
@@ -1720,9 +1125,9 @@
 @0DD5                push   r1
 @0DD7                push   r2
 @0DD9                set    r0 6DC4
-@0DDC                set    r1 05FB
+@0DDC                set    r1 00D3
 @0DDF                add    r2 2D94 09E5
-@0DE3                call   .sub_05B2
+@0DE3                call   .sub_0094
 @0DE5                pop    r2
 @0DE7                pop    r1
 @0DE9                pop    r0
@@ -1745,9 +1150,9 @@
 @0E13                push   r1
 @0E15                push   r2
 @0E17                set    r0 6DE7
-@0E1A                set    r1 05FB
+@0E1A                set    r1 00D3
 @0E1D                add    r2 07FD 0D74
-@0E21                call   .sub_05B2
+@0E21                call   .sub_0094
 @0E23                pop    r2
 @0E25                pop    r1
 @0E27                pop    r0
@@ -1756,9 +1161,9 @@
 @0E2D                push   r1
 @0E2F                push   r2
 @0E31                set    r0 6E0A
-@0E34                set    r1 05FB
+@0E34                set    r1 00D3
 @0E37                add    r2 00AA 03BE
-@0E3B                call   .sub_05B2
+@0E3B                call   .sub_0094
 @0E3D                pop    r2
 @0E3F                pop    r1
 @0E41                pop    r0
@@ -1786,9 +1191,9 @@
 @0E77                push   r1
 @0E79                push   r2
 @0E7B                set    r0 6E2C
-@0E7E                set    r1 05FB
+@0E7E                set    r1 00D3
 @0E81                add    r2 29B7 1D2D
-@0E85                call   .sub_05B2
+@0E85                call   .sub_0094
 @0E87                pop    r2
 @0E89                pop    r1
 @0E8B                pop    r0
@@ -1842,9 +1247,9 @@
 @0EED                push   r1
 @0EEF                push   r2
 @0EF1                set    r0 6E4C
-@0EF4                set    r1 05FB
+@0EF4                set    r1 00D3
 @0EF7                add    r2 5426 13BB
-@0EFB                call   .sub_05B2
+@0EFB                call   .sub_0094
 @0EFD                pop    r2
 @0EFF                pop    r1
 @0F01                pop    r0
@@ -1857,9 +1262,9 @@
 @0F13                push   r1
 @0F15                push   r2
 @0F17                set    r0 6E8F
-@0F1A                set    r1 05FB
+@0F1A                set    r1 00D3
 @0F1D                add    r2 4244 24B6
-@0F21                call   .sub_05B2
+@0F21                call   .sub_0094
 @0F23                pop    r2
 @0F25                pop    r1
 @0F27                pop    r0
@@ -1879,9 +1284,9 @@
 @0F48                push   r1
 @0F4A                push   r2
 @0F4C                set    r0 6EBB
-@0F4F                set    r1 05FB
+@0F4F                set    r1 00D3
 @0F52                add    r2 1272 3EEE
-@0F56                call   .sub_05B2
+@0F56                call   .sub_0094
 @0F58                pop    r2
 @0F5A                pop    r1
 @0F5C                pop    r0
@@ -2037,13 +1442,13 @@
 @108F                add    r1 r0 0F69
 @1093                rmem   r1 r1
 @1096                set    r0 65A8
-@1099                call   .sub_05EE
+@1099                call   .sub_0080
 @109B                set    r0 r1
-@109E                call   .sub_05EE
+@109E                call   .sub_0080
 @10A0                set    r0 65E8
-@10A3                call   .sub_05EE
+@10A3                call   .sub_0080
 @10A5                set    r0 r1
-@10A8                call   .sub_05EE
+@10A8                call   .sub_0080
 @10AA                out    '.'
 @10AC                out    '\n'
 @10AE                out    '\n'
@@ -2063,11 +1468,11 @@
 @10CE                add    r1 r0 0F69
 @10D2                rmem   r1 r1
 @10D5                set    r0 660A
-@10D8                call   .sub_05EE
+@10D8                call   .sub_0080
 @10DA                set    r0 r1
-@10DD                call   .sub_05EE
+@10DD                call   .sub_0080
 @10DF                set    r0 663A
-@10E2                call   .sub_05EE
+@10E2                call   .sub_0080
 @10E4                pop    r0
 @10E6                set    r1 r0
 @10E9                rmem   r0 .mem_0F70
@@ -2082,20 +1487,20 @@
 @1105                jf     r2 .jmp_1111
 @1108                push   r0
 @110A                set    r0 667B
-@110D                call   .sub_05EE
+@110D                call   .sub_0080
 @110F                pop    r0
 @1111     jmp_1111:  gt     r2 r1 r0
 @1115                jf     r2 .jmp_1121
 @1118                push   r0
 @111A                set    r0 669B
-@111D                call   .sub_05EE
+@111D                call   .sub_0080
 @111F                pop    r0
 @1121     jmp_1121:  out    '\n'
 @1123                out    '\n'
 @1125                jmp    .jmp_112E
 @1127     jmp_1127:  call   .sub_1234
 @1129                set    r0 66BB
-@112C                call   .sub_05EE
+@112C                call   .sub_0080
 @112E     jmp_112E:  pop    r2
 @1130                pop    r1
 @1132                pop    r0
@@ -2153,26 +1558,26 @@
 @11BB                rmem   r0 r0
 @11BE                jt     r0 .jmp_1200
 @11C1                set    r0 66D1
-@11C4                call   .sub_05EE
+@11C4                call   .sub_0080
 @11C6                rmem   r0 .mem_0F70
 @11C9                eq     r0 r0 001E
 @11CD                jt     r0 .jmp_11DE
 @11D0                set    r0 66F2
-@11D3                call   .sub_05EE
+@11D3                call   .sub_0080
 @11D5     jmp_11D5:  set    r0 671E
-@11D8                call   .sub_05EE
+@11D8                call   .sub_0080
 @11DA                call   .sub_1234
 @11DC                jmp    .jmp_1200
 @11DE     jmp_11DE:  set    r0 6748
-@11E1                call   .sub_05EE
+@11E1                call   .sub_0080
 @11E3                rmem   r0 .mem_0F72
 @11E6                add    r0 r0 0001
 @11EA                jt     r0 .jmp_11F4
 @11ED                set    r0 6774
-@11F0                call   .sub_05EE
+@11F0                call   .sub_0080
 @11F2                jmp    .jmp_11D5
 @11F4     jmp_11F4:  set    r0 67D8
-@11F7                call   .sub_05EE
+@11F7                call   .sub_0080
 @11F9                add    r0 0A9C 0002
 @11FD                wmem   r0 7FFF
 @1200     jmp_1200:  pop    r0
@@ -2182,17 +1587,17 @@
 @1209                rmem   r0 r0
 @120C                jt     r0 .jmp_1231
 @120F                set    r0 685D
-@1212                call   .sub_05EE
+@1212                call   .sub_0080
 @1214                rmem   r0 .mem_0AAC
 @1217                eq     r0 r0 0A3F
 @121B                jt     r0 .jmp_1225
 @121E                set    r0 6865
-@1221                call   .sub_05EE
+@1221                call   .sub_0080
 @1223                jmp    .jmp_122A
 @1225     jmp_1225:  set    r0 686B
-@1228                call   .sub_05EE
+@1228                call   .sub_0080
 @122A     jmp_122A:  set    r0 6871
-@122D                call   .sub_05EE
+@122D                call   .sub_0080
 @122F                call   .sub_1234
 @1231     jmp_1231:  pop    r0
 @1233                ret    
@@ -2213,7 +1618,7 @@
 @125B                eq     r0 r0 7FFF
 @125F                jt     r0 .jmp_126D
 @1262                set    r0 68C8
-@1265                call   .sub_05EE
+@1265                call   .sub_0080
 @1267                wmem   .mem_0AAC 0A12
 @126A                wmem   .mem_0AAD 0A12
 @126D     jmp_126D:  pop    r0
@@ -2226,9 +1631,9 @@
 @127A                push   r1
 @127C                push   r2
 @127E                set    r0 6ED1
-@1281                set    r1 05FB
+@1281                set    r1 00D3
 @1284                add    r2 4A6E 047C
-@1288                call   .sub_05B2
+@1288                call   .sub_0094
 @128A                pop    r2
 @128C                pop    r1
 @128E                pop    r0
@@ -2241,9 +1646,9 @@
 @12A0                push   r1
 @12A2                push   r2
 @12A4                set    r0 6EF1
-@12A7                set    r1 05FB
+@12A7                set    r1 00D3
 @12AA                add    r2 282C 3E53
-@12AE                call   .sub_05B2
+@12AE                call   .sub_0094
 @12B0                pop    r2
 @12B2                pop    r1
 @12B4                pop    r0
@@ -2266,9 +1671,9 @@
 @12E2                push   r1
 @12E4                push   r2
 @12E6                set    r0 6F25
-@12E9                set    r1 05FB
+@12E9                set    r1 00D3
 @12EC                add    r2 197A 1FEA
-@12F0                call   .sub_05B2
+@12F0                call   .sub_0094
 @12F2                pop    r2
 @12F4                pop    r1
 @12F6                pop    r0
@@ -2277,9 +1682,9 @@
 @12FC                push   r1
 @12FE                push   r2
 @1300                set    r0 6F5E
-@1303                set    r1 05FB
+@1303                set    r1 00D3
 @1306                add    r2 075C 178B
-@130A                call   .sub_05B2
+@130A                call   .sub_0094
 @130C                pop    r2
 @130E                pop    r1
 @1310                pop    r0
@@ -2294,9 +1699,9 @@
 @1327                push   r1
 @1329                push   r2
 @132B                set    r0 6F99
-@132E                set    r1 05FB
+@132E                set    r1 00D3
 @1331                add    r2 0B99 26D7
-@1335                call   .sub_05B2
+@1335                call   .sub_0094
 @1337                pop    r2
 @1339                pop    r1
 @133B                pop    r0
@@ -2312,9 +1717,9 @@
 @1355                push   r1
 @1357                push   r2
 @1359                set    r0 6FB3
-@135C                set    r1 05FB
+@135C                set    r1 00D3
 @135F                add    r2 0863 159A
-@1363                call   .sub_05B2
+@1363                call   .sub_0094
 @1365                pop    r2
 @1367                pop    r1
 @1369                pop    r0
@@ -2330,9 +1735,9 @@
 @1381                push   r1
 @1383                push   r2
 @1385                set    r0 6FCD
-@1388                set    r1 05FB
+@1388                set    r1 00D3
 @138B                add    r2 0C90 245C
-@138F                call   .sub_05B2
+@138F                call   .sub_0094
 @1391                pop    r2
 @1393                pop    r1
 @1395                pop    r0
@@ -2357,9 +1762,9 @@
 @13D2                push   r1
 @13D4                push   r2
 @13D6                set    r0 6FF8
-@13D9                set    r1 05FB
+@13D9                set    r1 00D3
 @13DC                add    r2 48D7 1410
-@13E0                call   .sub_05B2
+@13E0                call   .sub_0094
 @13E2                pop    r2
 @13E4                pop    r1
 @13E6                pop    r0
@@ -2367,16 +1772,16 @@
 @13EA                push   r0
 @13EC                add    r2 r0 0000
 @13F0                rmem   r0 r2
-@13F3                call   .sub_05EE
+@13F3                call   .sub_0080
 @13F5                pop    r0
 @13F7                push   r0
 @13F9                push   r0
 @13FB                push   r1
 @13FD                push   r2
 @13FF                set    r0 7007
-@1402                set    r1 05FB
+@1402                set    r1 00D3
 @1405                add    r2 19C4 552E
-@1409                call   .sub_05B2
+@1409                call   .sub_0094
 @140B                pop    r2
 @140D                pop    r1
 @140F                pop    r0
@@ -2422,14 +1827,14 @@
 @149B                wmem   .mem_099E 0000
 @149E                set    r0 69D7
 @14A1                set    r1 14DD
-@14A4                call   .sub_05B2
+@14A4                call   .sub_0094
 @14A6                push   r0
 @14A8                push   r1
 @14AA                push   r2
 @14AC                set    r0 7026
-@14AF                set    r1 05FB
+@14AF                set    r1 00D3
 @14B2                add    r2 4CE1 1A18
-@14B6                call   .sub_05B2
+@14B6                call   .sub_0094
 @14B8                pop    r2
 @14BA                pop    r1
 @14BC                pop    r0
@@ -2438,9 +1843,9 @@
 @14C2                push   r1
 @14C4                push   r2
 @14C6                set    r0 7069
-@14C9                set    r1 05FB
+@14C9                set    r1 00D3
 @14CC                add    r2 07F1 1685
-@14D0                call   .sub_05B2
+@14D0                call   .sub_0094
 @14D2                pop    r2
 @14D4                pop    r1
 @14D6                pop    r0
@@ -2502,17 +1907,15 @@
 @1550                push   r1
 @1552                push   r2
 @1554                set    r0 70AC
-@1557                set    r1 05FB
+@1557                set    r1 00D3
 @155A                add    r2 0E74 217B
-@155E                call   .sub_05B2
+@155E                call   .sub_0094
 @1560                pop    r2
 @1562                pop    r1
 @1564                pop    r0
-@1566                nop    
-@1567                nop    
-@1568                nop    
-@1569                nop    
-@156A                nop    
+
+                     ; -- nop --
+
 @156B                set    r0 0004
 @156E                set    r1 0001
 @1571                call   .sub_178B
@@ -2522,9 +1925,9 @@
 @157C                push   r1
 @157E                push   r2
 @1580                set    r0 7156
-@1583                set    r1 05FB
+@1583                set    r1 00D3
 @1586                add    r2 0A8A 30DC
-@158A                call   .sub_05B2
+@158A                call   .sub_0094
 @158C                pop    r2
 @158E                pop    r1
 @1590                pop    r0
@@ -2539,9 +1942,9 @@
 @15A6                push   r1
 @15A8                push   r2
 @15AA                set    r0 723D
-@15AD                set    r1 05FB
+@15AD                set    r1 00D3
 @15B0                add    r2 0A75 4904
-@15B4                call   .sub_05B2
+@15B4                call   .sub_0094
 @15B6                pop    r2
 @15B8                pop    r1
 @15BA                pop    r0
@@ -2554,9 +1957,9 @@
 @15CD                push   r1
 @15CF                push   r2
 @15D1                set    r0 72D8
-@15D4                set    r1 05FB
+@15D4                set    r1 00D3
 @15D7                add    r2 0372 6889
-@15DB                call   .sub_05B2
+@15DB                call   .sub_0094
 @15DD                pop    r2
 @15DF                pop    r1
 @15E1                pop    r0
@@ -2565,9 +1968,9 @@
 @15E7                push   r1
 @15E9                push   r2
 @15EB                set    r0 7369
-@15EE                set    r1 05FB
+@15EE                set    r1 00D3
 @15F1                add    r2 1FA0 3949
-@15F5                call   .sub_05B2
+@15F5                call   .sub_0094
 @15F7                pop    r2
 @15F9                pop    r1
 @15FB                pop    r0
@@ -2592,9 +1995,9 @@
 @1634                push   r1
 @1636                push   r2
 @1638                set    r0 73E3
-@163B                set    r1 05FB
+@163B                set    r1 00D3
 @163E                add    r2 12BD 1CA4
-@1642                call   .sub_05B2
+@1642                call   .sub_0094
 @1644                pop    r2
 @1646                pop    r1
 @1648                pop    r0
@@ -2613,9 +2016,9 @@
 @1663                push   r1
 @1665                push   r2
 @1667                set    r0 743D
-@166A                set    r1 05FB
+@166A                set    r1 00D3
 @166D                add    r2 1F64 1800
-@1671                call   .sub_05B2
+@1671                call   .sub_0094
 @1673                pop    r2
 @1675                pop    r1
 @1677                pop    r0
@@ -2634,9 +2037,9 @@
 @1697                push   r1
 @1699                push   r2
 @169B                set    r0 74FA
-@169E                set    r1 05FB
+@169E                set    r1 00D3
 @16A1                add    r2 3B94 1CD8
-@16A5                call   .sub_05B2
+@16A5                call   .sub_0094
 @16A7                pop    r2
 @16A9                pop    r1
 @16AB                pop    r0
@@ -2647,7 +2050,7 @@
 @16B5                ret    
 @16B6     sub_16B6:  out    '-'
 @16B8                out    ' '
-@16BA                call   .sub_05EE
+@16BA                call   .sub_0080
 @16BC                out    '\n'
 @16BE                ret    
 @16BF     sub_16BF:  push   r1
@@ -2655,7 +2058,7 @@
 @16C3                set    r0 6AF5
 @16C6                set    r1 16D6
 @16C9                set    r2 0000
-@16CC                call   .sub_05B2
+@16CC                call   .sub_0094
 @16CE                set    r0 r2
 @16D1                pop    r2
 @16D3                pop    r1
@@ -2675,7 +2078,7 @@
 @16F6                push   r1
 @16F8                set    r0 6AF5
 @16FB                set    r1 1705
-@16FE                call   .sub_05B2
+@16FE                call   .sub_0094
 @1700                pop    r1
 @1702                pop    r0
 @1704                ret    

@@ -12,10 +12,10 @@ from pathlib import Path
 from array import array
 import wx
 
-app = wx.App()
-frm = wx.Frame(None, title="Synacor VM")
-frm.Show()
-app.MainLoop()   
+#app = wx.App()
+#frm = wx.Frame(None, title="Synacor VM")
+#frm.Show()
+#app.MainLoop()   
 
 
 if __name__ == '__main__':
@@ -30,8 +30,18 @@ if __name__ == '__main__':
         output_file = Path(sys.argv[3])
         
         disassembly = Computer.DisassembleFile(input_file)
+        last_skipped = False
         with output_file.open('w') as f:
             for _,x in disassembly.items():
+                if x['op'] == 'nop':
+                    if last_skipped:
+                        continue
+                    else:
+                        last_skipped = True
+                        f.write('\n                     ; -- nop --\n\n')
+                        continue
+
+                last_skipped = False
                 if x['label'] != '':
                     f.write('@{:04X}  {:>12}  {:6} {}\n'.format(x['start_address'],x['label']+':',x['op'],' '.join(x['processed_args'])))
                 else:

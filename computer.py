@@ -279,8 +279,7 @@ class Computer:
     
     # 00HHHH  |  HHHH HHHH HHHH HHHH  |  asm__opa, opb, opc 
 
-        with open(program_file,'rb') as f:
-            
+        with open(program_file,'rb') as f:            
             data  = array('H')
             try:
                 data.fromfile(f,2**16)
@@ -381,8 +380,10 @@ class Computer:
 
         
 
-        make_tokens = re.compile(r'''\;[\w\s]*$|[\w]+\:|[\w\+\-\.]+|\'.+\'|\'\\n\'|@[0-9a-fA-F]{4}|^>''',re.VERBOSE).findall
+        make_tokens = re.compile(r'''\;[\w\s-]*$|[\w]+\:|[\w\+\-\.]+|\'.+\'|\'\\n\'|@[0-9a-fA-F]{4}|^>''',re.VERBOSE).findall
         tokens = make_tokens(line)
+
+
 
         if tokens and tokens[0] == '>':
             parsed['breakpoint'] = True
@@ -441,11 +442,11 @@ class Computer:
                 if '+' in tok:
                     thing = tok.split('+')    
                     label = thing[0].lstrip('.')
-                    addition = int(thing[1])
+                    addition = int(thing[1],16)
                 elif '-' in tok:
                     thing = tok.split('-')    
                     label = thing[0].lstrip('.')
-                    addition = -int(thing[1])
+                    addition = -int(thing[1],16)
                 else:
                     label = tok.lstrip('.')
                 
@@ -478,7 +479,7 @@ class Computer:
             labels = dict()
             for asm_line in asm_lines:
                 
-                tl = Computer.Tokenize(asm_line)
+                tl = Computer.Tokenize(asm_line.lstrip().rstrip())
                 if tl:
                     if tl['address']:
                         current_offset = tl['address']
