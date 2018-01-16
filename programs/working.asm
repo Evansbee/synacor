@@ -14,7 +14,7 @@
 @002B                set    r0 17E4
 @002E                add    r0 r0 0001
 @0032     jmp_0032:  gt     r3 r0 r2
-@0036                jt     r3 .jmp_0049
+@0036                jnz    r3 .jmp_0049
 @0039                rmem   r4 r0
 @003C                wmem   r1 r4
 @003F                add    r0 r0 0001
@@ -54,7 +54,7 @@
 @008F                ret    
 
                      ; -- nop --
-;printf
+
 @0094     sub_0094:  push   r0
 @0096                push   r3
 @0098                push   r4
@@ -66,12 +66,12 @@
 @00A7                set    r1 0000
 @00AA     jmp_00AA:  add    r3 0001 r1
 @00AE                gt     r0 r3 r4
-@00B2                jt     r0 .jmp_00C5
+@00B2                jnz    r0 .jmp_00C5
 @00B5                add    r3 r3 r6
 @00B9                rmem   r0 r3
 @00BC                call   r5
 @00BE                add    r1 r1 0001
-@00C2                jt     r1 .jmp_00AA
+@00C2                jnz    r1 .jmp_00AA
 @00C5     jmp_00C5:  pop    r6
 @00C7                pop    r5
 @00C9                pop    r4
@@ -93,9 +93,9 @@
 @0607     sub_0607:  push   r1
 @0609                push   r3
 @060B                rmem   r3 r0
-@060E                jf     r3 .jmp_061B
+@060E                jz     r3 .jmp_061B
 @0611                call   .sub_0094
-@0613                jt     r1 .jmp_061B
+@0613                jnz    r1 .jmp_061B
 @0616                set    r0 r2
 @0619                jmp    .jmp_061E
 @061B     jmp_061B:  set    r0 7FFF
@@ -119,7 +119,7 @@
 @0642                pop    r1
 @0644                ret    
 @0645                eq     r0 r0 r2
-@0649                jf     r0 .jmp_0652
+@0649                jz     r0 .jmp_0652
 @064C                set    r2 r1
 @064F                set    r1 7FFF
 @0652     jmp_0652:  ret    
@@ -128,7 +128,7 @@
 @0659                add    r3 r3 r1
 @065D                rmem   r3 r3
 @0660                eq     r3 r0 r3
-@0664                jt     r3 .jmp_066D
+@0664                jnz    r3 .jmp_066D
 @0667                set    r2 r1
 @066A                set    r1 7FFF
 @066D     jmp_066D:  pop    r3
@@ -137,7 +137,7 @@
 @0672                set    r1 r2
 @0675                call   .sub_0683
 @0677                pop    r1
-@0679                jf     r0 .jmp_0682
+@0679                jz     r0 .jmp_0682
 @067C                set    r2 r1
 @067F                set    r1 7FFF
 @0682     jmp_0682:  ret    
@@ -148,13 +148,13 @@
 @068B                rmem   r3 r0
 @068E                rmem   r4 r1
 @0691                eq     r2 r3 r4
-@0695                jf     r2 .jmp_06AF
+@0695                jz     r2 .jmp_06AF
 @0698                or     r2 r3 r4
-@069C                jf     r2 .jmp_06AA
+@069C                jz     r2 .jmp_06AA
 @069F                set    r2 r1
 @06A2                set    r1 0653
 @06A5                call   .sub_0094
-@06A7                jf     r1 .jmp_06AF
+@06A7                jz     r1 .jmp_06AF
 @06AA     jmp_06AA:  set    r0 0001
 @06AD                jmp    .jmp_06B2
 @06AF     jmp_06AF:  set    r0 0000
@@ -176,7 +176,7 @@
 @06D4                wmem   r1 r0
 @06D7                add    r1 r1 0001
 @06DB                eq     r0 7562 r1
-@06DF                jf     r0 .jmp_06C2
+@06DF                jz     r0 .jmp_06C2
 @06E2                pop    r1
 @06E4                pop    r0
 @06E6                ret    
@@ -190,16 +190,16 @@
 @06F8                set    r5 0000
 @06FB     jmp_06FB:  add    r0 r0 0001
 @06FF                gt     r3 r0 r2
-@0703                jt     r3 .jmp_0718
+@0703                jnz    r3 .jmp_0718
 @0706                in     r4
 @0708                eq     r3 r4 000A
-@070C                jt     r3 .jmp_0718
+@070C                jnz    r3 .jmp_0718
 @070F                wmem   r0 r4
 @0712                add    r5 r5 0001
 @0716                jmp    .jmp_06FB
 @0718     jmp_0718:  wmem   r1 r5
 @071B     jmp_071B:  eq     r3 r4 000A
-@071F                jt     r3 .jmp_0726
+@071F                jnz    r3 .jmp_0726
 @0722                in     r4
 @0724                jmp    .jmp_071B
 @0726     jmp_0726:  pop    r5
@@ -220,7 +220,7 @@
 @074A                add    r6 r6 0001
 @074E                rmem   r5 .mem_17ED
 @0751                gt     r4 r6 r5
-@0755                jf     r4 .jmp_073C
+@0755                jz     r4 .jmp_073C
 @0758     jmp_0758:  set    r3 0000
 @075B                set    r4 0000
 @075E     jmp_075E:  rmem   r5 .mem_17ED
@@ -242,7 +242,7 @@
 @078E                mod    r6 r6 r5
 @0792                add    r6 r6 0001
 @0796                gt     r5 r6 r2
-@079A                jt     r5 .jmp_07A0
+@079A                jnz    r5 .jmp_07A0
 @079D                set    r3 0001
 @07A0     jmp_07A0:  add    r6 r6 r1
 @07A4                rmem   r6 r6
@@ -251,8 +251,8 @@
 @07AF                wmem   r5 r6
 @07B2                rmem   r5 .mem_17F1
 @07B5                eq     r5 r4 r5
-@07B9                jf     r5 .jmp_075E
-@07BC                jf     r3 .jmp_0758
+@07B9                jz     r5 .jmp_075E
+@07BC                jz     r3 .jmp_0758
 @07BF                push   r0
 @07C1                set    r0 17F1
 @07C4                call   .sub_0080
@@ -270,15 +270,15 @@
 @07DB                push   r5
 @07DD                set    r2 0001
 @07E0                set    r5 0000
-@07E3     jmp_07E3:  jf     r0 .jmp_082C
+@07E3     jmp_07E3:  jz     r0 .jmp_082C
 @07E6                eq     r4 r2 2710
 @07EA                set    r3 r0
-@07ED                jt     r4 .jmp_07F8
+@07ED                jnz    r4 .jmp_07F8
 @07F0                mul    r1 r2 000A
 @07F4                mod    r3 r0 r1
 @07F8     jmp_07F8:  set    r4 0000
 @07FB                mul    r2 r2 7FFF
-@07FF     jmp_07FF:  jf     r3 .jmp_080C
+@07FF     jmp_07FF:  jz     r3 .jmp_080C
 @0802                add    r4 r4 0001
 @0806                add    r3 r3 r2
 @080A                jmp    .jmp_07FF
@@ -291,10 +291,10 @@
 @0824                add    r5 r5 0001
 @0828                push   r4
 @082A                jmp    .jmp_07E3
-@082C     jmp_082C:  jt     r5 .jmp_0833
+@082C     jmp_082C:  jnz    r5 .jmp_0833
 @082F                out    '0'
 @0831                jmp    .jmp_0840
-@0833     jmp_0833:  jf     r5 .jmp_0840
+@0833     jmp_0833:  jz     r5 .jmp_0840
 @0836                pop    r0
 @0838                out    r0
 @083A                add    r5 r5 7FFF
@@ -305,13 +305,7 @@
 @0846                pop    r2
 @0848                pop    r1
 @084A                pop    r0
-@084C                ret   
-
-
-
-
-
-;decrypt
+@084C                ret    
 @084D     sub_084D:  push   r1
 @084F                push   r2
 @0851                and    r2 r0 r1
@@ -331,12 +325,12 @@
 @087C                set    r1 r2
 @087F                pop    r2
 @0881                ret    
-@0882                jf     r0 .jmp_08C1
-@0885                jf     r1 .jmp_08C1
+@0882                jz     r0 .jmp_08C1
+@0885                jz     r1 .jmp_08C1
 @0888                push   r2
 @088A                push   r3
 @088C                gt     r2 r1 r0
-@0890                jt     r2 .jmp_089C
+@0890                jnz    r2 .jmp_089C
 @0893                set    r2 r0
 @0896                set    r0 r1
 @0899                set    r1 r2
@@ -344,9 +338,9 @@
 @089F                set    r0 0000
 @08A2     jmp_08A2:  add    r0 r0 r1
 @08A6                gt     r3 r1 r0
-@08AA                jt     r3 .jmp_08B9
+@08AA                jnz    r3 .jmp_08B9
 @08AD                add    r2 r2 7FFF
-@08B1                jt     r2 .jmp_08A2
+@08B1                jnz    r2 .jmp_08A2
 @08B4                set    r1 0000
 @08B7                jmp    .jmp_08BC
 @08B9     jmp_08B9:  set    r1 0001
@@ -358,29 +352,22 @@
 @08C7                ret    
 @08C8     sub_08C8:  push   r1
 @08CA                push   r2
-@08CC     jmp_08CC:  jf     r1 .jmp_08E4
+@08CC     jmp_08CC:  jz     r1 .jmp_08E4
 @08CF                add    r1 r1 7FFF
 @08D3                and    r2 r0 4000
 @08D7                mul    r0 r0 0002
-@08DB                jf     r2 .jmp_08CC
+@08DB                jz     r2 .jmp_08CC
 @08DE                or     r0 r0 0001
 @08E2                jmp    .jmp_08CC
 @08E4     jmp_08E4:  pop    r2
 @08E6                pop    r1
 @08E8                ret    
-
-
-
-
-
-
-
 @08E9     sub_08E9:  push   r1
 @08EB                gt     r1 r0 000E
-@08EF                jt     r1 .jmp_0905
+@08EF                jnz    r1 .jmp_0905
 @08F2                set    r1 r0
 @08F5                set    r0 0001
-@08F8     jmp_08F8:  jf     r1 .jmp_0908
+@08F8     jmp_08F8:  jz     r1 .jmp_0908
 @08FB                add    r1 r1 7FFF
 @08FF                mul    r0 r0 0002
 @0903                jmp    .jmp_08F8
@@ -812,16 +799,16 @@
 @0AB6     jmp_0AB6:  rmem   r1 .mem_0AAC
 @0AB9                rmem   r0 .mem_0AAD
 @0ABC                eq     r0 r0 r1
-@0AC0                jt     r0 .jmp_0AD2
+@0AC0                jnz    r0 .jmp_0AD2
 @0AC3                rmem   r0 .mem_0AAC
 @0AC6                add    r0 r0 0004
 @0ACA                rmem   r0 r0
-@0ACD                jf     r0 .jmp_0AD2
+@0ACD                jz     r0 .jmp_0AD2
 @0AD0                call   r0
 @0AD2     jmp_0AD2:  rmem   r1 .mem_0AAC
 @0AD5                rmem   r0 .mem_0AAD
 @0AD8                eq     r0 r0 r1
-@0ADC                jt     r0 .jmp_0AE7
+@0ADC                jnz    r0 .jmp_0AE7
 @0ADF                set    r0 6576
 @0AE2                wmem   r0 0000
 @0AE5                call   .sub_0B94
@@ -845,7 +832,7 @@
 @0B11                set    r1 0020
 @0B14                call   .sub_0623
 @0B16                eq     r1 r0 7FFF
-@0B1A                jf     r1 .jmp_0B20
+@0B1A                jz     r1 .jmp_0B20
 @0B1D                rmem   r0 .mem_6576
 @0B20     jmp_0B20:  set    r2 r0
 @0B23                rmem   r1 .mem_6576
@@ -857,7 +844,7 @@
 @0B33                pop    r1
 @0B35                wmem   .mem_6576 r1
 @0B38                eq     r1 r0 7FFF
-@0B3C                jf     r1 .jmp_0B45
+@0B3C                jz     r1 .jmp_0B45
 @0B3F                set    r0 0000
 @0B42                set    r2 0000
 @0B45     jmp_0B45:  add    r1 6B0E 0001
@@ -865,22 +852,22 @@
 @0B4D                rmem   r1 r1
 @0B50                rmem   r3 .mem_6576
 @0B53                eq     r3 r3 r2
-@0B57                jt     r3 .jmp_0B80
+@0B57                jnz    r3 .jmp_0B80
 @0B5A                mul    r0 r2 7FFF
 @0B5E                rmem   r3 .mem_6576
 @0B61                add    r3 r0 r3
-@0B65                jf     r2 .jmp_0B6C
+@0B65                jz     r2 .jmp_0B6C
 @0B68                add    r3 r3 7FFF
 @0B6C     jmp_0B6C:  mod    r3 r3 0020
 @0B70                add    r0 6576 r2
-@0B74                jf     r2 .jmp_0B7B
+@0B74                jz     r2 .jmp_0B7B
 @0B77                add    r0 r0 0001
 @0B7B     jmp_0B7B:  wmem   r0 r3
 @0B7E                jmp    .jmp_0B86
 @0B80     jmp_0B80:  set    r0 6576
 @0B83                wmem   r0 0000
 @0B86     jmp_0B86:  call   r1
-@0B88                jt     r1 .jmp_0AB6
+@0B88                jnz    r1 .jmp_0AB6
 @0B8B                pop    r3
 @0B8D                pop    r2
 @0B8F                pop    r1
@@ -890,14 +877,14 @@
 @0B96                push   r1
 @0B98                push   r2
 @0B9A                rmem   r1 r0
-@0B9D                jf     r1 .jmp_0BD8
+@0B9D                jz     r1 .jmp_0BD8
 @0BA0                call   .sub_1721
-@0BA2                jf     r0 .jmp_0BBE
+@0BA2                jz     r0 .jmp_0BBE
 @0BA5                push   r0
 @0BA7                call   .sub_1766
 @0BA9                set    r1 r0
 @0BAC                pop    r0
-@0BAE                jf     r1 .jmp_0BBE
+@0BAE                jz     r1 .jmp_0BBE
 @0BB1                add    r1 r0 0001
 @0BB5                rmem   r0 r1
 @0BB8                call   .sub_0080
@@ -932,7 +919,7 @@
 @0BFC                rmem   r0 r0
 @0BFF                rmem   r1 r0
 @0C02                eq     r1 r1 0002
-@0C06                jf     r1 .jmp_0C20
+@0C06                jz     r1 .jmp_0C20
 @0C09                push   r0
 @0C0B                set    r0 0A78
 @0C0E                call   .sub_1766
@@ -946,7 +933,7 @@
 @0C24                pop    r0
 @0C26                push   r0
 @0C28                call   .sub_16BF
-@0C2A                jf     r0 .jmp_0C4A
+@0C2A                jz     r0 .jmp_0C4A
 @0C2D                push   r0
 @0C2F                push   r1
 @0C31                push   r2
@@ -972,7 +959,7 @@
 @0C64                out    'r'
 @0C66                out    'e'
 @0C68                out    ' '
-@0C6A                jt     r2 .jmp_0C75
+@0C6A                jnz    r2 .jmp_0C75
 @0C6D                out    'a'
 @0C6F                out    'r'
 @0C71                out    'e'
@@ -987,7 +974,7 @@
 @0C83                out    'i'
 @0C85                out    't'
 @0C87                eq     r2 r0 0001
-@0C8B                jt     r2 .jmp_0C90
+@0C8B                jnz    r2 .jmp_0C90
 @0C8E                out    's'
 @0C90     jmp_0C90:  out    ':'
 @0C92                out    '\n'
@@ -1011,7 +998,7 @@
 @0CBD                rmem   r0 r0
 @0CC0                call   .sub_0634
 @0CC2                eq     r2 r0 7FFF
-@0CC6                jt     r2 .jmp_0CE6
+@0CC6                jnz    r2 .jmp_0CE6
 @0CC9                rmem   r2 .mem_0AAC
 @0CCC                add    r2 r2 0003
 @0CD0                rmem   r2 r2
@@ -1069,12 +1056,12 @@
 @0D4A                push   r1
 @0D4C                push   r2
 @0D4E                call   .sub_1721
-@0D50                jf     r0 .jmp_0D81
+@0D50                jz     r0 .jmp_0D81
 @0D53                add    r1 r0 0002
 @0D57                rmem   r0 r1
 @0D5A                rmem   r2 .mem_0AAC
 @0D5D                eq     r2 r0 r2
-@0D61                jf     r2 .jmp_0D81
+@0D61                jz     r2 .jmp_0D81
 @0D64                wmem   r1 0000
 @0D67                push   r0
 @0D69                push   r1
@@ -1104,10 +1091,10 @@
 @0DA0                push   r0
 @0DA2                push   r1
 @0DA4                call   .sub_1721
-@0DA6                jf     r0 .jmp_0DD3
+@0DA6                jz     r0 .jmp_0DD3
 @0DA9                add    r1 r0 0002
 @0DAD                rmem   r0 r1
-@0DB0                jt     r0 .jmp_0DD3
+@0DB0                jnz    r0 .jmp_0DD3
 @0DB3                rmem   r0 .mem_0AAC
 @0DB6                wmem   r1 r0
 @0DB9                push   r0
@@ -1137,13 +1124,13 @@
 @0DF0                push   r0
 @0DF2                push   r1
 @0DF4                call   .sub_1721
-@0DF6                jf     r0 .jmp_0E11
+@0DF6                jz     r0 .jmp_0E11
 @0DF9                add    r1 r0 0002
 @0DFD                rmem   r1 r1
-@0E00                jt     r1 .jmp_0E11
+@0E00                jnz    r1 .jmp_0E11
 @0E03                add    r1 r0 0003
 @0E07                rmem   r1 r1
-@0E0A                jf     r1 .jmp_0E2B
+@0E0A                jz     r1 .jmp_0E2B
 @0E0D                call   r1
 @0E0F                jmp    .jmp_0E43
 @0E11     jmp_0E11:  push   r0
@@ -1175,7 +1162,7 @@
 @0E4C                push   r2
 @0E4E                set    r0 0A78
 @0E51                call   .sub_1766
-@0E53                jt     r0 .jmp_0E6E
+@0E53                jnz    r0 .jmp_0E6E
 @0E56                add    r0 0A74 0002
 @0E5A                wmem   r0 7FFF
 @0E5D                add    r0 0A78 0002
@@ -1279,7 +1266,7 @@
 @0F39                rmem   r0 .mem_099E
 @0F3C                rmem   r1 .mem_69DD
 @0F3F                eq     r0 r0 r1
-@0F43                jt     r0 .jmp_0F64
+@0F43                jnz    r0 .jmp_0F64
 @0F46                push   r0
 @0F48                push   r1
 @0F4A                push   r2
@@ -1436,7 +1423,7 @@
 @107E                push   r2
 @1080                add    r2 0A9C 0002
 @1084                rmem   r2 r2
-@1087                jt     r2 .jmp_10B0
+@1087                jnz    r2 .jmp_10B0
 @108A                call   .sub_1135
 @108C                wmem   .mem_0F6F r0
 @108F                add    r1 r0 0F69
@@ -1461,7 +1448,7 @@
 @10BB                push   r2
 @10BD                add    r2 0A9C 0002
 @10C1                rmem   r2 r2
-@10C4                jt     r2 .jmp_112E
+@10C4                jnz    r2 .jmp_112E
 @10C7                call   .sub_1135
 @10C9                push   r0
 @10CB                rmem   r0 .mem_0F6F
@@ -1480,17 +1467,17 @@
 @10EF                add    r2 r2 0F6C
 @10F3                rmem   r2 r2
 @10F6                call   r2
-@10F8                jt     r1 .jmp_1127
+@10F8                jnz    r1 .jmp_1127
 @10FB                rmem   r1 .mem_0F70
 @10FE                wmem   .mem_0F70 r0
 @1101                gt     r2 r0 r1
-@1105                jf     r2 .jmp_1111
+@1105                jz     r2 .jmp_1111
 @1108                push   r0
 @110A                set    r0 667B
 @110D                call   .sub_0080
 @110F                pop    r0
 @1111     jmp_1111:  gt     r2 r1 r0
-@1115                jf     r2 .jmp_1121
+@1115                jz     r2 .jmp_1121
 @1118                push   r0
 @111A                set    r0 669B
 @111D                call   .sub_0080
@@ -1513,7 +1500,7 @@
 @113F                push   r5
 @1141                rmem   r5 .mem_0F71
 @1144                gt     r3 r5 752F
-@1148                jt     r3 .jmp_1152
+@1148                jnz    r3 .jmp_1152
 @114B                add    r5 r5 0001
 @114F                wmem   .mem_0F71 r5
 @1152     jmp_1152:  set    r3 r0
@@ -1556,12 +1543,12 @@
 @11B5     sub_11B5:  push   r0
 @11B7                add    r0 0A9C 0002
 @11BB                rmem   r0 r0
-@11BE                jt     r0 .jmp_1200
+@11BE                jnz    r0 .jmp_1200
 @11C1                set    r0 66D1
 @11C4                call   .sub_0080
 @11C6                rmem   r0 .mem_0F70
 @11C9                eq     r0 r0 001E
-@11CD                jt     r0 .jmp_11DE
+@11CD                jnz    r0 .jmp_11DE
 @11D0                set    r0 66F2
 @11D3                call   .sub_0080
 @11D5     jmp_11D5:  set    r0 671E
@@ -1572,7 +1559,7 @@
 @11E1                call   .sub_0080
 @11E3                rmem   r0 .mem_0F72
 @11E6                add    r0 r0 0001
-@11EA                jt     r0 .jmp_11F4
+@11EA                jnz    r0 .jmp_11F4
 @11ED                set    r0 6774
 @11F0                call   .sub_0080
 @11F2                jmp    .jmp_11D5
@@ -1585,12 +1572,12 @@
 @1203     sub_1203:  push   r0
 @1205                add    r0 0A9C 0002
 @1209                rmem   r0 r0
-@120C                jt     r0 .jmp_1231
+@120C                jnz    r0 .jmp_1231
 @120F                set    r0 685D
 @1212                call   .sub_0080
 @1214                rmem   r0 .mem_0AAC
 @1217                eq     r0 r0 0A3F
-@121B                jt     r0 .jmp_1225
+@121B                jnz    r0 .jmp_1225
 @121E                set    r0 6865
 @1221                call   .sub_0080
 @1223                jmp    .jmp_122A
@@ -1616,7 +1603,7 @@
 @1254                add    r0 0A9C 0002
 @1258                rmem   r0 r0
 @125B                eq     r0 r0 7FFF
-@125F                jt     r0 .jmp_126D
+@125F                jnz    r0 .jmp_126D
 @1262                set    r0 68C8
 @1265                call   .sub_0080
 @1267                wmem   .mem_0AAC 0A12
@@ -1660,7 +1647,7 @@
 @12BF                push   r0
 @12C1                add    r0 0A70 0002
 @12C5                rmem   r0 r0
-@12C8                jt     r0 .jmp_12FA
+@12C8                jnz    r0 .jmp_12FA
 @12CB                add    r0 0A7C 0002
 @12CF                wmem   r0 7FFF
 @12D2                add    r0 0A70 0002
@@ -1730,7 +1717,7 @@
 @1373                push   r3
 @1375                rmem   r2 .mem_0AAC
 @1378                eq     r2 r2 0999
-@137C                jt     r2 .jmp_1399
+@137C                jnz    r2 .jmp_1399
 @137F                push   r0
 @1381                push   r1
 @1383                push   r2
@@ -1791,7 +1778,7 @@
 @141A                wmem   .mem_099E r2
 @141D                rmem   r3 .mem_69DD
 @1420                eq     r3 r2 r3
-@1424                jf     r3 .jmp_14D8
+@1424                jz     r3 .jmp_14D8
 @1427                set    r0 0000
 @142A                add    r1 69DD 0001
 @142E                rmem   r1 r1
@@ -1813,7 +1800,7 @@
 @1469                mul    r1 r1 7FFF
 @146D                add    r0 r0 r1
 @1471                eq     r1 r0 018F
-@1475                jt     r1 .jmp_14C0
+@1475                jnz    r1 .jmp_14C0
 @1478                add    r2 0A80 0002
 @147C                wmem   r2 0999
 @147F                add    r2 0A84 0002
@@ -1902,7 +1889,7 @@
 @1545                push   r0
 @1547                push   r1
 @1549                push   r2
-@154B                jf     r7 .jmp_15E5
+@154B                jz     r7 .jmp_15E5
 @154E                push   r0
 @1550                push   r1
 @1552                push   r2
@@ -1920,7 +1907,7 @@
 @156E                set    r1 0001
 @1571                call   .sub_178B
 @1573                eq     r1 r0 0006
-@1577                jf     r1 .jmp_15CB
+@1577                jz     r1 .jmp_15CB
 @157A                push   r0
 @157C                push   r1
 @157E                push   r2
@@ -1984,7 +1971,7 @@
 @1614                add    r1 r1 69DD
 @1618                add    r2 r2 0001
 @161C                gt     r1 r2 r1
-@1620                jf     r1 .jmp_1604
+@1620                jz     r1 .jmp_1604
 @1623                set    r1 650A
 @1626                set    r2 7FFF
 @1629                push   r3
@@ -2069,7 +2056,7 @@
 @16DD                add    r4 r0 0002
 @16E1                rmem   r4 r4
 @16E4                eq     r3 r3 r4
-@16E8                jf     r3 .jmp_16EF
+@16E8                jz     r3 .jmp_16EF
 @16EB                add    r2 r2 0001
 @16EF     jmp_16EF:  pop    r4
 @16F1                pop    r3
@@ -2086,7 +2073,7 @@
 @1707                add    r3 r0 0002
 @170B                rmem   r3 r3
 @170E                eq     r3 r2 r3
-@1712                jf     r3 .jmp_171E
+@1712                jz     r3 .jmp_171E
 @1715                add    r0 r0 0000
 @1719                rmem   r0 r0
 @171C                call   .sub_16B6
@@ -2099,7 +2086,7 @@
 @172B                set    r1 174C
 @172E                call   .sub_0607
 @1730                eq     r1 r0 7FFF
-@1734                jt     r1 .jmp_1744
+@1734                jnz    r1 .jmp_1744
 @1737                add    r1 6AF5 r0
 @173B                add    r1 r1 0001
 @173F                rmem   r0 r1
@@ -2114,7 +2101,7 @@
 @1755                rmem   r0 r0
 @1758                call   .sub_0683
 @175A                pop    r1
-@175C                jf     r0 .jmp_1765
+@175C                jz     r0 .jmp_1765
 @175F                set    r2 r1
 @1762                set    r1 7FFF
 @1765     jmp_1765:  ret    
@@ -2122,20 +2109,20 @@
 @1768                push   r2
 @176A                add    r0 r0 0002
 @176E                rmem   r0 r0
-@1771                jf     r0 .jmp_1783
+@1771                jz     r0 .jmp_1783
 @1774                rmem   r1 .mem_0AAC
 @1777                eq     r1 r0 r1
-@177B                jt     r1 .jmp_1783
+@177B                jnz    r1 .jmp_1783
 @177E                set    r0 0000
 @1781                jmp    .jmp_1786
 @1783     jmp_1783:  set    r0 0001
 @1786     jmp_1786:  pop    r2
 @1788                pop    r1
 @178A                ret    
-@178B     sub_178B:  jt     r0 .jmp_1793
+@178B     sub_178B:  jnz    r0 .jmp_1793
 @178E                add    r0 r1 0001
 @1792                ret    
-@1793     jmp_1793:  jt     r1 .jmp_17A0
+@1793     jmp_1793:  jnz    r1 .jmp_17A0
 @1796                add    r0 r0 7FFF
 @179A                set    r1 r7
 @179D                call   .sub_178B

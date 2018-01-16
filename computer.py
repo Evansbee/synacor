@@ -11,8 +11,8 @@ OPCODES = {
     'eq':4,
     'gt':5,
     'jmp':6,
-    'jt':7,
-    'jf':8,
+    'jnz':7,
+    'jz':8,
     'add':9,
     'mul':10,
     'mod':11,
@@ -333,7 +333,7 @@ class Computer:
 
                 if token['op'] == 'jmp' and not Computer.isreg(actual_values[1]):
                     update_label(actual_values[1],'jmp',token, 0)
-                elif (token['op'] == 'jt' or token['op'] == 'jf' ) and not Computer.isreg(actual_values[2]):
+                elif (token['op'] == 'jnz' or token['op'] == 'jz' ) and not Computer.isreg(actual_values[2]):
                     update_label(actual_values[2],'jmp',token, 1)
                 elif token['op'] == 'call' and not Computer.isreg(actual_values[1]):
                     update_label(actual_values[1],'sub',token, 0)

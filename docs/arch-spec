@@ -47,9 +47,9 @@ gt: 5 a b c
   set <a> to 1 if <b> is greater than <c>; set it to 0 otherwise
 jmp: 6 a
   jump to <a>
-jt: 7 a b
+jt: 7 a b (evan is making this JNZ)
   if <a> is nonzero, jump to <b>
-jf: 8 a b
+jf: 8 a b (evan iz making this jz)
   if <a> is zero, jump to <b>
 add: 9 a b c
   assign into <a> the sum of <b> and <c> (modulo 32768)
