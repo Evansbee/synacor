@@ -50,7 +50,7 @@ class Computer:
 
         self.memory = array('H')#,[0] * 2**15)
         self.stack = []
-        self.call_stack = []
+        self.stack_type = []
         self.cycles = 0
         self.registers = array('H',[0] * 8)
         self.pc = 0
@@ -124,8 +124,10 @@ class Computer:
             self.registers[Computer.reg(args[0])] = self.value(args[1])
         elif op == 2: #push
             self.stack += [self.value(args[0])]
+            self.stack_type += ["VALUE"]
         elif op == 3: #pop
             self.registers[Computer.reg(args[0])] = self.stack.pop()
+            _ = self.stack_type.pop()
         elif op == 4: #eq
             self.registers[Computer.reg(args[0])] = int(self.value(args[1]) == self.value(args[2]))
         elif op == 5: #gt
@@ -156,9 +158,11 @@ class Computer:
             self.memory[self.value(args[0])] = self.value(args[1])
         elif op == 17: #call
             self.stack += [self.pc]
+            self.stack_type += ['RET']
             self.pc = self.value(args[0])
         elif op == 18: #ret
             self.pc = self.stack.pop()
+            _ = self.stack_type.pop()
         elif op == 19: #out
             self.output_buffer += chr(self.value(args[0]))
         elif op == 20: #in
@@ -191,7 +195,7 @@ class Computer:
             for i in range(8):
                 f.write("r{}: {:04x}\n".format(i,self.registers[i]))
             for i, v in enumerate(self.stack):
-                f.write("stack({}): {:04X}\n".format(i,v))
+                f.write("stack({}): {:04X} ({})\n".format(i,v,self.stack_type[i]))
             f.write("Memory\n")
             for i in range(0,len(self.memory),16):
                 chars = [['.',chr(x)][x>=ord(' ') and x <= ord('~')] for x in self.memory[i:i+16]]
@@ -199,7 +203,13 @@ class Computer:
                 char_string = ''.join(["{}".format(x) for x in chars])
                 f.write("{:06X} | {} | {}\n".format(i,mem_string,char_string))
 
-
+    def Print(self):
+        print("pc: {:04x}".format(self.pc))
+        for i in range(8):
+            print("r{}: {:04x}".format(i,self.registers[i]))
+        for i, v in enumerate(self.stack):
+            print("stack({}): {:04X} ({})".format(i,v,self.stack_type[i]))
+            
 
 
 
