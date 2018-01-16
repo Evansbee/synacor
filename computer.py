@@ -1,6 +1,8 @@
 from array import array
 from collections import OrderedDict
-
+import re
+import datetime
+import time
 OPCODES = {
     'halt':0,
     'set':1,
@@ -56,6 +58,7 @@ class Computer:
         self.breakpoints = dict()
         self.input_buffer = ''
         self.output_buffer = ''
+        self.waiting_for_input = False
     
     def __repr__(self):
         print("A computer", end = '')
@@ -75,7 +78,7 @@ class Computer:
 
     def reg_or_value_string(val):
         if Computer.isreg(val):
-            return 'r{}  '.format(Computer.reg(val))
+            return 'r{}'.format(Computer.reg(val))
         else:
             return '{:04X}'.format(val)
     
@@ -160,7 +163,10 @@ class Computer:
             self.output_buffer += chr(self.value(args[0]))
         elif op == 20: #in
             if self.input_buffer == '':
-                self.input_buffer = input() + '\n'
+                self.waiting_for_input = True
+                self.pc = self.pc - 2
+                return
+            self.waiting_for_input = False
             self.registers[Computer.reg(args[0])] = ord(self.input_buffer[0])
             self.input_buffer = self.input_buffer[1:]
         elif op == 21: #nop
@@ -176,7 +182,29 @@ class Computer:
         while self.running:
             yield self.pc
             self.process_instruction()
-            
+
+
+    def Dump(self):
+        filename = 'VM Dump {}.dump'.format(time.strftime("%Y%m%d-%H%M%S"))
+        with open(filename, 'w') as f:
+            f.write("pc: {:04x}\n".format(self.pc))
+            for i in range(8):
+                f.write("r{}: {:04x}\n".format(i,self.registers[i]))
+            for i, v in enumerate(self.stack):
+                f.write("stack({}): {:04X}\n".format(i,v))
+            f.write("Memory\n")
+            for i in range(0,len(self.memory),16):
+                chars = [['.',chr(x)][x>=ord(' ') and x <= ord('~')] for x in self.memory[i:i+16]]
+                mem_string = ' '.join(["{:04X}".format(x) for x in self.memory[i:i+16]])
+                char_string = ''.join(["{}".format(x) for x in chars])
+                f.write("{:06X} | {} | {}\n".format(i,mem_string,char_string))
+
+
+
+
+
+
+
     def get_instruction_at(self, address):
         op = self.memory[address]
         if op <= 21:
@@ -266,17 +294,13 @@ class Computer:
             else:
                 token['label'] = ''            
 
-
             if data[addr] in MNEUMONICS and Computer.valid_instruction(data[addr:1+addr+ARGCOUNT[data[addr]]]):
                 
-                actual_values = [data[addr]]
-                addr += 1
-                token['op'] = MNEUMONICS[actual_values[0]]
-                for _ in range(ARGCOUNT[actual_values[0]]):
-                    actual_values += [data[addr]]
-                    addr += 1
-            
+                actual_values = data[addr:1+addr+ARGCOUNT[data[addr]]]
+                addr += len(actual_values)
 
+                token['op'] = MNEUMONICS[actual_values[0]]
+                
                 token['args'] = actual_values[1:]
                 token['raw'] = actual_values
                 token['size'] = len(actual_values)
@@ -332,3 +356,152 @@ class Computer:
                 token['comment'] = ''
                 disassembly[token['start_address']] = token
         return disassembly
+
+
+
+    def Tokenize(line):
+        parsed = dict()
+        parsed['breakpoint'] = False
+        parsed['address'] = None
+        parsed['label'] = None
+        parsed['instruction'] = None
+        parsed['args'] = []
+        parsed['comment'] = None
+        parsed['size'] = 0
+
+        
+
+        make_tokens = re.compile(r'''\;[\w\s]*$|[\w]+\:|[\w\+\-\.]+|\'.+\'|\'\\n\'|@[0-9a-fA-F]{4}|^>''',re.VERBOSE).findall
+        tokens = make_tokens(line)
+
+        if tokens and tokens[0] == '>':
+            parsed['breakpoint'] = True
+            tokens = tokens[1:]
+
+        if tokens and tokens[0].startswith('@'):
+            parsed['address'] = int(tokens[0][1:],16)
+            tokens = tokens[1:]
+
+        if tokens and tokens[0].endswith(':'):
+            parsed['label'] = tokens[0][:-1].lstrip()
+            tokens = tokens[1:]
+
+        if tokens and tokens[0] == 'db':
+            parsed['instruction'] = tokens[0]
+            tokens = tokens[1:]
+            if len(tokens)>=1:
+                parsed['args'] = [tokens[0]]
+            else:
+                print("Error: Insufficient arguments for operation"+parsed['instruction'])
+            parsed['size'] = 1
+        elif tokens and tokens[0] in OPCODES:
+            parsed['instruction'] = tokens[0]
+            tokens = tokens[1:]
+            
+            if len(tokens) >= ARGCOUNT[OPCODES[parsed['instruction']]]:
+                parsed['args'] = [tokens[x] for x in range(ARGCOUNT[OPCODES[parsed['instruction']]])]
+                parsed['size'] = 1 + ARGCOUNT[OPCODES[parsed['instruction']]]    
+            else:
+                print("Error: Insufficient arguments for operation"+parsed['instruction'])
+        elif tokens and tokens[0].startswith(';'):
+            pass
+        elif not line or parsed['label']:
+            pass
+        else:
+            print("Failed to tokenize:",line)
+            print(line.split())
+            print(tokens)
+            exit()
+
+        return parsed
+
+    def AssembleLine(tokens, labels): #takes a token and converts to a string of bytes
+        #returns {'label' : '', 'code':[1,2,3,4] }
+        assembled_bytes = array('H')
+        if tokens['instruction'] in OPCODES:
+            assembled_bytes.append(OPCODES[tokens['instruction']])
+        
+        
+        registers = ['r0','r1','r2','r3','r4','r5','r6','r7']
+        for tok in tokens['args']:
+            if tok in registers:
+                assembled_bytes.append(2**15 + registers.index(tok))
+            elif tok.startswith('.'):
+                addition = 0
+                if '+' in tok:
+                    thing = tok.split('+')    
+                    label = thing[0].lstrip('.')
+                    addition = int(thing[1])
+                elif '-' in tok:
+                    thing = tok.split('-')    
+                    label = thing[0].lstrip('.')
+                    addition = -int(thing[1])
+                else:
+                    label = tok.lstrip('.')
+                
+                if label in labels:
+                    assembled_bytes.append(labels[label] + addition)
+                else:
+                    print(label)
+                    print(labels)
+                    print("failed to assemble:",tokens)
+                    assembled_bytes.append(0)
+                    exit()
+            elif tok == "'": #work around bug, the parsers pulls the space on -> out ' '
+                assembled_bytes.append(ord(' '))
+            elif tok == "'\\n'": #work around bug, the parsers pulls the space on -> out ' '
+                assembled_bytes.append(ord('\n'))  
+            elif tok.startswith("'") and tok.endswith("'"):
+                assembled_bytes.append(ord(tok.strip("'"))) 
+            else:
+                assembled_bytes.append(int(tok,16) % (2**15))   
+    
+        return assembled_bytes
+    
+    def AssembleFile(filename, debug = False):
+        with open(filename) as f:
+            asm_lines = f.read().splitlines()
+            breakpoints = array('H',[0])
+            tokenized_lines = []
+            current_address = 0
+            current_offset = 0
+            labels = dict()
+            for asm_line in asm_lines:
+                
+                tl = Computer.Tokenize(asm_line)
+                if tl:
+                    if tl['address']:
+                        current_offset = tl['address']
+                        current_address = 0
+
+                    if tl['label']:
+                        labels[tl['label']] = current_address + current_offset
+                    
+                    if tl['breakpoint']:
+                        breakpoints.append(current_address + current_offset)
+
+                    tokenized_lines += [tl]
+                    current_address += tl['size']    
+            
+
+            
+            binary_data = array('H')
+            for tok_line in tokenized_lines:
+                #print('len:',len(binary_data),'tokenizing:',tok_line)
+                
+                if tok_line['address']:
+                    fill_to = tok_line['address']
+                    if fill_to < len(binary_data):
+                        print("Can't achieve positional statement",tok_line,'size',len(binary_data))
+                        print(tokenized_lines[:5])
+                        exit()
+                    if fill_to == len(binary_data):
+                        pass
+                    else:
+                        binary_data += array('H',[21] * (fill_to - len(binary_data)))
+                        #binary_data += [21] * (fill_to - len(binary_data))
+
+                binary_data += Computer.AssembleLine(tok_line,labels)
+
+
+            return (binary_data,breakpoints)
