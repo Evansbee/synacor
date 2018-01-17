@@ -11,6 +11,7 @@ from computer import Computer
 from pathlib import Path
 from array import array
 import wx
+import time
 
 class emuWindow(wx.Frame):
     def __init__(self, *args, **kwargs):
@@ -217,6 +218,14 @@ if __name__ == '__main__':
         with breakpoint_file.open('wb') as f:
             breakpoints.tofile(f)
 
+    elif len(sys.argv) == 2 and sys.argv[1] == 'benchmark':
+        c = Computer()
+        c.load_program_from_file('programs/conway_life.bin')
+        start = time.time()
+        c.run_until_done()
+        end = time.time()
+        print("Executed {} cycles in {:.2f}s".format(c.cycles,end-start))
+        print("Roughly {:.1f} KHz".format((c.cycles/(end-start))/1000.0))
     elif len(sys.argv) == 3 and sys.argv[1] == 'run':
         input_file = Path(sys.argv[2])
         breakpoint_file = input_file.with_suffix('.bp')

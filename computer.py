@@ -4,6 +4,7 @@ import re
 import datetime
 import time
 
+
 OPCODES = {
     'halt':0,
     'set':1,
@@ -40,13 +41,14 @@ class Computer:
         
     def initialize(self):
         self.memory = array('H')#,[0] * 2**15)
+        self.stored_memory = array('H')
         self.program_loaded = False
         self.breakpoints = array('H')
 
     def reset(self):
+        self.memory = self.stored_memory
         self.at_breakpoint = False
         self.stack = array('H')
-        self.stack_type = []
         self.call_stack = array('H')
         self.cycles = 0
         self.registers = array('H',[0] * 8)
@@ -71,17 +73,21 @@ class Computer:
         print("A computer", end = '')
         pass
     
+  
     def value(self, arg):
         if arg >= 32768 and arg <= 32775:
             return self.registers[arg-32768]
         else:
             return arg
-        
+
+     
     def reg(val):
         return val - 32768
     
+   
     def isreg(val):
         return val >= 32768 and val <= 32775
+
 
     def reg_or_value_string(val):
         if Computer.isreg(val):
@@ -92,105 +98,145 @@ class Computer:
     def load_program_from_file(self, binfile):
         with open(binfile,'rb') as f:
             try:
+                self.stored_memory.fromfile(f,2**16)
                 self.reset()
-                self.memory.fromfile(f,2**16)
                 self.program_loaded = True
             except EOFError:
                 pass
 
     def load_program_from_data(self, data):
+        self.stored_memory = data
         self.reset()
-        self.memory = data
         self.program_loaded = True
 
     def is_opcode(opcode):
         return opcode >= 0 and opcode < len(mnemonic)
 
+
+  
+    def do_halt(self, args):
+        self.halted = True
+
+    def do_set(self, args):
+        self.registers[Computer.reg(args[0])] = self.value(args[1])
+
+    def do_push(self, args):
+        self.stack.append(self.value(args[0]))
+
+    def do_pop(self, args):
+        self.registers[Computer.reg(args[0])] = self.stack.pop()
+
+    def do_eq(self, args):
+        if self.value(args[1]) == self.value(args[2]):
+            self.registers[Computer.reg(args[0])] = 1
+        else:
+            self.registers[Computer.reg(args[0])] = 0
+
+    def do_gt(self, args):
+        self.registers[Computer.reg(args[0])] = int(self.value(args[1]) > self.value(args[2]))
+
+    def do_jmp(self, args):
+        self.pc = self.value(args[0])
+
+    def do_jt(self, args):
+        if self.value(args[0]) != 0:
+                self.pc = self.value(args[1])
+
+    def do_jf(self,args):
+        if self.value(args[0]) == 0:
+                self.pc = self.value(args[1])
+
+    def do_add(self, args):
+        self.registers[Computer.reg(args[0])] = (self.value(args[1]) + self.value(args[2])) % 32768
+
+    def do_mult(self, args):
+        self.registers[Computer.reg(args[0])] = (self.value(args[1]) * self.value(args[2])) % 32768
+
+    def do_mod(self, args):
+        self.registers[Computer.reg(args[0])] = (self.value(args[1]) % self.value(args[2])) % 32768
+
+    def do_and(self, args):
+        self.registers[Computer.reg(args[0])] = (self.value(args[1]) & self.value(args[2])) % 32768
+
+    def do_or(self, args):
+        self.registers[Computer.reg(args[0])] = (self.value(args[1]) | self.value(args[2])) % 32768    
+
+    def do_not(self, args):
+        self.registers[Computer.reg(args[0])] = (~self.value(args[1])) % 32768
+
+    def do_rmem(self, args):
+        self.registers[Computer.reg(args[0])] = self.memory[self.value(args[1])]
+
+    def do_wmem(self, args):
+        self.memory[self.value(args[0])] = self.value(args[1])
+
+    def do_call(self, args):
+        self.stack.append(self.pc)
+        self.pc = self.value(args[0])
+        self.call_stack.append(self.pc)
+
+    def do_ret(self, args):
+        self.pc = self.stack.pop()
+        _ = self.call_stack.pop()
+
+
+    def do_out(self, args):
+        self.output_buffer += chr(self.value(args[0]))
+
+    def do_in(self, args):
+        if self.input_buffer == '':
+            self.cycles -= 1
+            self.waiting_for_input = True
+            self.pc = self.pc - 2
+            return
+        self.waiting_for_input = False
+        self.registers[Computer.reg(args[0])] = ord(self.input_buffer[0])
+        self.input_buffer = self.input_buffer[1:]
+
+    def do_nop(self, args):
+        pass
+
+
+    FCN_MAP = [do_halt, do_set, do_push, do_pop, do_eq, 
+               do_gt, do_jmp, do_jt, do_jf, do_add, do_mult,
+               do_mod, do_and, do_or, do_not, do_rmem,
+               do_wmem, do_call, do_ret, do_out, do_in,
+               do_nop
+              ]
+
+  
     def process_instruction(self):
         op = self.memory[self.pc]
+
         try:
-            args = array('H', [self.memory[self.pc + x + 1] for x in range(ARGCOUNT[op])])
-        except IndexError:
-            print("INDEX ERROR")
+            start = self.pc
+            #args = array('H', [self.memory[self.pc + x + 1] for x in range(ARGCOUNT[op])])
+            self.pc += (1 + ARGCOUNT[op])
+            self.cycles += 1
+
+            if op < len(Computer.FCN_MAP):
+                Computer.FCN_MAP[op](self, self.memory[start+1:self.pc])
+            else:
+                print("Unknown opcode (0x{:02X}) @ 0x{:04X}".format(op,self.pc))
+                self.halted = True
+        except:
             self.halted = True
             return
 
-        self.pc += (1 + ARGCOUNT[op])
-        self.cycles += 1
-        if op == 0: #halt
-            print("HALT")
-            self.halted = True
-        elif op == 1: #set
-            self.registers[Computer.reg(args[0])] = self.value(args[1])
-        elif op == 2: #push
-            self.stack.append(self.value(args[0]))
-            self.stack_type += ["VALUE"]
-        elif op == 3: #pop
-            self.registers[Computer.reg(args[0])] = self.stack.pop()
-            _ = self.stack_type.pop()
-        elif op == 4: #eq
-            self.registers[Computer.reg(args[0])] = int(self.value(args[1]) == self.value(args[2]))
-        elif op == 5: #gt
-            self.registers[Computer.reg(args[0])] = int(self.value(args[1]) > self.value(args[2]))
-        elif op == 6: #jmp
-            self.pc = self.value(args[0])
-        elif op == 7: #jt
-            if self.value(args[0]) != 0:
-                self.pc = self.value(args[1])
-        elif op == 8: #jf
-            if self.value(args[0]) == 0:
-                self.pc = self.value(args[1])
-        elif op == 9: #add
-            self.registers[Computer.reg(args[0])] = (self.value(args[1]) + self.value(args[2])) % 32768
-        elif op == 10: #mult
-            self.registers[Computer.reg(args[0])] = (self.value(args[1]) * self.value(args[2])) % 32768
-        elif op == 11: #mod
-            self.registers[Computer.reg(args[0])] = (self.value(args[1]) % self.value(args[2])) % 32768
-        elif op == 12: #and
-            self.registers[Computer.reg(args[0])] = (self.value(args[1]) & self.value(args[2])) % 32768
-        elif op == 13: #or
-            self.registers[Computer.reg(args[0])] = (self.value(args[1]) | self.value(args[2])) % 32768    
-        elif op == 14: #not
-            self.registers[Computer.reg(args[0])] = (~self.value(args[1])) % 32768
-        elif op == 15: #rmem
-            self.registers[Computer.reg(args[0])] = self.memory[self.value(args[1])]
-        elif op == 16: #wmem
-            self.memory[self.value(args[0])] = self.value(args[1])
-        elif op == 17: #call
-            self.stack.append(self.pc)
-            self.stack_type += ['RET']
-            self.pc = self.value(args[0])
-            self.call_stack.append(self.pc)
-        elif op == 18: #ret
-            self.pc = self.stack.pop()
-            _ = self.call_stack.pop()
-            _ = self.stack_type.pop()
-        elif op == 19: #out
-            self.output_buffer += chr(self.value(args[0]))
-        elif op == 20: #in
-            if self.input_buffer == '':
-                self.cycles -= 1
-                self.waiting_for_input = True
-                self.pc = self.pc - 2
-                return
-            self.waiting_for_input = False
-            self.registers[Computer.reg(args[0])] = ord(self.input_buffer[0])
-            self.input_buffer = self.input_buffer[1:]
-        elif op == 21: #nop
-            pass
-        else:
-            print("Unknown opcode (0x{:02X}) @ 0x{:04X}".format(op,self.pc))
-            self.halted = True
 
 
     
     def run(self):
- 
         while not self.halted:
             yield self.pc
             self.process_instruction()
 
+    
+    def run_until_done(self):
+        while not self.halted and not self.waiting_for_input:
+            self.process_instruction()
 
+    
     def run_n_times(self, n, stop_at_breakpoints = False):
         self.at_breakpoint = False
         for _ in range(n):
