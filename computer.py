@@ -3,6 +3,7 @@ from collections import OrderedDict
 import re
 import datetime
 import time
+
 OPCODES = {
     'halt':0,
     'set':1,
@@ -34,32 +35,38 @@ ARGCOUNT = array('B', [0,2,1,1,3,3,1,2,2,3,3,3,3,3,2,2,2,1,0,1,1,0])
 
 class Computer:
     def __init__(self, debugging_mode = False):
+        self.initialize()
         self.reset()
-        self.debugging = debugging_mode
         
-    def assy_line(self, memory_address):
-        return 0
-
-    def get_assy_line(self, line_no):
-
-        return self.assembly_cache[line_no]
+    def initialize(self):
+        self.memory = array('H')#,[0] * 2**15)
+        self.program_loaded = False
+        self.breakpoints = array('H')
 
     def reset(self):
-        self.assembly_cache = []
-        self.memory_to_assembly = []
-
-        self.memory = array('H')#,[0] * 2**15)
-        self.stack = []
+        self.at_breakpoint = False
+        self.stack = array('H')
         self.stack_type = []
+        self.call_stack = array('H')
         self.cycles = 0
         self.registers = array('H',[0] * 8)
         self.pc = 0
-        self.running = False
-        self.breakpoints = dict()
+        self.halted = False
         self.input_buffer = ''
         self.output_buffer = ''
         self.waiting_for_input = False
     
+    def AddBreakpoint(self, value):
+        if value not in self.breakpoints:
+            self.breakpoints.append(value)
+
+    def ClearBreakpoints(self):
+        self.breakpoints.clear()
+
+    def RemoveBreakpoint(self, value):
+        while value in self.breakpoints:
+            self.breakpoints.remove(value)
+
     def __repr__(self):
         print("A computer", end = '')
         pass
@@ -85,45 +92,38 @@ class Computer:
     def load_program_from_file(self, binfile):
         with open(binfile,'rb') as f:
             try:
+                self.reset()
                 self.memory.fromfile(f,2**16)
+                self.program_loaded = True
             except EOFError:
                 pass
-            if self.debugging:
-                self.pre_process_image()
 
     def load_program_from_data(self, data):
+        self.reset()
         self.memory = data
-        if self.debugging:
-            self.pre_process_image()
-      
-    def pre_process_image(self):
-        self.assembly_cache = []
-        self.memory_to_assembly = []
-    
+        self.program_loaded = True
 
     def is_opcode(opcode):
         return opcode >= 0 and opcode < len(mnemonic)
 
-    def arg_count_for_opcode(opcode):
-        return ARGCOUNT[opcode]
-    
     def process_instruction(self):
         op = self.memory[self.pc]
         try:
             args = array('H', [self.memory[self.pc + x + 1] for x in range(ARGCOUNT[op])])
         except IndexError:
-            print("PC:",self.pc)
-            print("OP:",op)
-            print("FUCKED")
-            exit()
+            print("INDEX ERROR")
+            self.halted = True
+            return
+
         self.pc += (1 + ARGCOUNT[op])
-        
+        self.cycles += 1
         if op == 0: #halt
-            self.running = False
+            print("HALT")
+            self.halted = True
         elif op == 1: #set
             self.registers[Computer.reg(args[0])] = self.value(args[1])
         elif op == 2: #push
-            self.stack += [self.value(args[0])]
+            self.stack.append(self.value(args[0]))
             self.stack_type += ["VALUE"]
         elif op == 3: #pop
             self.registers[Computer.reg(args[0])] = self.stack.pop()
@@ -157,16 +157,19 @@ class Computer:
         elif op == 16: #wmem
             self.memory[self.value(args[0])] = self.value(args[1])
         elif op == 17: #call
-            self.stack += [self.pc]
+            self.stack.append(self.pc)
             self.stack_type += ['RET']
             self.pc = self.value(args[0])
+            self.call_stack.append(self.pc)
         elif op == 18: #ret
             self.pc = self.stack.pop()
+            _ = self.call_stack.pop()
             _ = self.stack_type.pop()
         elif op == 19: #out
             self.output_buffer += chr(self.value(args[0]))
         elif op == 20: #in
             if self.input_buffer == '':
+                self.cycles -= 1
                 self.waiting_for_input = True
                 self.pc = self.pc - 2
                 return
@@ -177,15 +180,28 @@ class Computer:
             pass
         else:
             print("Unknown opcode (0x{:02X}) @ 0x{:04X}".format(op,self.pc))
-            self.running = False
-        #does not use self.pc because you could want to pass in something 
+            self.halted = True
+
+
     
     def run(self):
-        self.running = True
-        
-        while self.running:
+ 
+        while not self.halted:
             yield self.pc
             self.process_instruction()
+
+
+    def run_n_times(self, n, stop_at_breakpoints = False):
+        self.at_breakpoint = False
+        for _ in range(n):
+            self.process_instruction()
+            if stop_at_breakpoints and self.pc in self.breakpoints:
+                self.at_breakpoint = True
+                return
+            if self.waiting_for_input:
+                return
+            if self.halted:
+                return
 
 
     def Dump(self):
@@ -211,17 +227,6 @@ class Computer:
             print("stack({}): {:04X} ({})".format(i,v,self.stack_type[i]))
             
 
-
-
-
-
-    def get_instruction_at(self, address):
-        op = self.memory[address]
-        if op <= 21:
-            args = array('H', [op] + [self.memory[address + 1 + x] for x in range(ARGCOUNT[op])])
-            if Computer.valid_instruction(args):
-                return args
-        return None
     # tests if the instruction is a valid format, this will prevent the DB seciont from
     # getting disassembled as strange instructions
     def valid_instruction(op_args):
