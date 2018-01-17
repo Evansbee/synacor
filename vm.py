@@ -12,10 +12,16 @@ from pathlib import Path
 from array import array
 import wx
 
-#app = wx.App()
-#frm = wx.Frame(None, title="Synacor VM")
-#frm.Show()
-#app.MainLoop()   
+
+class MyFrame(wx.Frame):
+    def __init__(self, *args, **kwargs):
+        wx.Frame.__init__(self, args, kwargs)
+
+
+app = wx.App()
+frm = MyFrame(None, title="Synacor VM")
+frm.Show()
+app.MainLoop()   
 
 
 if __name__ == '__main__':
@@ -24,7 +30,7 @@ if __name__ == '__main__':
     print('{} disassemble [binary input] [asm output]'.format(sys.argv[0]))
     print('{} assemble [asm input] [binary output] <[breakpoint file]>'.format(sys.argv[0]))
     print('{} run [binary input]'.format(sys.argv[0]))
-
+    print(sys.argv)
     if len(sys.argv) == 4 and sys.argv[1] == 'disassemble':
         input_file = Path(sys.argv[2])
         output_file = Path(sys.argv[3])
