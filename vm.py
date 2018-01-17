@@ -13,16 +13,6 @@ from array import array
 import wx
 
 
-class MyFrame(wx.Frame):
-    def __init__(self, *args, **kwargs):
-        wx.Frame.__init__(self, args, kwargs)
-
-
-app = wx.App()
-frm = MyFrame(None, title="Synacor VM")
-frm.Show()
-app.MainLoop()   
-
 
 if __name__ == '__main__':
 
@@ -117,6 +107,12 @@ if __name__ == '__main__':
             if c.output_buffer != '':
                 print(c.output_buffer,end='')
                 c.output_buffer = ''
+    else:
+        app = wx.App()
+        frm = wx.Frame(None, title="Synacor VM")
+        frm.Show()
+        app.MainLoop()
+
 
 
 
