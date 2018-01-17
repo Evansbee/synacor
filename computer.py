@@ -206,11 +206,9 @@ class Computer:
 
   
     def process_instruction(self):
-        op = self.memory[self.pc]
-
         try:
+            op = self.memory[self.pc]
             start = self.pc
-            #args = array('H', [self.memory[self.pc + x + 1] for x in range(ARGCOUNT[op])])
             self.pc += (1 + ARGCOUNT[op])
             self.cycles += 1
 
