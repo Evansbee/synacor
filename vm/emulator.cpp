@@ -58,8 +58,19 @@ void do_instruction(virtual_machine *vm)
 			vm->halted = true;
 			return;
 		case 1:
-			vm->registers[reg_number(vm->memory[vm->pc + 1]] = get_value(vm->memory[vm->pc+2])
+			vm->registers[reg_number(vm->memory[vm->pc + 1]] = get_value(vm, vm->memory[vm->pc+2])
+			vm->pc += 3;
+			return;
+		case 2:
+			vm->stack.push_back(get_value(vm,vm->memory[vm->pc+1]));
 			vm->pc += 2;
 			return;
+		case 3:
+			vm->registers[reg_number(vm->memory[vm->pc + 1]] = vm->stack.back()
+			vm->stack.pop_back();
+			vm->pc += 2;
+			return;
+		case 4:
+			vm->registers[reg_number(vm->memory[vm->pc + 1]] = ()
 	}
 }
