@@ -7,7 +7,7 @@
 # In[1]:
 
 import sys
-from computer import Computer
+from computer import Computer, Computer2
 from pathlib import Path
 from array import array
 import wx
@@ -224,8 +224,16 @@ if __name__ == '__main__':
         start = time.time()
         c.run_until_done()
         end = time.time()
-        print("Executed {} cycles in {:.2f}s".format(c.cycles,end-start))
-        print("Roughly {:.1f} KHz".format((c.cycles/(end-start))/1000.0))
+        print("OLD Executed {} cycles in {:.2f}s".format(c.cycles,end-start))
+        print("OLD Roughly {:.1f} KHz".format((c.cycles/(end-start))/1000.0))
+    
+        c = Computer2()
+        c.load_program_from_file('programs/conway_life.bin')
+        start = time.time()
+        c.run()
+        end = time.time()
+        print("NEW Executed {} cycles in {:.2f}s".format(c.cycles,end-start))
+        print("NEW Roughly {:.1f} KHz".format((c.cycles/(end-start))/1000.0))
     elif len(sys.argv) == 3 and sys.argv[1] == 'run':
         input_file = Path(sys.argv[2])
         breakpoint_file = input_file.with_suffix('.bp')

@@ -1,10 +1,11 @@
 
 
 set r0 0
-init: 	call .update
+init: 	
+		call .update
 		call .print
 		add r0 r0 1
-		eq r1 r0 0200
+		eq r1 r0 1000
 		jz r1 .init
 		halt
 
