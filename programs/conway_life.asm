@@ -5,8 +5,7 @@ init:
 		call .update
 		call .print
 		add r0 r0 1
-		eq r1 r0 0100
-		jz r1 .init
+		jump init
 		halt
 
 
