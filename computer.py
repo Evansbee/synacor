@@ -6,7 +6,7 @@ import time
 from ctypes import *
 import os
 
-dll = CDLL(os.path.realpath(os.path.join(os.path.dirname(__file__), 'emu')))
+dll = CDLL(os.path.realpath(os.path.join(os.path.dirname(__file__),'bin', '_emu')))
 
 class cEmulator(Structure):
     _fields_ = [

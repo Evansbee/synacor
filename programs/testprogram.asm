@@ -1,8 +1,8 @@
-@0000         init:  jmp    .jmp_0003
-@0002                halt   
-@0003     jmp_0003:  out    'h'
-@0005                out    'i'
-@0007                out    '\n'
+0000h         :init  jmp    .jmp_0003
+0002h                halt   
+0003h     .jmp_0003  out    22
+0005h                out    34     ;helloasd asdasd 
+0007h                out    65
 set r0 0FAB
 call .fcn
 out '\n'
