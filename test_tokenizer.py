@@ -1,5 +1,7 @@
 import ply.lex as lex
 
+reserved = ['']
+
 tokens = (
 	'NUMBER',
 	'GLOBALLABEL',
@@ -14,6 +16,7 @@ tokens = (
 	'RPAREN',
 	'CHAR',
 	'STRING',
+	'PLACEMENT'
 )
 
 t_CHAR = r"'.'"
@@ -28,6 +31,14 @@ t_LOCALLABEL = r'\.[a-zA-Z][a-zA-Z0-9_]+'
 t_GLOBALLABEL = r'\:[a-zA-Z][a-zA-Z0-9_]+'
 t_FQLABEL = r'\:[a-zA-Z][a-zA-Z0-9\_]+\.[a-zA-Z][a-zA-Z0-9_]+'
 t_COMMENT = r';.*'
+
+def t_PLACEMENT(t):
+	r'^[0-9a-fA-F]+h|^\d+'
+	if t.value[-1] == 'h':
+		t.value = int(t.value[:-1],16)
+	else:
+		t.value = int(t.value)
+	return t
 	
 def t_NUMBER(t):
 	r'[0-9a-fA-F]+h|\d+'
@@ -37,13 +48,16 @@ def t_NUMBER(t):
 		t.value = int(t.value)
 	return t
 
+
+	
 def t_error(t):
     print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 	
 def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)	
+	r'\n+'
+	print('NEWLINE')
+	t.lexer.lineno += len(t.value)	
 	
 t_ignore  = ' \t'	
 
@@ -59,10 +73,10 @@ jmp :init.jmp_0003
 
 lexer = lex.lex()
 
+	
 lexer.input(data)
-
 while True:
-    tok = lexer.token()
-    if not tok: 
-        break      # No more input
-    print(tok)
+	tok = lexer.token()
+	if not tok: 
+		break      # No more input
+	print(tok)
