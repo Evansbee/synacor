@@ -14,7 +14,7 @@ class cEmulator(Structure):
         ('registers', c_ushort * 8),
         ('memory', c_ushort * 0x7FFF),
         ('breakpoints', c_ushort * 64),
-        ('breakpoints_write_pointer',c_ushort),
+        ('breakpoint_write_pointer',c_ushort),
         ('stack', c_ushort * 1000),
         ('stack_write_pointer', c_ushort),
         ('cycles',c_ulonglong),
@@ -24,8 +24,8 @@ class cEmulator(Structure):
         ('program_loaded',c_int),
         ('waiting_for_input', c_int),
         ('output_buffer_full', c_int),
-        ('stack_overflow', c_int)
-        ('at_breakpoint', c_int)
+        ('stack_overflow', c_int),
+        ('at_breakpoint', c_int),
     ]
 
 FIELDS = set(x[0] for x in cEmulator._fields_)    

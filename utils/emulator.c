@@ -70,18 +70,19 @@ void run_n(virtual_machine* vm, uint32_t n)
    for(int i = 0; i < n; ++i)
    {
       do_instruction(vm);
-      if(vm->waiting_for_input || vm->halted)
+      if(vm->waiting_for_input || vm->halted || vm->output_buffer_full)
       {
-         return;
+            return;
       }
-      // for(int j = 0; j < vm->breakpoint_write_pointer; ++j)
-      // {
-      //    if(vm->pc == vm->breakpoints[j])
-      //    {
-      //       vm->at_breakpoint = true;
-      //       return;
-      //    }
-      // }
+      vm->at_breakpoint = false;
+      for(int i = 0; i < vm->breakpoint_write_pointer; ++i)
+      {
+            if(vm->pc == vm->breakpoints[i])
+            {
+                  vm->at_breakpoint = true;
+                  return;
+            }
+      }
    }
 }
 
@@ -90,11 +91,18 @@ void run(virtual_machine* vm)
       while(true)
       {
             do_instruction(vm);
-            if(vm->waiting_for_input || vm->halted)
+            if(vm->waiting_for_input || vm->halted || vm->output_buffer_full)
             {
-                  printf("CYCLES: %lld\n",vm->cycles);
-                  printf("OUT BUF: %s\n",vm->output_buffer);
                   return;
+            }
+            vm->at_breakpoint = false;
+            for(int i = 0; i < vm->breakpoint_write_pointer; ++i)
+            {
+                  if(vm->pc == vm->breakpoints[i])
+                  {
+                        vm->at_breakpoint = true;
+                        return;
+                  }
             }
       }   
 }
@@ -123,6 +131,40 @@ inline void push_value_to_stack(virtual_machine *vm, uint16_t value)
 {
       vm->stack[vm->stack_write_pointer] = value;
       vm->stack_write_pointer++;     
+}
+
+void add_breakpoint(virtual_machine *vm, uint16_t breakpoint)
+{
+      for(int i = 0; i < vm->breakpoint_write_pointer; ++i)
+      {
+            if(breakpoint == vm->breakpoints[i])
+            {
+                  return;
+            }
+      }
+
+      if(vm->breakpoint_write_pointer < NUM_BREAKPOINTS)
+      {
+            vm->breakpoints[vm->breakpoint_write_pointer] = breakpoint;
+            vm->breakpoint_write_pointer++;
+      }
+}
+
+void remove_breakpoint(virtual_machine *vm, uint16_t breakpoint)
+{
+      for(int i = 0; i < vm->breakpoint_write_pointer; ++i)
+      {
+            if(breakpoint == vm->breakpoints[i])
+            {
+                  vm->breakpoint_write_pointer--;
+                  vm->breakpoints[i] = vm->breakpoints[vm->breakpoint_write_pointer];
+                  return;
+            }
+      }
+}
+void clear_breakpoints(virtual_machine *vm)
+{
+      vm->breakpoint_write_pointer = 0;
 }
 
 void do_instruction(virtual_machine *vm)
@@ -249,18 +291,4 @@ void do_instruction(virtual_machine *vm)
             case 21:
                   return;
 	}
-}
-
-
-void add_breakpoint(virtual_machine *vm, uint16_t breakpoint)
-{
-
-}
-void remove_breakpoint(virtual_machine *vm, uint16_t breakpoint)
-{
-
-}
-void clear_breakpoints(virtual_machine *vm)
-{
-
 }
