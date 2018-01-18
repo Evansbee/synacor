@@ -64,14 +64,7 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_COMMENT = r';.*'
 
-def t_PLACEMENT(t):
-	r'^[0-9a-fA-F]+h|^\d+'
-	if t.value[-1] == 'h':
-		t.value = int(t.value[:-1],16)
-	else:
-		t.value = int(t.value)
-	return t
-	
+
 def t_LABEL_DEF(t):
 	r'[\.\:][a-zA-Z][a-zA-Z0-9_]+'
 	if t.value[0] == ':':
@@ -117,7 +110,6 @@ def t_error(t):
 	
 def t_newline(t):
 	r'\n+'
-	print('NEWLINE')
 	t.lexer.lineno += len(t.value)	
 	
 t_ignore  = ' \t'	
@@ -132,7 +124,7 @@ data = r'''
 @0003h     .jmp_0003  out    'bad\n'
 @000Fh                out    ';'     ;helloasd asdasd 
 @0007h                out    r0    ; tricky comments have 'this stuff' in them
-@0090 		jmp init.jmp_0003
+@0090h 		jmp init.jmp_0003
 '''
 
 lexer = lex.lex()
