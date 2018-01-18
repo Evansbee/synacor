@@ -63,6 +63,14 @@ t_MINUS = r'\-'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_COMMENT = r';.*'
+
+def t_PLACEMENT(t):
+	r'^[0-9a-fA-F]+h|^\d+'
+	if t.value[-1] == 'h':
+		t.value = int(t.value[:-1],16)
+	else:
+		t.value = int(t.value)
+	return t
 	
 def t_LABEL_DEF(t):
 	r'[\.\:][a-zA-Z][a-zA-Z0-9_]+'
@@ -108,8 +116,9 @@ def t_error(t):
     t.lexer.skip(1)
 	
 def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)	
+	r'\n+'
+	print('NEWLINE')
+	t.lexer.lineno += len(t.value)	
 	
 t_ignore  = ' \t'	
 
@@ -128,10 +137,10 @@ data = r'''
 
 lexer = lex.lex()
 
+	
 lexer.input(data)
-
 while True:
-    tok = lexer.token()
-    if not tok: 
-        break      # No more input
-    print(tok)
+	tok = lexer.token()
+	if not tok: 
+		break      # No more input
+	print(tok)
