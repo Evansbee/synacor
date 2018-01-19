@@ -84,6 +84,10 @@ class Computer2:
     def run(self):
         dll.run(byref(self.emu))
 
+    def run_n(self, times):
+        dll.run_n(byref(self.emu), times)
+
+
     def __getattr__(self, name):
         if name in FIELDS:
             return getattr(self.emu, name)

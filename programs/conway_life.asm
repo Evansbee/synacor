@@ -5,7 +5,7 @@ init:
 		call .update
 		call .print
 		add r0 r0 1
-		jump init
+		jmp .init
 		halt
 
 
