@@ -20,6 +20,7 @@ class cEmulator(Structure):
         ('cycles',c_ulonglong),
         ('input_buffer',c_char * 2048),
         ('output_buffer',c_char * 2048),
+        ('input_buffer_write_pointer',c_ushort),
         ('halted',c_int),
         ('program_loaded',c_int),
         ('waiting_for_input', c_int),

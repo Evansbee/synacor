@@ -38,6 +38,7 @@ void reset(virtual_machine* vm)
       vm->input_buffer[i] = 0;
       vm->output_buffer[i] = 0;
    }
+   vm->input_buffer_write_pointer = 0;
 
    for(int i = 0; i < MEMORY_SIZE; ++i)
    {
@@ -56,6 +57,43 @@ void reset(virtual_machine* vm)
    vm->output_buffer_full = false;
    vm->stack_overflow = false;
    vm->pc = 0;
+}
+
+
+char pop_char(virtual_machine *vm)
+{
+   if(vm->input_buffer_write_pointer > 0)
+   {
+      char out = vm->input_buffer[0];
+      for(int i = 0; i < vm->input_buffer_write_pointer; ++i)
+      {
+         vm->input_buffer[i] = vm->input_buffer[i+1];
+         vm->input_buffer[i+1] = 0;
+         
+            
+      }
+
+      vm->input_buffer_write_pointer--;
+      return out;
+   }
+   return 0;
+}
+
+void push_char(virtual_machine *vm, char c)
+{
+   if(vm->input_buffer_write_pointer < TEXT_BUFFER_SIZE)
+   {
+      vm->input_buffer[vm->input_buffer_write_pointer++] = c;
+   }
+}
+
+//does ctypes send a string '0' terminated?
+void push_string(virtual_machine* vm, char* str)
+{
+   for(int i = 0; str[i] != '\0'; ++i)
+   {
+      push_char(vm, str[i]);
+   } 
 }
 
 void load(virtual_machine* vm, uint16_t* program, uint32_t length)
