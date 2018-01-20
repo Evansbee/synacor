@@ -11,6 +11,9 @@
 
 void do_instruction(virtual_machine *vm);
 
+
+
+
 static uint8_t arg_count[22] = {
       0,2,1,1,3,    3,1,2,2,3,    3,3,3,3,2,   2,2,1,0,1,  1,0
 };
@@ -175,8 +178,8 @@ void do_instruction(virtual_machine *vm)
       uint32_t len;
 	uint16_t opcode = vm->memory[vm->pc];
     
-   vm->pc++;
-   vm->cycles++;
+      vm->pc++;
+      vm->cycles++;
       
 	if(opcode > 21)
 	{

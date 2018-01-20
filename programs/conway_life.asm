@@ -4,6 +4,12 @@ init:
 		call .update
 		call .print
 		add r0 r0 1
+		out 'h'
+		out 'e'
+		out 'l'
+		out 'l'
+		out 'o'
+		out '\n'
 		jmp .init
 		halt
 
