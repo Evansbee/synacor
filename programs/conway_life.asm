@@ -41,10 +41,6 @@ upd_loop:
 		
 cls:   push r0
 		set r0 001B
-		out r0
-		out '['
-		out '2'
-		out 'J'
 		pop r0
 		ret
 		
@@ -59,12 +55,6 @@ print: push r0
 		push r6
 		push r7
 		call .cls
-		out 'b'
-		out 'o'
-		out 'a'
-		out 'r'
-		out 'd'
-		out '\n'
 		set r0 0
 p_ol:	add r3 r0 .row1
 		rmem r4 r3 ;has the row in r4 
@@ -73,19 +63,17 @@ p_il:
 		and r5 r1 r4
 		eq r5 r5 0
 		jz r5 .p_0
-		out '*'
 		jmp .printed
-p_0:    out '0'		
+p_0:  nop  ;out '0'		
 printed:
 		mul r1 r1 2
 		eq r2 r1 8000
 		jz r2 .p_il
-		out '\n'
+
 		add r0 r0 1
 		eq r1 r0 000F
 		jz r1 .p_ol
-		out '\n'
-		out '\n'
+
 p_done:	pop r7
 		pop r6
 		pop r5

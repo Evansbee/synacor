@@ -174,8 +174,10 @@ void do_instruction(virtual_machine *vm)
 {
       uint32_t len;
 	uint16_t opcode = vm->memory[vm->pc];
-      vm->pc++;
-      vm->cycles++;
+    
+   vm->pc++;
+   vm->cycles++;
+      
 	if(opcode > 21)
 	{
          printf("Invalid opcode: %d\n",opcode);
@@ -183,8 +185,9 @@ void do_instruction(virtual_machine *vm)
 		return;
 	}
 
+   //printf("EXPECTED ARGS FOR OP (%d) is %d\n",opcode, arg_count[opcode]);
       uint16_t args[3];
-      for(int i; i < arg_count[opcode];++i)
+      for(int i=0; i < arg_count[opcode];++i)
       {
             args[i] = vm->memory[vm->pc];
             vm->pc++;
