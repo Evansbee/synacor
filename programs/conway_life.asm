@@ -1,6 +1,5 @@
 
 
-set r0 0
 init: 	
 		call .update
 		call .print

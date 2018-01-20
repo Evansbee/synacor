@@ -67,11 +67,13 @@ void load(virtual_machine* vm, uint16_t* program, uint32_t length)
 
 void run_n(virtual_machine* vm, uint32_t n)
 {
+   printf("Running %d times\n",n);
    for(int i = 0; i < n; ++i)
    {
       do_instruction(vm);
       if(vm->waiting_for_input || vm->halted || vm->output_buffer_full)
       {
+            printf("%d %d %d",vm->waiting_for_input, vm->halted, vm->output_buffer_full);
             return;
       }
       vm->at_breakpoint = false;
@@ -93,6 +95,7 @@ void run(virtual_machine* vm)
             do_instruction(vm);
             if(vm->waiting_for_input || vm->halted || vm->output_buffer_full)
             {
+                  
                   return;
             }
             vm->at_breakpoint = false;
@@ -175,7 +178,8 @@ void do_instruction(virtual_machine *vm)
       vm->cycles++;
 	if(opcode > 21)
 	{
-		vm->halted = true;
+         printf("Invalid opcode: %d\n",opcode);
+      vm->halted = true;
 		return;
 	}
 
