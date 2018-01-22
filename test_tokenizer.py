@@ -1,5 +1,5 @@
 import ply.lex as lex
-
+import ply.yacc as yacc
 
 OPCODES = {
 	'halt' : 0,
@@ -41,10 +41,10 @@ reserved = set(list(OPCODES.keys()) + list(REGISTERS.keys()) + ['db'])
 
 tokens = [
 	'NUMBER',
-	'LABEL_DEF',
-	'LABEL_REF',
-	'ANON_LABEL_DEF',
-	'ANON_LABEL_REF',
+	'LABEL',
+	'REFERENCE',
+	'ANON_LABEL',
+	'ANON_REFERENCE',
 	'COMMENT',
 	'PLUS',
 	'MINUS',
@@ -65,9 +65,9 @@ t_MINUS = r'\-'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_COMMENT = r';.*'
-t_ANON_LABEL_REF = r'\@b|\@f|\@r'
+t_ANON_REFERENCE = r'\@b|\@f|\@r'
 
-def t_LABEL_DEF(t):
+def t_LABEL(t):
 	r'[a-zA-Z][a-zA-Z0-9_]{,9}:|\.[a-zA-Z][a-zA-Z0-9_]{,8}:'
 	t.lexer.placement = False
 	if t.value[0] != '.':
@@ -77,13 +77,13 @@ def t_LABEL_DEF(t):
 		t.value = t.lexer.label_prefix + t.value[:-1]
 	return t
 
-def t_ANON_LABEL_DEF(t):
+def t_ANON_LABEL(t):
 	r'\@\@:'
 	t.lexer.placement = False
 	t.value = t.value[:-1]
 	return t
 
-def t_LABEL_REF(t):
+def t_REFERENCE(t):
 	r'[a-zA-Z][a-zA-Z0-9_]{,9}(\.[a-zA-Z][a-zA-Z0-9_]{,8})?|\.[a-zA-Z][a-zA-Z0-9_]{,8}'
 	if t.value in OPCODES:
 		t.lexer.placement = False
@@ -153,6 +153,82 @@ while True:
 	print(tok)
 
 
+def p_empty(p):
+	'empty :'
+	print('EMPTY')
+
+def p_program(p):
+	'program : lines'
+	print(p_program.__doc__)
+	p[0] = Program(p[1])
+
+def p_lines1(p):
+	'lines : line lines'
+	print(p_lines1.__doc__)
+	p[0] = (p[1],) + p[2]
+
+def p_lines2(p):
+	'lines : line'
+	print(p_lines2.__doc__)
+	p[0] = (p[1],)
+
+def p_line1(p):
+	'line : location label operation comment'
+	print(p_line1.__doc__)
+
+def p_location(p):
+	'location : PLACEMENT'
+	'         | empty'
+	print(p_location.__doc__)
+	p[0] = Placement(p[1])
+
+def p_labeldef(p):
+	'label : LABEL'
+	'      | ANON_LABEL'
+	print(p_labeldef.__doc__)
+
+def p_operation(p):
+	'operation : OPCODE args'
+	'          | empty'
+	print(p_operation.__doc__)
+
+def p_args1(p):
+	'args : arg args'
+	print(p_args1.__doc__)
+
+def p_args2(p):
+	'args : arg'
+	print(p_args2.__doc__)	
+
+def p_arg(p):
+	'arg : NUMBER'
+	'    | REGISTER'
+	'    | REFERENCE'
+	'    | ANON_REFERENCE'
+	'    | CHAR'
+	'    | STRING'
+	'    | LPAREN expression RPAREN'
+	'    | empty'
+	print(p_arg.__doc__)	
+
+def p_expression(p):
+	'expression : NUMBER PLUS NUMBER'
+	'           | REFERENCE PLUS NUMBER'
+	'           | NUMBER PLUS REFERENCE'
+	'           | NUMBER MINUS NUMBER'
+	'           | REFERENCE MINUS NUMBER'
+	'           | NUMBER MINUS REFERENCE'
+	print(p_expression.__doc__)
+
+def p_comment(p):
+	'comment : COMMENT'
+	'        | empty'
+	print(p_comment.__doc__)
+
+def p_error(p):
+	print('Parse error')
+
+
 
 class Program(object):
 	def __init__(self):
@@ -201,3 +277,10 @@ class Label(object):
 		pass
 	def pretty_print(self):
 		pass	
+
+
+
+parser = yacc.yacc()
+
+result = parser.parse(data, lexer=lexer)
+print(result)
