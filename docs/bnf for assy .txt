@@ -1,0 +1,34 @@
+
+program : lines
+lines : line lines
+      | line
+	  
+line : location label instruction comment
+	  
+location : PLACEMENT
+         | empty
+		 
+label : LABEL
+      | ANON_LABEL
+	  | empty
+
+instruction: OPCODE args
+		   | empty
+		   
+comment : COMMENT
+        | empty
+		
+args : arg args
+     | arg
+
+arg : LPAREN expression RPAREN
+    | LPAREN arg RPAREN
+	| REGISTER
+	| REFERENCE
+	| ANON_REFERENCE
+	| NUMBER
+	| empty
+	
+expression : arg PLUS arg
+	       | arg MINUS arg
+	  
