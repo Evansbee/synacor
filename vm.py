@@ -178,32 +178,26 @@ def doui():
 
 if __name__ == '__main__':
 
-    print('usage:')
-    print('{} disassemble [binary input] [asm output]'.format(sys.argv[0]))
-    print('{} assemble [asm input] [binary output] <[breakpoint file]>'.format(sys.argv[0]))
-    print('{} run [binary input]'.format(sys.argv[0]))
-
-    if len(sys.argv) == 4 and sys.argv[1] == 'disassemble':
+    if len(sys.argv) == 3 and sys.argv[1] == 'disassemble':
         input_file = Path(sys.argv[2])
-        output_file = Path(sys.argv[3])
         
         disassembly = Computer.DisassembleFile(input_file)
         last_skipped = False
-        with output_file.open('w') as f:
-            for _,x in disassembly.items():
-                if x['op'] == 'nop':
-                    if last_skipped:
-                        continue
-                    else:
-                        last_skipped = True
-                        f.write('\n                     ; -- nop --\n\n')
-                        continue
 
-                last_skipped = False
-                if x['label'] != '':
-                    f.write('@{:04X}  {:>12}  {:6} {}\n'.format(x['start_address'],x['label']+':',x['op'],' '.join(x['processed_args'])))
+        for _,x in disassembly.items():
+            if x['op'] == 'nop':
+                if last_skipped:
+                    continue
                 else:
-                    f.write('@{:04X}  {:>12}  {:6} {}\n'.format(x['start_address'],'',x['op'],' '.join(x['processed_args'])))
+                    last_skipped = True
+                    print('\n                     ; -- nop --\n')
+                    continue
+
+            last_skipped = False
+            if x['label'] != '':
+                print('0x{:04X}  {:>12}  {:6} {}'.format(x['start_address'],x['label']+':',x['op'],' '.join(x['processed_args'])))
+            else:
+                print('0x{:04X}  {:>12}  {:6} {}'.format(x['start_address'],'',x['op'],' '.join(x['processed_args'])))
 
 
     elif len(sys.argv) == 4 and sys.argv[1] == 'assemble':

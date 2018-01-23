@@ -165,8 +165,10 @@ class Computer:
     def reg_or_value_string(val):
         if Computer.isreg(val):
             return 'r{}'.format(Computer.reg(val))
+        elif chr(val) in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890-=+_!@#$%^&*()[]{}\|;\':",.<>/?`~"':
+            return "'" + chr(val) + "'"
         else:
-            return '{:04X}'.format(val)
+            return '0x{:04X}'.format(val)
     
     def load_program_from_file(self, binfile):
         with open(binfile,'rb') as f:
@@ -444,10 +446,10 @@ class Computer:
                 def update_label(addr, prefix, token, offset):
                     if token['start_address'] < addr:
                         labels[addr] = "{}_{:04X}".format(prefix,addr)
-                        token['processed_args'][offset] = ".{}_{:04X}".format(prefix,addr)
+                        token['processed_args'][offset] = "{}_{:04X}".format(prefix,addr)
                     elif addr in disassembly and disassembly[addr]['label'] == '':
                         disassembly[addr]['label'] = "{}_{:04X}".format(prefix,addr)
-                        token['processed_args'][offset] = ".{}_{:04X}".format(prefix,addr)
+                        token['processed_args'][offset] = "{}_{:04X}".format(prefix,addr)
                     elif addr not in disassembly:
                         pass
                     else:
@@ -483,7 +485,7 @@ class Computer:
                 token['args'] = actual_values
                 token['raw'] = actual_values
                 token['size'] = 1
-                token['processed_args'] = ['{:04x}'.format(actual_values[0])]
+                token['processed_args'] = ['0x{:04x}'.format(actual_values[0])]
                 token['comment'] = ''
                 disassembly[token['start_address']] = token
         return disassembly
