@@ -37,38 +37,31 @@ REGISTERS = {
 	'r7' : 32775
 }
 
-reserved = set(list(OPCODES.keys()) + list(REGISTERS.keys()) + ['db'])
+reserved = set(list(OPCODES.keys()) + ['db'])
 
-tokens = [
+tokens = list(x.upper() for x in reserved) + [
 	'NUMBER',
 	'LABEL',
 	'REFERENCE',
-	'ANON_LABEL',
-	'ANON_REFERENCE',
 	'COMMENT',
-	'PLUS',
-	'MINUS',
+	'MATHOP',
 	'LPAREN',
 	'RPAREN',
 	'CHAR',
 	'STRING',
 	'PLACEMENT',
-	'OPCODE',
 	'REGISTER',
-	'DATA',
-] + list(reserved)
+]
 
 t_CHAR = r"'.'"
-t_STRING = r"'..+'|\"..+\""
-t_PLUS = r'\+'
-t_MINUS = r'\-'
+t_STRING = r"'[^']{2,}'|\"[^\"]{2,}\""
+t_MATHOP = r'[\-\+]'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_COMMENT = r';.*'
-t_ANON_REFERENCE = r'\@b|\@f|\@r'
 
 def t_LABEL(t):
-	r'[a-zA-Z][a-zA-Z0-9_]{,9}:|\.[a-zA-Z][a-zA-Z0-9_]{,8}:'
+	r'[a-zA-Z][a-zA-Z0-9_]{,9}:|\.[a-zA-Z][a-zA-Z0-9_]{,8}:|\@\@:'
 	t.lexer.placement = False
 	if t.value[0] != '.':
 		t.lexer.label_prefix = t.value[:-1]
@@ -77,23 +70,19 @@ def t_LABEL(t):
 		t.value = t.lexer.label_prefix + t.value[:-1]
 	return t
 
-def t_ANON_LABEL(t):
-	r'\@\@:'
-	t.lexer.placement = False
-	t.value = t.value[:-1]
+def t_REGISTER(t):
+	r'r[0-7]'
 	return t
 
 def t_REFERENCE(t):
-	r'[a-zA-Z][a-zA-Z0-9_]{,9}(\.[a-zA-Z][a-zA-Z0-9_]{,8})?|\.[a-zA-Z][a-zA-Z0-9_]{,8}'
+	r'[a-zA-Z][a-zA-Z0-9_]{,9}(\.[a-zA-Z][a-zA-Z0-9_]{,8})?|\.[a-zA-Z][a-zA-Z0-9_]{,8}|\@f|\@b|\@r'
 	if t.value in OPCODES:
 		t.lexer.placement = False
-		t.type = 'OPCODE'
-		t.value = t.value
-	elif t.value in REGISTERS:
-		t.type = 'REGISTER'
+		t.type = t.value.upper()
 		t.value = t.value
 	elif t.value == 'db':
-		t.type = 'DATA'
+		t.lexer.placement = False
+		t.type = 'DB'
 		t.value = t.value
 	elif t.value[0] == '.': #local label
 		t.value = t.lexer.label_prefix + t.value
@@ -105,8 +94,6 @@ def t_NUMBER(t):
 		t.value = int(t.value[:-1],16)
 	else:
 		t.value = int(t.value)
-
-
 	if t.lexer.placement:
 		t.lexer.placement = False
 		t.type = 'PLACEMENT'	
@@ -153,81 +140,93 @@ while True:
 	print(tok)
 
 
-def p_empty(p):
-	'empty :'
-	print('EMPTY')
 
 def p_program(p):
 	'program : lines'
-	print(p_program.__doc__)
-	p[0] = Program(p[1])
+	print("PROGRAM")
 
 def p_lines1(p):
-	'lines : line lines'
-	print(p_lines1.__doc__)
+	'lines : line lines'	
 	p[0] = (p[1],) + p[2]
 
 def p_lines2(p):
 	'lines : line'
-	print(p_lines2.__doc__)
 	p[0] = (p[1],)
 
 def p_line1(p):
 	'line : location label operation comment'
-	print(p_line1.__doc__)
+	print('LINE')
 
 def p_location(p):
-	'location : PLACEMENT'
-	'         | empty'
-	print(p_location.__doc__)
-	p[0] = Placement(p[1])
+	'''location : PLACEMENT
+	         | empty'''
+	if p[1]: print('PLACE',p[1])
+	#p[0] = Placement(p[1])
 
-def p_labeldef(p):
-	'label : LABEL'
-	'      | ANON_LABEL'
-	print(p_labeldef.__doc__)
+def p_label(p):
+	'''label : LABEL
+	      | empty'''
+	if p[1]: print('LABEL',p[1])
 
 def p_operation(p):
-	'operation : OPCODE args'
-	'          | empty'
-	print(p_operation.__doc__)
+	'''operation : HALT
+	          | SET REGISTER arg
+	          | PUSH REGISTER
+	          | POP REGISTER
+	          | EQ REGISTER arg arg
+	          | GT REGISTER arg arg
+	          | JMP arg
+	          | JNZ arg arg
+	          | JZ arg
+	          | ADD REGISTER arg arg
+	          | MULT REGISTER arg arg
+	          | MOD REGISTER arg arg
+	          | AND REGISTER arg arg
+	          | OR REGISTER arg arg
+	          | NOT REGISTER arg
+	          | RMEM REGISTER arg
+	          | WMEM REGISTER arg
+	          | CALL arg
+	          | RET
+	          | OUT arg
+	          | IN REGISTER
+	          | NOP
+				 | DB args
+	          | empty'''
 
-def p_args1(p):
-	'args : arg args'
-	print(p_args1.__doc__)
+	if p[1]: print('OP', p[1])
 
-def p_args2(p):
-	'args : arg'
-	print(p_args2.__doc__)	
+def p_args(p):
+	'''args : arg args
+	        | arg'''
+	print('ARG',p[1])
 
 def p_arg(p):
-	'arg : NUMBER'
-	'    | REGISTER'
-	'    | REFERENCE'
-	'    | ANON_REFERENCE'
-	'    | CHAR'
-	'    | STRING'
-	'    | LPAREN expression RPAREN'
-	'    | empty'
-	print(p_arg.__doc__)	
+	'''arg : NUMBER
+	    | REGISTER
+	    | REFERENCE
+	    | CHAR
+	    | STRING
+	    | LPAREN expression RPAREN'''
+	print('ARG',p[1])
 
 def p_expression(p):
-	'expression : NUMBER PLUS NUMBER'
-	'           | REFERENCE PLUS NUMBER'
-	'           | NUMBER PLUS REFERENCE'
-	'           | NUMBER MINUS NUMBER'
-	'           | REFERENCE MINUS NUMBER'
-	'           | NUMBER MINUS REFERENCE'
-	print(p_expression.__doc__)
+	'''expression : NUMBER MATHOP NUMBER
+	           | REFERENCE MATHOP NUMBER
+	           | NUMBER MATHOP REFERENCE'''
+	print(p[1],p[2],p[3])
 
 def p_comment(p):
-	'comment : COMMENT'
-	'        | empty'
-	print(p_comment.__doc__)
+	'''comment : COMMENT
+	        | empty'''
+	if p[1]: print('COMMENT',p[1])
 
 def p_error(p):
-	print('Parse error')
+	print('Parse error', p)
 
+def p_empty(p):
+	'empty :'
+	pass
 
 
 class Program(object):
@@ -283,4 +282,4 @@ class Label(object):
 parser = yacc.yacc()
 
 result = parser.parse(data, lexer=lexer)
-print(result)
+#print(result)
