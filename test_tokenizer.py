@@ -1,6 +1,6 @@
 import ply.lex as lex
 import ply.yacc as yacc
-
+import sys
 OPCODES = {
 	'halt' : 0,
 	'set'  : 1,
@@ -113,178 +113,362 @@ t_ignore  = ' \t'
 	
 data = r'''
 0000h         init:  jmp    init.jmp_0003
-0001h
-0002h                halt   
-						db 0234h
+20 ;blankish line
+40                halt   
+						db 0234h 20 55
 						db '2'
 						db '321314'
-0003h     .jmp_0003:  out    'bad\n'
-000Fh                out    ';'     ;helloasd asdasd 
-0007h                out    r0    ; tricky comments have 'this stuff' in them
-0090h 		jmp .jmp_0003
+100h     .jmp_0003:  out    'bad\n'
+200h                out    ';'     ;helloasd asdasd 
+300h                out    r0    ; tricky comments have 'this stuff' in them
+			set r0 123
+			add r0 r1 (@f+1)
+
+400h 		jmp .jmp_0003
 jmp init
 1000h     @@:   nop
 jmp @b
 jmp @r ;go back
 jmp @f
+@@: nop
 '''
+
+def pretty_string(val):
+	if not isinstance(val,int):
+		return val
+
+	if chr(val) in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890-=+_!@#$%^&*()[]{}\|;\':",.<>/?`~"':
+		return "'" + chr(val) + "'"
+	elif val < REGISTERS['r0']:
+		return "0x{:04x}".format(val)
+	elif val <= REGISTER['r7']:
+		return "r{}".format(val-REGISTER['r0'])
+	else:
+		return val
+
+class Program(object):
+	def __init__(self, lines):
+		self.lines = []
+		self.labels = {}
+		self.anon_labels = []
+		self.size = 0
+		for line in lines:
+			self.lines.append(line)
+			if line.placement:
+				if self.size > line.placement:
+					raise Exception('Invalid Placement')
+					sys.exit()
+				self.size = line.placement
+			else:
+				line.placement = self.size
+			
+			if line.label:
+				if line.label.name == '@@':
+					self.anon_labels += [self.size]
+				else:
+					self.labels[self.size] = line.label.name
+
+			self.size += line.size
+	
+	def assemble(self):
+		pass
+	def pretty(self):
+		return '\n'.join([line.pretty() for line in self.lines])	
+
+class Line(object):
+	def __init__(self, placement, label, operation, comment):
+		self.placement = placement
+		self.label = label
+		self.operation = operation
+		self.comment = comment
+		self.size = 0
+		if self.operation:
+			self.size = self.operation.size
+
+		print("LINE: ",placement, label, operation, comment)
+		pass
+	def assemble(self, labels = {}, anon_labels = []):
+		pass
+
+	def __str__(self):
+		print(self.pretty())
+	def __repr__(self):
+		print(self.pretty())	
+
+
+	def pretty(self):
+		placement = ""
+		label = ""
+		operation = ""
+		comment = ""
+		if self.placement is not None:
+			placement = "0x{:04x}".format(self.placement)
+		if self.label:
+			label = self.label.pretty()
+		if self.operation:
+			operation = self.operation.pretty()
+		if self.comment:
+			comment = self.comment.pretty()	
+		return "{:8}{:>20}  {:30}{}".format(placement,label,operation,comment)
+
+class Comment(object):
+	def __init__(self, comment):
+		self.comment = comment.lstrip(';').lstrip()
+	def pretty(self):
+		return '; ' + self.comment	
+
+
+class Reference(object):
+	def __init__(self, name):
+		self.name = name
+	def assemble(self, labels = {}, anon_labels = []):
+		pass
+	def pretty(self):
+		return self.name
+
+
+class Operation(object):
+	def __init__(self, opcode, args = []):
+		self.op = opcode
+		self.args = args
+		self.size = 10
+
+	def assemble(self, labels = {}, anon_labels = []):
+		pass
+	def pretty(self):
+		ret = self.op + ' '
+		for arg in self.args:
+			ret += arg.pretty() + ' '
+		return ret	
+
+class Register(object):
+	def __init__(self, name):
+		self.name = name
+		pass
+	def assemble(self, labels = {}, anon_labels = []):
+		pass
+	def pretty(self):
+		return self.name	
+
+class Expression(object):
+	def __init__(self, arg_a, op, arg_b):
+		self.a = arg_a
+		self.op = op
+		self.b = arg_b
+		
+	def assemble(self, labels = {}, anon_labels = []):
+		pass
+	def pretty(self):
+		return '({}{}{})'.format(self.a,self.op,self.b)
+
+class Arg(object):
+	def __init__(self, arg):
+		self.arg = arg
+		pass
+	def assemble(self, labels = {}, anon_labels = []):
+		if isinstance(self.arg, Expression) or isinstance(self.arg,Register) or isinstance(self.arg, Reference):
+			return [self.arg.assemble(labels, anon_labels)]
+		elif isinstance(self.arg, int):
+			return [self.arg]
+		elif isinstance(self.arg, str):
+			return [ord(x) for x in self.arg]
+
+	def pretty(self):
+		if isinstance(self.arg, Expression) or isinstance(self.arg,Register) or isinstance(self.arg, Reference):
+			return self.arg.pretty()
+		elif isinstance(self.arg, int):
+			return pretty_string(self.arg)
+		else:
+			return self.arg	
+
+class Label(object):
+	def __init__(self, name):
+		self.name = name
+		pass
+	def pretty(self):
+		return self.name +":"	
 
 lexer = lex.lex()
 lexer.placement = True
 	
-lexer.input(data)
-while True:
-	tok = lexer.token()
-	if not tok: 
-		break      # No more input
-	print(tok)
+#lexer.input(data)
+#while True:
+#	tok = lexer.token()
+#	if not tok: 
+#		break      # No more input
+#	print(tok)
 
 
 
 def p_program(p):
 	'program : lines'
-	print(p[1])
+	p[0] = Program(p[1])
+	#p[0] = p[1]
 
 def p_lines1(p):
 	'lines : line lines'	
-	p[0] = (p[1],) + p[2]
+	p[0] = [p[1]] + p[2]
 
 def p_lines2(p):
 	'lines : line'
-	p[0] = (p[1],)
+	p[0] = [p[1]]
 
-def p_line1(p):
-	'line : location label operation comment'
-	line = {}
-	if p[1] : line['placement'] = p[1]
-	if p[2] : line['label'] = p[2]
-	if p[3] : line['operation'] = p[3]
-	if p[4] : line['comment'] = p[4]
-	p[0] = line
+def p_line_ploc(p):
+	'line : PLACEMENT LABEL operation COMMENT'
+	p[0] = Line(p[1],Label(p[2]),p[3],Comment(p[4]))
 
-def p_location(p):
-	'''location : PLACEMENT
-	         | empty'''
-	if p[1]: p[0] = p[1]
 
-def p_label(p):
-	'''label : LABEL
-	      | empty'''
-	if p[1]: p[0] = p[1]
+def p_line_loc(p):
+	'line : LABEL operation COMMENT'
+	p[0] = Line(None,Label(p[1]),p[2],Comment(p[3]))
+
+def p_line_poc(p):
+	'line : PLACEMENT operation COMMENT'
+	p[0] = Line(p[1],None,p[2],Comment(p[3]))
+
+def p_line_plc(p):
+	'line : PLACEMENT LABEL COMMENT'
+	p[0] = Line(p[1],Label(p[2]),None,Comment(p[3]))
+
+def p_line_plo(p):
+	'line : PLACEMENT LABEL operation'
+	p[0] = Line(p[1],Label(p[2]),p[3],None)
+
+
+def p_line_oc(p):
+	'line : operation COMMENT'
+	p[0] = Line(None,None,p[1],Comment(p[2]))
+
+
+def p_line_pc(p):
+	'line : PLACEMENT COMMENT'
+	p[0] = Line(p[1],None,None,Comment(p[2]))
+
+def p_line_pl(p):
+	'line : PLACEMENT LABEL '
+	p[0] = Line(p[1],Label(p[2]),None,None)
+
+
+def p_line_lc(p):
+	'line : LABEL COMMENT'
+	p[0] = Line(None,Label(p[1]),None,Comment(p[2]))
+
+def p_line_po(p):
+	'line : PLACEMENT operation '
+	p[0] = Line(p[1],None, p[2] ,None)
+
+def p_line_lo(p):
+	'line : LABEL operation'
+	p[0] = Line(None, Label(p[1]),p[2] ,None)
+
+def p_line_p(p):
+	'line : PLACEMENT'
+	p[0] = Line(p[1],None, None, None)
+
+def p_line_l(p):
+	'line : LABEL '
+	p[0] = Line(None, Label(p[1]), None, None)
+
+def p_line_o(p):
+	'line : operation '
+	p[0] = Line(None, None, p[1], None)
+
+
+def p_line_c(p):
+	'line : COMMENT'
+	p[0] = Line(None, None, None, Comment(p[1]))
+
+def p_line_e(p):
+	'line : empty'
+	pass
+
 
 def p_operation(p):
 	'''operation : HALT
-	          | SET REGISTER arg
-	          | PUSH REGISTER
-	          | POP REGISTER
-	          | EQ REGISTER arg arg
-	          | GT REGISTER arg arg
-	          | JMP arg
-	          | JNZ arg arg
-	          | JZ arg
-	          | ADD REGISTER arg arg
-	          | MULT REGISTER arg arg
-	          | MOD REGISTER arg arg
-	          | AND REGISTER arg arg
-	          | OR REGISTER arg arg
-	          | NOT REGISTER arg
-	          | RMEM REGISTER arg
-	          | WMEM REGISTER arg
-	          | CALL arg
+	          | SET args
+	          | PUSH args
+	          | POP args
+	          | EQ args
+	          | GT args
+	          | JMP args
+	          | JNZ args
+	          | JZ args
+	          | ADD args
+	          | MULT args
+	          | MOD args
+	          | AND args
+	          | OR args
+	          | NOT args
+	          | RMEM args
+	          | WMEM args
+	          | CALL args
 	          | RET
-	          | OUT arg
-	          | IN REGISTER
+	          | OUT args
+	          | IN args
 	          | NOP
-				 | DB args
-	          | empty'''
+			  | DB args'''
 
-	if p[1]: 
-		p[0] = (p[1:],)
+	if len(p) > 2:
+		p[0] = Operation(p[1],p[2])
+	else:
+		p[0] = Operation(p[1], [])
 
-def p_args(p):
-	'''args : arg args
-	        | arg'''
-	p[0] = p[1]
+def p_args1(p):
+	'''args : arg args'''
+	p[0] = [p[1]] + p[2]
 
-def p_arg(p):
-	'''arg : NUMBER
-	    | REGISTER
-	    | REFERENCE
-	    | CHAR
-	    | STRING
-	    | LPAREN expression RPAREN'''
-	p[0] = (p[1:],)
+def p_args2(p):
+	'''args : arg'''
+	p[0] = [p[1]]
+
+def p_arg_num(p):
+	'arg : NUMBER'
+	p[0] = Arg(p[1])
+
+def p_arg_reg(p):
+	'arg : REGISTER'
+	p[0] = Register(p[1])
+
+def p_arg_ref(p):
+	'arg : REFERENCE'
+	p[0] = Reference(p[1])
+
+def p_arg_char(p):
+	'arg : CHAR'
+	p[0] = Arg(p[1])
+
+def p_arg_string(p):		   
+	'arg : STRING'
+	p[0] = Arg(p[1])
+
+def p_arg_expression(p):
+	'''arg : LPAREN expression RPAREN'''
+	p[0] = Arg(p[2])
 
 def p_expression(p):
 	'''expression : NUMBER MATHOP NUMBER
 	           | REFERENCE MATHOP NUMBER
 	           | NUMBER MATHOP REFERENCE'''
-	p[0] = (p[1:],)
-
-def p_comment(p):
-	'''comment : COMMENT
-	        | empty'''
-	if p[1]: p[0] = p[1]
+	p[0] = Expression(p[1],p[2],p[3])
 
 def p_error(p):
-	print('Parse error', p)
+	if p:
+		print('Syntax Error at token', p.type)
+		sys.exit()
+	else:
+		print('Syntax Error')
+		sys.exit()
 
 def p_empty(p):
 	'empty :'
 	pass
 
 
-class Program(object):
-	def __init__(self):
-		pass
-	def assemble(self):
-		pass
-	def pretty_print(self):
-		pass	
-
-class Line(object):
-	def __init__(self):
-		pass
-	def assemble(self):
-		pass
-	def pretty_print(self):
-		pass	
-
-class Comment(object):
-	def __init__(self):
-		pass
-	def assemble(self):
-		pass
-	def pretty_print(self):
-		pass	
-
-class Opcode(object):
-	def __init__(self):
-		pass
-	def assemble(self):
-		pass
-	def pretty_print(self):
-		pass	
-
-class Arg(object):
-	def __init__(self):
-		pass
-	def assemble(self):
-		pass
-	def pretty_print(self):
-		pass	
-
-class Label(object):
-	def __init__(self):
-		pass
-	def assemble(self):
-		pass
-	def pretty_print(self):
-		pass	
 
 
 
-parser = yacc.yacc()
-
+parser = yacc.yacc(debug = False, write_tables = False)
 result = parser.parse(data, lexer=lexer)
-#print(result)
+print(result.pretty())
+print(result.labels)
+print(result.anon_labels)
