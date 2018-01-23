@@ -29,3 +29,9 @@ def Benchmark(filename, runtime = 10.0, batch = 10000):
     print("** Executed {} cycles in {:.2}s".format(vm.cycles,elapsed))
     print("** Effective clock rate: {:.1} MHz".format(mhz))
     print("*" * 80)
+
+
+
+if __name__ == '__main__':
+    program = 'programs/conway_life.asm'
+    Benchmark(program)
