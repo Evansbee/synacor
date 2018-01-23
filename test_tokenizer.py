@@ -143,7 +143,7 @@ while True:
 
 def p_program(p):
 	'program : lines'
-	print("PROGRAM")
+	print(p[1])
 
 def p_lines1(p):
 	'lines : line lines'	
@@ -155,18 +155,22 @@ def p_lines2(p):
 
 def p_line1(p):
 	'line : location label operation comment'
-	print('LINE')
+	line = {}
+	if p[1] : line['placement'] = p[1]
+	if p[2] : line['label'] = p[2]
+	if p[3] : line['operation'] = p[3]
+	if p[4] : line['comment'] = p[4]
+	p[0] = line
 
 def p_location(p):
 	'''location : PLACEMENT
 	         | empty'''
-	if p[1]: print('PLACE',p[1])
-	#p[0] = Placement(p[1])
+	if p[1]: p[0] = p[1]
 
 def p_label(p):
 	'''label : LABEL
 	      | empty'''
-	if p[1]: print('LABEL',p[1])
+	if p[1]: p[0] = p[1]
 
 def p_operation(p):
 	'''operation : HALT
@@ -194,12 +198,13 @@ def p_operation(p):
 				 | DB args
 	          | empty'''
 
-	if p[1]: print('OP', p[1])
+	if p[1]: 
+		p[0] = (p[1:],)
 
 def p_args(p):
 	'''args : arg args
 	        | arg'''
-	print('ARG',p[1])
+	p[0] = p[1]
 
 def p_arg(p):
 	'''arg : NUMBER
@@ -208,18 +213,18 @@ def p_arg(p):
 	    | CHAR
 	    | STRING
 	    | LPAREN expression RPAREN'''
-	print('ARG',p[1])
+	p[0] = (p[1:],)
 
 def p_expression(p):
 	'''expression : NUMBER MATHOP NUMBER
 	           | REFERENCE MATHOP NUMBER
 	           | NUMBER MATHOP REFERENCE'''
-	print(p[1],p[2],p[3])
+	p[0] = (p[1:],)
 
 def p_comment(p):
 	'''comment : COMMENT
 	        | empty'''
-	if p[1]: print('COMMENT',p[1])
+	if p[1]: p[0] = p[1]
 
 def p_error(p):
 	print('Parse error', p)
