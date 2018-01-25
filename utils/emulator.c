@@ -291,7 +291,7 @@ void do_instruction(virtual_machine *vm)
                   vm->registers[reg_number(args[0])] = (get_value(vm, args[1]) | get_value(vm, args[2])) % 32768;
                   return;
             case 14:
-                  vm->registers[reg_number(args[0])] = (~get_value(vm, args[1]) % 32768);
+                  vm->registers[reg_number(args[0])] = (~get_value(vm, args[1]) & 0x7FFF);
                   return;
             case 15: //rmem
                   vm->registers[reg_number(args[0])] = vm->memory[get_value(vm, args[1])];
@@ -328,10 +328,26 @@ void do_instruction(virtual_machine *vm)
                   }
                   return;
             case 20:
-                  vm->cycles -= 1;
-                  vm->pc -= 2;
-                  vm->waiting_for_input = true;
-                  vm->halted = true;
+                  if(vm->input_buffer[0] == 0)
+                  {
+                        vm->cycles -= 1;
+                        vm->pc -= 2;
+                        vm->waiting_for_input = true;
+                  }
+                  else
+                  {
+                        vm->waiting_for_input = false;
+                        vm->registers[reg_number(args[0])] = vm->input_buffer[0];
+                        for(int i = 0; i < TEXT_BUFFER_SIZE-1 != 0; ++i)
+                        {
+                              vm->input_buffer[i] = vm->input_buffer[i+1];
+                              if(vm->input_buffer[i+1] == 0)
+                              {
+                                    break;
+                              }
+                              vm->input_buffer[i+1] = 0;
+                        }
+                  }
                   return;
             case 21:
                   return;

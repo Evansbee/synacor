@@ -59,54 +59,6 @@ OPCODES = {
 MNEUMONICS = dict((v, k) for k, v in OPCODES.items())
 ARGCOUNT = array('B', [0, 2, 1, 1, 3, 3, 1, 2, 2, 3, 3, 3, 3, 3, 2, 2, 2, 1, 0, 1, 1, 0])
 
-class Computer2:
-    def __init__(self):
-        self.emu = cEmulator();
-        self.in_buf = ''
-        self.out_buf = ''        
-        self.reset()
-
-    def reset(self):
-        dll.reset(byref(self.emu))
-
-    def load_program_from_file(self, binfile):
-            with open(binfile,'rb') as f:
-                data = array('H')
-                try:
-                    data.fromfile(f,2**16)
-                except EOFError:
-                    pass
-
-                program_len = len(data)
-                program_data = (c_ushort * program_len)()
-                for i,v in enumerate(data):
-                    program_data[i] = v 
-                dll.load(byref(self.emu),program_data,program_len)
-
-    def run(self):
-        dll.run(byref(self.emu))
-
-    def run_n(self, times):
-        start_cycles = self.cycles
-        while self.cycles < start_cycles + times
-            dll.run_n(byref(self.emu), start_cycles + times - self.cycles)
-            if self.emu.waiting_for_input or self.emu.halted or self.emu.at_breakpoint:
-                return
-            if self.emu.output_buffer_full:
-                print(self.emu.output_buffer)
-                self.emu.output_buffer = ''
-
-
-    def __getattr__(self, name):
-        if name in FIELDS:
-            return getattr(self.emu, name)
-        return super(Computer2, self).__getattr__(name)
-
-    def __setattr__(self, name, value):
-        if name in FIELDS:
-            return setattr(self.emu,name,value)
-        return super(Computer2,self).__setattr__(name,value)
-
 class Computer:
     def __init__(self, debugging_mode = False):
         self.initialize()

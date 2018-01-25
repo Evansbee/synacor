@@ -32,7 +32,8 @@ FIELDS = set(x[0] for x in cEmulator._fields_)
 class VirtualMachine(object):
     '''Virtual Synacore Machine'''
     def __init__(self):
-        self.emu = cEmulator()     
+        self.emu = cEmulator()    
+        self.Output = ''
         self.Reset()
 
     def Reset(self):
@@ -61,29 +62,39 @@ class VirtualMachine(object):
                 program_data[i] = v 
             dll.load(byref(self.emu),program_data,program_len)
 
-    def Run(self):
+    def Run(self, supress_output = False):
         dll.run(byref(self.emu))
+        self.Output += self.emu.output_buffer.decode('UTF-8')
+        self.emu.output_buffer = ''.encode('UTF-8')
+
+        if self.emu.waiting_for_input or self.emu.halted or self.emu.at_breakpoint:
+            return
+
+        
 
     def Run_N(self, times, supress_output = False):
         start_cycles = self.cycles
         while self.cycles < start_cycles + times:
             dll.run_n(byref(self.emu), start_cycles + times - self.cycles)
+            
+            self.Output += self.emu.output_buffer.decode('UTF-8')
+            self.emu.output_buffer = ''.encode('UTF-8')
+            
             if self.emu.waiting_for_input or self.emu.halted or self.emu.at_breakpoint:
                 #print(f'{self.emu.waiting_for_input}{self.emu.halted}{self.emu.at_breakpoint}')
                 return
             
-            if len(self.emu.output_buffer.decode('UTF-8')) > 0:
-                if not supress_output:
-                    print(self.emu.output_buffer.decode('UTF-8'))
-                self.emu.output_buffer = '\0'.encode('UTF-8')
-
-
     def __getattr__(self, name):
         if name in FIELDS:
             return getattr(self.emu, name)
         return super(VirtualMachine, self).__getattr__(name)
 
     def __setattr__(self, name, value):
+        if name == 'Input':
+            print("appending input buffer")
+            current = self.emu.input_buffer.decode('UTF-8')
+            current += value
+            self.emu.input_buffer = current[:2047].encode('UTF-8')
         if name in FIELDS:
             return setattr(self.emu,name,value)
         return super(VirtualMachine,self).__setattr__(name,value)

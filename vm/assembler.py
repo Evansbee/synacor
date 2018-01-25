@@ -5,6 +5,8 @@ import ply.lex as lex
 import ply.yacc as yacc
 import sys
 
+from collections import OrderedDict
+
 OPCODES = {
 	'halt' : 0,
 	'set'  : 1,
@@ -116,9 +118,9 @@ def t_error(t):
     t.lexer.skip(1)
 	
 def t_newline(t):
-	r'\n+'
-	t.lexer.lineno += len(t.value)	
-	t.lexer.placement = True
+    r'\n+'
+    t.lexer.lineno += len(t.value)	
+    t.lexer.placement = True
 	
 t_ignore  = ' \t'	
 
@@ -206,6 +208,7 @@ class Program(object):
 class Line(object):
     def __init__(self, placement, label, operation, comment):
         self.placement = placement
+        self.line_number = -1
         self.label = label
         self.operation = operation
         self.comment = comment
@@ -223,7 +226,7 @@ class Line(object):
         placement = ""
         label = ""
         operation = ""
-        comment = ""
+        comment = ";" + str(self.line_number)
         if self.placement is not None:
             placement = "0x{:04x}".format(self.placement)
         if self.label:
@@ -357,6 +360,20 @@ class String(object):
         temp = self.string.replace('\n','\\n')
         return "'" + temp + "'"
 
+class Literal(object):
+    def __init__(self, value):
+        self.value = value
+        
+    def assemble(self, current_location, labels = {}, anon_labels = []):
+        return array('H', [self.value])
+            
+    def make_ref(self, label):
+        return Reference(label)
+    
+    def pretty(self):
+        return pretty_string(self.value)
+        
+
 
 class Number(object):
     def __init__(self, number):
@@ -369,6 +386,7 @@ class Number(object):
     def pretty(self):
         return pretty_string(self.number)
 
+
 class Label(object):
     def __init__(self, name):
         self.name = name
@@ -377,21 +395,22 @@ class Label(object):
         return self.name +":"	
 
 def p_program(p):
-	'program : lines'
-	p[0] = Program(p[1])
-	#p[0] = p[1]
+    'program : lines' 
+    p[0] = Program(p[1])
 
 def p_lines1(p):
-	'lines : line lines'	
-	p[0] = [p[1]] + p[2]
+    'lines : line lines'	
+    p[1].line_number = p.lineno(0)
+    p[0] = [p[1]] + p[2]
 
 def p_lines2(p):
-	'lines : line'
-	p[0] = [p[1]]
+    'lines : line'
+    p[1].line_number = p.lineno(0)
+    p[0] = [p[1]]
 
 def p_line_ploc(p):
-	'line : PLACEMENT LABEL operation COMMENT'
-	p[0] = Line(p[1],Label(p[2]),p[3],Comment(p[4]))
+    'line : PLACEMENT LABEL operation COMMENT'
+    p[0] = Line(p[1],Label(p[2]),p[3],Comment(p[4]))
 
 
 def p_line_loc(p):
@@ -446,8 +465,8 @@ def p_line_l(p):
 	p[0] = Line(None, Label(p[1]), None, None)
 
 def p_line_o(p):
-	'line : operation '
-	p[0] = Line(None, None, p[1], None)
+    'line : operation'
+    p[0] = Line(None, None, p[1], None)
 
 
 def p_line_c(p):
@@ -460,34 +479,33 @@ def p_line_e(p):
 
 
 def p_operation(p):
-	'''operation : HALT
-	          | SET args
-	          | PUSH args
-	          | POP args
-	          | EQ args
-	          | GT args
-	          | JMP args
-	          | JNZ args
-	          | JZ args
-	          | ADD args
-	          | MUL args
-	          | MOD args
-	          | AND args
-	          | OR args
-	          | NOT args
-	          | RMEM args
-	          | WMEM args
-	          | CALL args
-	          | RET
-	          | OUT args
-	          | IN args
-	          | NOP
-			  | DB args'''
-
-	if len(p) > 2:
-		p[0] = Operation(p[1],p[2])
-	else:
-		p[0] = Operation(p[1], [])
+    '''operation : HALT
+            | SET args
+            | PUSH args
+            | POP args
+            | EQ args
+            | GT args
+            | JMP args
+            | JNZ args
+            | JZ args
+            | ADD args
+            | MUL args
+            | MOD args
+            | AND args
+            | OR args
+            | NOT args
+            | RMEM args
+            | WMEM args
+            | CALL args
+            | RET
+            | OUT args
+            | IN args
+            | NOP
+            | DB args'''
+    if len(p) > 2:
+        p[0] = Operation(p[1],p[2])
+    else:
+        p[0] = Operation(p[1], [])    
 
 def p_args1(p):
 	'''args : arg args'''
@@ -542,7 +560,7 @@ def p_expression_nmr(p):
 
 def p_error(p):
 	if p:
-		print('Syntax Error at token', p.type, p.lineno)
+		print('Syntax Error at token', p.type, p.lineno(0))
 		sys.exit()
 	else:
 		print('Syntax Error')
@@ -555,43 +573,40 @@ def p_empty(p):
 def make_lexer():
     lexer = lex.lex()
     lexer.placement = True
+    lexer.lineno = 1
     return lexer
 
 def make_parser():
-    parser = yacc.yacc(debug = False, write_tables = False)
+    parser = yacc.yacc(debug = False)#, write_tables = False)
     return parser
 
-LEXER = make_lexer()
-PARSER = make_parser()
-
-#interface functions
-
-
-def parse(text):
-    program = PARSER.parse(text,lexer=LEXER)
+def Parse(text):
+    lexer = make_lexer()
+    parser = make_parser()
+    program = parser.parse(text,lexer=lexer, tracking = True)
     program.text = text
     return program
 
-def parse_file(filename):
+def ParseFile(filename):
     text = ""
     with open(filename) as f:
         text = f.read()
-    return parse(text)
+    return Parse(text)
 
 def Pretty(text, verbose = False):
-    prog = parse(text)
+    prog = Parse(text)
     return prog.pretty(verbose)
 
 def PrettyFile(filename, verbose = False):
-    prog = parse_file(filename)
+    prog = ParseFile(filename)
     return prog.pretty(verbose)
 
 def Assemble(text):
-    prog = parse(text)
+    prog = Parse(text)
     return prog.assemble()
 
 def AssembleFile(filename):
-    prog = parse_file(filename)
+    prog = ParseFile(filename)
     return prog.assemble()
 
 
@@ -615,15 +630,15 @@ def valid_instruction(op_args):
         if op == 0:
             return True
         elif op == 1: #set
-            return Computer.isreg(args[0]) and args[1] < 32776
+            return isreg(args[0]) and args[1] < 32776
         elif op == 2: #push
             return args[0] < 32776
         elif op == 3: #pop
-            return Computer.isreg(args[0])
+            return isreg(args[0])
         elif op == 4: #eq
-            return Computer.isreg(args[0]) and args[1] < 32776 and args[2] < 32776
+            return isreg(args[0]) and args[1] < 32776 and args[2] < 32776
         elif op == 5: #gt
-            return Computer.isreg(args[0]) and args[1] < 32776 and args[2] < 32776
+            return isreg(args[0]) and args[1] < 32776 and args[2] < 32776
         elif op == 6: #jmp
             return args[0] < 32776
         elif op == 7: #jt
@@ -631,11 +646,11 @@ def valid_instruction(op_args):
         elif op == 8: #jf
             return args[0] < 32776 and args[1] < 32776
         elif op == 9 or op == 10 or op == 11 or op == 12 or op == 13: #add, mult, mod, and, or
-            return Computer.isreg(args[0]) and args[1] < 32776 and args[2] < 32776
+            return isreg(args[0]) and args[1] < 32776 and args[2] < 32776
         elif op == 14: #not
-            return Computer.isreg(args[0]) and args[1] < 32776
+            return isreg(args[0]) and args[1] < 32776
         elif op == 15: #rmem
-            return Computer.isreg(args[0]) and args[1] < 32776
+            return isreg(args[0]) and args[1] < 32776
         elif op == 16: #wmem
             return args[0] < 32776 and args[1] < 32776
         elif op == 17: #call
@@ -645,7 +660,7 @@ def valid_instruction(op_args):
         elif op == 19: #out
             return args[0] < 32776
         elif op == 20: #in
-            return Computer.isreg(args[0])
+            return isreg(args[0])
         elif op == 21: #nop
             return True
         else:
@@ -655,8 +670,8 @@ def valid_instruction(op_args):
     return False #no reach
 
 def reg_or_value_string(val):
-    if Computer.isreg(val):
-        return 'r{}'.format(Computer.reg(val))
+    if isreg(val):
+        return REV_REGISTERS[val]
     elif chr(val) in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890-=+_!@#$%^&*()[]{}\|;\':",.<>/?`~"':
         return "'" + chr(val) + "'"
     else:
@@ -692,7 +707,7 @@ def Disassemble(data, verbose = False):
             token['comment'] = ''
 
             for arg in token['args']:
-                token['processed_args'] += [Computer.reg_or_value_string(arg)]
+                token['processed_args'] += [reg_or_value_string(arg)]
 
             def update_label(addr, prefix, token, offset):
                 if token['start_address'] < addr:
@@ -704,17 +719,17 @@ def Disassemble(data, verbose = False):
                 elif addr not in disassembly:
                     pass
                 else:
-                    token['processed_args'][offset] = "." + disassembly[addr]['label']
+                    token['processed_args'][offset] = disassembly[addr]['label']
 
-            if token['op'] == 'jmp' and not Computer.isreg(actual_values[1]):
+            if token['op'] == 'jmp' and not isreg(actual_values[1]):
                 update_label(actual_values[1],'jmp',token, 0)
-            elif (token['op'] == 'jnz' or token['op'] == 'jz' ) and not Computer.isreg(actual_values[2]):
+            elif (token['op'] == 'jnz' or token['op'] == 'jz' ) and not isreg(actual_values[2]):
                 update_label(actual_values[2],'jmp',token, 1)
-            elif token['op'] == 'call' and not Computer.isreg(actual_values[1]):
+            elif token['op'] == 'call' and not isreg(actual_values[1]):
                 update_label(actual_values[1],'sub',token, 0)
-            elif token['op'] == 'rmem' and not Computer.isreg(actual_values[2]):
+            elif token['op'] == 'rmem' and not isreg(actual_values[2]):
                 update_label(actual_values[2],'mem',token, 1)
-            elif token['op'] == 'wmem' and not Computer.isreg(actual_values[1]):
+            elif token['op'] == 'wmem' and not isreg(actual_values[1]):
                 update_label(actual_values[1],'mem',token, 0)
             elif token['op'] == 'out' and actual_values[1] < 255:
                 if actual_values[1] == 10:

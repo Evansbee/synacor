@@ -1,8 +1,8 @@
 ''' Benchmarks a file'''
 
 import time
-from assembler import AssembleFile,PrettyFile
-from emulator import VirtualMachine
+from .assembler import AssembleFile,PrettyFile
+from .emulator import VirtualMachine
 
 import sys
 

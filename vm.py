@@ -7,11 +7,13 @@
 # In[1]:
 
 import sys
-from computer import Computer, Computer2
+from computer import Computer
 from pathlib import Path
 from array import array
 import wx
 import time
+
+from vm import AssembleFile, VirtualMachine, DisassembleFile, PrettyFile
 
 class emuWindow(wx.Frame):
     def __init__(self, *args, **kwargs):
@@ -179,13 +181,11 @@ def doui():
 if __name__ == '__main__':
 
     if len(sys.argv) == 3 and sys.argv[1] == 'disassemble':
-        input_file = Path(sys.argv[2])
-        
-        disassembly = Computer.DisassembleFile(input_file)
+        disassembly = DisassembleFile(sys.argv[2])
         last_skipped = False
 
         for _,x in disassembly.items():
-            if x['op'] == 'nop':
+            if x['op'] == 'nop' and x['label'] == '':
                 if last_skipped:
                     continue
                 else:
@@ -229,56 +229,30 @@ if __name__ == '__main__':
         print("NEW Executed {} cycles in {:.2f}s".format(c.cycles,end-start))
         print("NEW Roughly {:.1f} KHz".format((c.cycles/(end-start))/1000.0))
     elif len(sys.argv) == 3 and sys.argv[1] == 'run':
-        input_file = Path(sys.argv[2])
-        breakpoint_file = input_file.with_suffix('.bp')
         
-        c = Computer()
-        c.load_program_from_file(sys.argv[2])
-
-        breakpoints = array('H')
-
-        try:
-            with breakpoint_file.open('rb') as f:
-                try:
-                    breakpoints.fromfile(f,1000)
-                except:
-                    pass
-        except:
-            print('Failed to open:',breakpoint_file)
-
-        print('Breakpoints: ',breakpoints)
-        for next_address in c.run():
+        sys.stdout.write(" [ ] Creating Virtual Machine...")
+        sys.stdout.flush()
+        c = VirtualMachine()
+        sys.stdout.write("\r [+] Virtual Machine Created...\n")
+        sys.stdout.flush()
+        sys.stdout.write(" [ ] Assembling File...")
+        sys.stdout.flush()
+        program = AssembleFile(sys.argv[2])
+        sys.stdout.write("\r [+] File Assembled...   \n")
+        sys.stdout.flush()
+        sys.stdout.write(" [ ] Loading Binary Data...")
+        sys.stdout.flush()
+        c.LoadProgramFromData(program)
+        sys.stdout.write("\r [+] Binary Data Loaded...   \n")
+        sys.stdout.flush()
+        print(' [*] Running Program!')
+        print('*' * 80 + '\n')
+        while not c.halted:
+            c.Run()
+            print(c.Output)
+            c.Output = ''
             if c.waiting_for_input:
-                print(">",end=' ')
-                buf = input()
-                if buf == 'dump':
-                    c.Dump()
-                elif buf == 'quit':
-                    c.Dump()
-                    sys.exit()
-                elif buf == 'print':
-                    c.Print()
-                else:
-                    c.input_buffer = buf + "\n"
-            #sys.stdout.write('\r{:04X}'.format(next_address))
-            #sys.stdout.flush()
-            
-            if next_address in breakpoints:
-                print("BREAK ({:04X})".format(next_address))
-                print(">",end=' ')
-                buf = input()
-                if buf == 'dump':
-                    c.Dump()
-                elif buf == 'quit':
-                    c.Dump()
-                    sys.exit()
-                elif buf == 'print':
-                    c.Print()
-                else:
-                    pass
-            if c.output_buffer != '':
-                print(c.output_buffer,end='')
-                c.output_buffer = ''
+                c.Input = input() + '\n'
     else:
         doui()
         

@@ -1,3 +1,4 @@
+0x0000         init:  nop    
 
                      ; -- nop --
 
@@ -175,6 +176,10 @@
 
                      ; -- nop --
 
+0x015B     jmp_015B:  nop    
+
+                     ; -- nop --
+
 0x0160                jmp    jmp_0166
 0x0162                jmp    jmp_0170
 0x0164                jmp    jmp_018D
@@ -215,6 +220,7 @@
 0x01A3                out    '1'
 0x01A5                out    '\n'
 0x01A7                halt   
+0x01A8     jmp_01A8:  nop    
 
                      ; -- nop --
 
@@ -232,6 +238,7 @@
 0x01C0                out    '1'
 0x01C2                out    '\n'
 0x01C4                halt   
+0x01C5     jmp_01C5:  nop    
 
                      ; -- nop --
 
@@ -404,7 +411,7 @@
 0x039C                eq     r1 r0 'T'
 0x03A0                jz     r1 jmp_04EE
 0x03A3                wmem   mem_03A9 0x0015
-0x03A6                wmem   mem_03AA 0x0007
+0x03A6                wmem   (mem_03A9 + 1) 0x0007
 0x03A9     mem_03A9:  jmp    jmp_03AD
 0x03AB                out    0x03D2
 0x03AD     jmp_03AD:  out    'w'
@@ -682,7 +689,7 @@
 0x05ED                ret    
 0x05EE     sub_05EE:  push   r1
 0x05F0                set    r1 0x05F8
-0x05F3                call   .sub_05B2
+0x05F3                call   sub_05B2
 0x05F5                pop    r1
 0x05F7                ret    
 0x05F8                out    r0
@@ -697,7 +704,7 @@
 0x0609                push   r3
 0x060B                rmem   r3 r0
 0x060E                jz     r3 jmp_061B
-0x0611                call   .sub_05B2
+0x0611                call   sub_05B2
 0x0613                jnz    r1 jmp_061B
 0x0616                set    r0 r2
 0x0619                jmp    jmp_061E
@@ -717,7 +724,7 @@
 0x0636                push   r2
 0x0638                set    r2 r1
 0x063B                set    r1 0x0670
-0x063E                call   .sub_0607
+0x063E                call   sub_0607
 0x0640                pop    r2
 0x0642                pop    r1
 0x0644                ret    
@@ -756,7 +763,7 @@
 0x069C                jz     r2 jmp_06AA
 0x069F                set    r2 r1
 0x06A2                set    r1 0x0653
-0x06A5                call   .sub_05B2
+0x06A5                call   sub_05B2
 0x06A7                jz     r1 jmp_06AF
 0x06AA     jmp_06AA:  set    r0 0x0001
 0x06AD                jmp    jmp_06B2
@@ -858,7 +865,7 @@
 0x07BC                jz     r3 jmp_0758
 0x07BF                push   r0
 0x07C1                set    r0 0x17F1
-0x07C4                call   .sub_05EE
+0x07C4                call   sub_05EE
 0x07C6                pop    r0
 0x07C8                pop    r6
 0x07CA                pop    r5
@@ -901,7 +908,7 @@
 0x0836                pop    r0
 0x0838                out    r0
 0x083A                add    r5 r5 0x7FFF
-0x083E                jmp    .jmp_0833
+0x083E                jmp    jmp_0833
 0x0840     jmp_0840:  pop    r5
 0x0842                pop    r4
 0x0844                pop    r3
@@ -961,7 +968,7 @@
 0x08D7                mul    r0 r0 0x0002
 0x08DB                jz     r2 jmp_08CC
 0x08DE                or     r0 r0 0x0001
-0x08E2                jmp    .jmp_08CC
+0x08E2                jmp    jmp_08CC
 0x08E4     jmp_08E4:  pop    r2
 0x08E6                pop    r1
 0x08E8                ret    
@@ -1403,26 +1410,26 @@
 0x0AB9                rmem   r0 mem_0AAD
 0x0ABC                eq     r0 r0 r1
 0x0AC0                jnz    r0 jmp_0AD2
-0x0AC3                rmem   r0 .mem_0AAC
+0x0AC3                rmem   r0 mem_0AAC
 0x0AC6                add    r0 r0 0x0004
 0x0ACA                rmem   r0 r0
 0x0ACD                jz     r0 jmp_0AD2
 0x0AD0                call   r0
-0x0AD2     jmp_0AD2:  rmem   r1 .mem_0AAC
-0x0AD5                rmem   r0 .mem_0AAD
+0x0AD2     jmp_0AD2:  rmem   r1 mem_0AAC
+0x0AD5                rmem   r0 mem_0AAD
 0x0AD8                eq     r0 r0 r1
 0x0ADC                jnz    r0 jmp_0AE7
 0x0ADF                set    r0 0x6576
 0x0AE2                wmem   r0 0x0000
 0x0AE5                call   sub_0B94
-0x0AE7     jmp_0AE7:  wmem   .mem_0AAD r1
+0x0AE7     jmp_0AE7:  wmem   mem_0AAD r1
 0x0AEA                push   r0
 0x0AEC                push   r1
 0x0AEE                push   r2
 0x0AF0                set    r0 0x6B16
 0x0AF3                set    r1 0x05FB
 0x0AF6                add    r2 0x01FA 0x2072
-0x0AFA                call   .sub_05B2
+0x0AFA                call   sub_05B2
 0x0AFC                pop    r2
 0x0AFE                pop    r1
 0x0B00                pop    r0
@@ -1490,7 +1497,7 @@
 0x0BAE                jz     r1 jmp_0BBE
 0x0BB1                add    r1 r0 0x0001
 0x0BB5                rmem   r0 r1
-0x0BB8                call   .sub_05EE
+0x0BB8                call   sub_05EE
 0x0BBA                out    '\n'
 0x0BBC                jmp    jmp_0CA6
 0x0BBE     jmp_0BBE:  push   r0
@@ -1499,19 +1506,19 @@
 0x0BC4                set    r0 0x6B28
 0x0BC7                set    r1 0x05FB
 0x0BCA                add    r2 0x474D 0x12A7
-0x0BCE                call   .sub_05B2
+0x0BCE                call   sub_05B2
 0x0BD0                pop    r2
 0x0BD2                pop    r1
 0x0BD4                pop    r0
 0x0BD6                jmp    jmp_0CA6
-0x0BD8     jmp_0BD8:  rmem   r0 .mem_0AAC
+0x0BD8     jmp_0BD8:  rmem   r0 mem_0AAC
 0x0BDB                push   r0
 0x0BDD                out    '='
 0x0BDF                out    '='
 0x0BE1                out    ' '
 0x0BE3                add    r0 r0 0x0000
 0x0BE7                rmem   r0 r0
-0x0BEA                call   .sub_05EE
+0x0BEA                call   sub_05EE
 0x0BEC                out    ' '
 0x0BEE                out    '='
 0x0BF0                out    '='
@@ -1531,7 +1538,7 @@
 0x0C15                add    r0 r0 0x0001
 0x0C19                add    r0 r0 r1
 0x0C1D                rmem   r0 r0
-0x0C20     jmp_0C20:  call   .sub_05EE
+0x0C20     jmp_0C20:  call   sub_05EE
 0x0C22                out    '\n'
 0x0C24                pop    r0
 0x0C26                push   r0
@@ -1543,11 +1550,11 @@
 0x0C33                set    r0 0x6B3F
 0x0C36                set    r1 0x05FB
 0x0C39                add    r2 0x1369 0x1C82
-0x0C3D                call   .sub_05B2
+0x0C3D                call   sub_05B2
 0x0C3F                pop    r2
 0x0C41                pop    r1
 0x0C43                pop    r0
-0x0C45                rmem   r2 .mem_0AAC
+0x0C45                rmem   r2 mem_0AAC
 0x0C48                call   sub_16F4
 0x0C4A     jmp_0C4A:  pop    r0
 0x0C4C                push   r0
@@ -1586,7 +1593,7 @@
 0x0C98                add    r0 r0 0x0002
 0x0C9C                rmem   r0 r0
 0x0C9F                set    r1 0x16B6
-0x0CA2                call   .sub_05B2
+0x0CA2                call   sub_05B2
 0x0CA4                pop    r0
 0x0CA6     jmp_0CA6:  pop    r2
 0x0CA8                pop    r1
@@ -1596,20 +1603,20 @@
 0x0CAF                push   r1
 0x0CB1                push   r2
 0x0CB3                set    r1 r0
-0x0CB6                rmem   r0 .mem_0AAC
+0x0CB6                rmem   r0 mem_0AAC
 0x0CB9                add    r0 r0 0x0002
 0x0CBD                rmem   r0 r0
-0x0CC0                call   .sub_0634
+0x0CC0                call   sub_0634
 0x0CC2                eq     r2 r0 0x7FFF
 0x0CC6                jnz    r2 jmp_0CE6
-0x0CC9                rmem   r2 .mem_0AAC
+0x0CC9                rmem   r2 mem_0AAC
 0x0CCC                add    r2 r2 0x0003
 0x0CD0                rmem   r2 r2
 0x0CD3                add    r2 r2 0x0001
 0x0CD7                add    r2 r2 r0
 0x0CDB                rmem   r2 r2
-0x0CDE                wmem   .mem_0AAC r2
-0x0CE1                wmem   .mem_0AAD 0x0000
+0x0CDE                wmem   mem_0AAC r2
+0x0CE1                wmem   mem_0AAD 0x0000
 0x0CE4                jmp    jmp_0CFE
 0x0CE6     jmp_0CE6:  push   r0
 0x0CE8                push   r1
@@ -1617,7 +1624,7 @@
 0x0CEC                set    r0 0x6B5A
 0x0CEF                set    r1 0x05FB
 0x0CF2                add    r2 0x5470 0x1309
-0x0CF6                call   .sub_05B2
+0x0CF6                call   sub_05B2
 0x0CF8                pop    r2
 0x0CFA                pop    r1
 0x0CFC                pop    r0
@@ -1632,7 +1639,7 @@
 0x0D0D                set    r0 0x6B8C
 0x0D10                set    r1 0x05FB
 0x0D13                add    r2 0x24B2 0x0AC2
-0x0D17                call   .sub_05B2
+0x0D17                call   sub_05B2
 0x0D19                pop    r2
 0x0D1B                pop    r1
 0x0D1D                pop    r0
@@ -1646,7 +1653,7 @@
 0x0D2C                set    r0 0x6D85
 0x0D2F                set    r1 0x05FB
 0x0D32                add    r2 0x01BC 0x1E2A
-0x0D36                call   .sub_05B2
+0x0D36                call   sub_05B2
 0x0D38                pop    r2
 0x0D3A                pop    r1
 0x0D3C                pop    r0
@@ -1662,7 +1669,7 @@
 0x0D50                jz     r0 jmp_0D81
 0x0D53                add    r1 r0 0x0002
 0x0D57                rmem   r0 r1
-0x0D5A                rmem   r2 .mem_0AAC
+0x0D5A                rmem   r2 mem_0AAC
 0x0D5D                eq     r2 r0 r2
 0x0D61                jz     r2 jmp_0D81
 0x0D64                wmem   r1 0x0000
@@ -1672,7 +1679,7 @@
 0x0D6D                set    r0 0x6D96
 0x0D70                set    r1 0x05FB
 0x0D73                add    r2 0x0952 0x0498
-0x0D77                call   .sub_05B2
+0x0D77                call   sub_05B2
 0x0D79                pop    r2
 0x0D7B                pop    r1
 0x0D7D                pop    r0
@@ -1683,7 +1690,7 @@
 0x0D87                set    r0 0x6D9E
 0x0D8A                set    r1 0x05FB
 0x0D8D                add    r2 0x0D2E 0x0E49
-0x0D91                call   .sub_05B2
+0x0D91                call   sub_05B2
 0x0D93                pop    r2
 0x0D95                pop    r1
 0x0D97                pop    r0
@@ -1698,7 +1705,7 @@
 0x0DA9                add    r1 r0 0x0002
 0x0DAD                rmem   r0 r1
 0x0DB0                jnz    r0 jmp_0DD3
-0x0DB3                rmem   r0 .mem_0AAC
+0x0DB3                rmem   r0 mem_0AAC
 0x0DB6                wmem   r1 r0
 0x0DB9                push   r0
 0x0DBB                push   r1
@@ -1706,7 +1713,7 @@
 0x0DBF                set    r0 0x6DBA
 0x0DC2                set    r1 0x05FB
 0x0DC5                add    r2 0x0462 0x0206
-0x0DC9                call   .sub_05B2
+0x0DC9                call   sub_05B2
 0x0DCB                pop    r2
 0x0DCD                pop    r1
 0x0DCF                pop    r0
@@ -1717,7 +1724,7 @@
 0x0DD9                set    r0 0x6DC4
 0x0DDC                set    r1 0x05FB
 0x0DDF                add    r2 0x2D94 0x09E5
-0x0DE3                call   .sub_05B2
+0x0DE3                call   sub_05B2
 0x0DE5                pop    r2
 0x0DE7                pop    r1
 0x0DE9                pop    r0
@@ -1742,7 +1749,7 @@
 0x0E17                set    r0 0x6DE7
 0x0E1A                set    r1 0x05FB
 0x0E1D                add    r2 0x07FD 0x0D74
-0x0E21                call   .sub_05B2
+0x0E21                call   sub_05B2
 0x0E23                pop    r2
 0x0E25                pop    r1
 0x0E27                pop    r0
@@ -1753,7 +1760,7 @@
 0x0E31                set    r0 0x6E0A
 0x0E34                set    r1 0x05FB
 0x0E37                add    r2 0x00AA 0x03BE
-0x0E3B                call   .sub_05B2
+0x0E3B                call   sub_05B2
 0x0E3D                pop    r2
 0x0E3F                pop    r1
 0x0E41                pop    r0
@@ -1772,7 +1779,7 @@
 0x0E61                wmem   r0 0x7FFF
 0x0E64                add    r0 0x0A70 0x0002
 0x0E68                wmem   r0 0x7FFF
-0x0E6B                wmem   .mem_0AAC 0x0A58
+0x0E6B                wmem   mem_0AAC 0x0A58
 0x0E6E     jmp_0E6E:  pop    r2
 0x0E70                pop    r1
 0x0E72                pop    r0
@@ -1783,7 +1790,7 @@
 0x0E7B                set    r0 0x6E2C
 0x0E7E                set    r1 0x05FB
 0x0E81                add    r2 0x29B7 0x1D2D
-0x0E85                call   .sub_05B2
+0x0E85                call   sub_05B2
 0x0E87                pop    r2
 0x0E89                pop    r1
 0x0E8B                pop    r0
@@ -1792,10 +1799,10 @@
 0x0E8F     sub_0E8F:  push   r1
 0x0E91                rmem   r1 mem_0E8E
 0x0E94                or     r1 r1 r0
-0x0E98                wmem   .mem_0E8E r1
+0x0E98                wmem   mem_0E8E r1
 0x0E9B                pop    r1
 0x0E9D                ret    
-0x0E9E                wmem   .mem_0E8E 0x0000
+0x0E9E                wmem   mem_0E8E 0x0000
 0x0EA1                ret    
 0x0EA2                push   r0
 0x0EA4                set    r0 0x0001
@@ -1804,27 +1811,27 @@
 0x0EAB                ret    
 0x0EAC                push   r0
 0x0EAE                set    r0 0x0002
-0x0EB1                call   .sub_0E8F
+0x0EB1                call   sub_0E8F
 0x0EB3                pop    r0
 0x0EB5                ret    
 0x0EB6                push   r0
 0x0EB8                set    r0 0x0004
-0x0EBB                call   .sub_0E8F
+0x0EBB                call   sub_0E8F
 0x0EBD                pop    r0
 0x0EBF                ret    
 0x0EC0                push   r0
 0x0EC2                set    r0 0x0008
-0x0EC5                call   .sub_0E8F
+0x0EC5                call   sub_0E8F
 0x0EC7                pop    r0
 0x0EC9                ret    
 0x0ECA                push   r0
 0x0ECC                set    r0 0x0010
-0x0ECF                call   .sub_0E8F
+0x0ECF                call   sub_0E8F
 0x0ED1                pop    r0
 0x0ED3                ret    
 0x0ED4                push   r0
 0x0ED6                set    r0 0x0020
-0x0ED9                call   .sub_0E8F
+0x0ED9                call   sub_0E8F
 0x0EDB                pop    r0
 0x0EDD                ret    
 0x0EDE                push   r0
@@ -1832,18 +1839,18 @@
 0x0EE2                push   r2
 0x0EE4                push   r3
 0x0EE6                set    r0 '@'
-0x0EE9                call   .sub_0E8F
+0x0EE9                call   sub_0E8F
 0x0EEB                push   r0
 0x0EED                push   r1
 0x0EEF                push   r2
 0x0EF1                set    r0 0x6E4C
 0x0EF4                set    r1 0x05FB
 0x0EF7                add    r2 0x5426 0x13BB
-0x0EFB                call   .sub_05B2
+0x0EFB                call   sub_05B2
 0x0EFD                pop    r2
 0x0EFF                pop    r1
 0x0F01                pop    r0
-0x0F03                rmem   r0 .mem_0E8E
+0x0F03                rmem   r0 mem_0E8E
 0x0F06                set    r1 0x650A
 0x0F09                set    r2 0x7FFF
 0x0F0C                set    r3 0x6E8B
@@ -1854,11 +1861,11 @@
 0x0F17                set    r0 0x6E8F
 0x0F1A                set    r1 0x05FB
 0x0F1D                add    r2 0x4244 0x24B6
-0x0F21                call   .sub_05B2
+0x0F21                call   sub_05B2
 0x0F23                pop    r2
 0x0F25                pop    r1
 0x0F27                pop    r0
-0x0F29                wmem   .mem_0AAC 0x0971
+0x0F29                wmem   mem_0AAC 0x0971
 0x0F2C                pop    r3
 0x0F2E                pop    r2
 0x0F30                pop    r1
@@ -1876,12 +1883,12 @@
 0x0F4C                set    r0 0x6EBB
 0x0F4F                set    r1 0x05FB
 0x0F52                add    r2 0x1272 0x3EEE
-0x0F56                call   .sub_05B2
+0x0F56                call   sub_05B2
 0x0F58                pop    r2
 0x0F5A                pop    r1
 0x0F5C                pop    r0
-0x0F5E                wmem   .mem_0AAC 0x0999
-0x0F61                wmem   .mem_0AAD 0x0999
+0x0F5E                wmem   mem_0AAC 0x0999
+0x0F61                wmem   mem_0AAD 0x0999
 0x0F64     jmp_0F64:  pop    r1
 0x0F66                pop    r0
 0x0F68                ret    
@@ -2032,13 +2039,13 @@
 0x108F                add    r1 r0 0x0F69
 0x1093                rmem   r1 r1
 0x1096                set    r0 0x65A8
-0x1099                call   .sub_05EE
+0x1099                call   sub_05EE
 0x109B                set    r0 r1
-0x109E                call   .sub_05EE
+0x109E                call   sub_05EE
 0x10A0                set    r0 0x65E8
-0x10A3                call   .sub_05EE
+0x10A3                call   sub_05EE
 0x10A5                set    r0 r1
-0x10A8                call   .sub_05EE
+0x10A8                call   sub_05EE
 0x10AA                out    '.'
 0x10AC                out    '\n'
 0x10AE                out    '\n'
@@ -2054,43 +2061,43 @@
 0x10C4                jnz    r2 jmp_112E
 0x10C7                call   sub_1135
 0x10C9                push   r0
-0x10CB                rmem   r0 .mem_0F6F
+0x10CB                rmem   r0 mem_0F6F
 0x10CE                add    r1 r0 0x0F69
 0x10D2                rmem   r1 r1
 0x10D5                set    r0 0x660A
-0x10D8                call   .sub_05EE
+0x10D8                call   sub_05EE
 0x10DA                set    r0 r1
-0x10DD                call   .sub_05EE
+0x10DD                call   sub_05EE
 0x10DF                set    r0 0x663A
-0x10E2                call   .sub_05EE
+0x10E2                call   sub_05EE
 0x10E4                pop    r0
 0x10E6                set    r1 r0
 0x10E9                rmem   r0 mem_0F70
-0x10EC                rmem   r2 .mem_0F6F
+0x10EC                rmem   r2 mem_0F6F
 0x10EF                add    r2 r2 0x0F6C
 0x10F3                rmem   r2 r2
 0x10F6                call   r2
 0x10F8                jnz    r1 jmp_1127
-0x10FB                rmem   r1 .mem_0F70
-0x10FE                wmem   .mem_0F70 r0
+0x10FB                rmem   r1 mem_0F70
+0x10FE                wmem   mem_0F70 r0
 0x1101                gt     r2 r0 r1
 0x1105                jz     r2 jmp_1111
 0x1108                push   r0
 0x110A                set    r0 0x667B
-0x110D                call   .sub_05EE
+0x110D                call   sub_05EE
 0x110F                pop    r0
 0x1111     jmp_1111:  gt     r2 r1 r0
 0x1115                jz     r2 jmp_1121
 0x1118                push   r0
 0x111A                set    r0 0x669B
-0x111D                call   .sub_05EE
+0x111D                call   sub_05EE
 0x111F                pop    r0
 0x1121     jmp_1121:  out    '\n'
 0x1123                out    '\n'
 0x1125                jmp    jmp_112E
 0x1127     jmp_1127:  call   sub_1234
 0x1129                set    r0 0x66BB
-0x112C                call   .sub_05EE
+0x112C                call   sub_05EE
 0x112E     jmp_112E:  pop    r2
 0x1130                pop    r1
 0x1132                pop    r0
@@ -2105,7 +2112,7 @@
 0x1144                gt     r3 r5 0x752F
 0x1148                jnz    r3 jmp_1152
 0x114B                add    r5 r5 0x0001
-0x114F                wmem   .mem_0F71 r5
+0x114F                wmem   mem_0F71 r5
 0x1152     jmp_1152:  set    r3 r0
 0x1155                set    r4 r1
 0x1158                add    r0 r5 0x0002
@@ -2114,7 +2121,7 @@
 0x1161                or     r0 r1 r0
 0x1165                set    r1 r4
 0x1168                call   sub_08C8
-0x116A                wmem   .mem_0F72 r0
+0x116A                wmem   mem_0F72 r0
 0x116D                set    r0 0x0F73
 0x1170                add    r1 r5 0x0002
 0x1174                set    r2 r4
@@ -2137,9 +2144,9 @@
 0x11A2                ret    
 0x11A3     sub_11A3:  push   r0
 0x11A5                rmem   r0 r0
-0x11A8                call   .sub_08C8
+0x11A8                call   sub_08C8
 0x11AA                set    r1 r2
-0x11AD                call   .sub_084D
+0x11AD                call   sub_084D
 0x11AF                pop    r1
 0x11B1                wmem   r1 r0
 0x11B4                ret    
@@ -2148,26 +2155,26 @@
 0x11BB                rmem   r0 r0
 0x11BE                jnz    r0 jmp_1200
 0x11C1                set    r0 0x66D1
-0x11C4                call   .sub_05EE
-0x11C6                rmem   r0 .mem_0F70
+0x11C4                call   sub_05EE
+0x11C6                rmem   r0 mem_0F70
 0x11C9                eq     r0 r0 0x001E
 0x11CD                jnz    r0 jmp_11DE
 0x11D0                set    r0 0x66F2
-0x11D3                call   .sub_05EE
+0x11D3                call   sub_05EE
 0x11D5     jmp_11D5:  set    r0 0x671E
-0x11D8                call   .sub_05EE
+0x11D8                call   sub_05EE
 0x11DA                call   sub_1234
 0x11DC                jmp    jmp_1200
 0x11DE     jmp_11DE:  set    r0 0x6748
-0x11E1                call   .sub_05EE
-0x11E3                rmem   r0 .mem_0F72
+0x11E1                call   sub_05EE
+0x11E3                rmem   r0 mem_0F72
 0x11E6                add    r0 r0 0x0001
 0x11EA                jnz    r0 jmp_11F4
 0x11ED                set    r0 0x6774
-0x11F0                call   .sub_05EE
+0x11F0                call   sub_05EE
 0x11F2                jmp    jmp_11D5
 0x11F4     jmp_11F4:  set    r0 0x67D8
-0x11F7                call   .sub_05EE
+0x11F7                call   sub_05EE
 0x11F9                add    r0 0x0A9C 0x0002
 0x11FD                wmem   r0 0x7FFF
 0x1200     jmp_1200:  pop    r0
@@ -2177,24 +2184,24 @@
 0x1209                rmem   r0 r0
 0x120C                jnz    r0 jmp_1231
 0x120F                set    r0 0x685D
-0x1212                call   .sub_05EE
-0x1214                rmem   r0 .mem_0AAC
+0x1212                call   sub_05EE
+0x1214                rmem   r0 mem_0AAC
 0x1217                eq     r0 r0 0x0A3F
 0x121B                jnz    r0 jmp_1225
 0x121E                set    r0 0x6865
-0x1221                call   .sub_05EE
+0x1221                call   sub_05EE
 0x1223                jmp    jmp_122A
 0x1225     jmp_1225:  set    r0 0x686B
-0x1228                call   .sub_05EE
+0x1228                call   sub_05EE
 0x122A     jmp_122A:  set    r0 0x6871
-0x122D                call   .sub_05EE
+0x122D                call   sub_05EE
 0x122F                call   sub_1234
 0x1231     jmp_1231:  pop    r0
 0x1233                ret    
 0x1234     sub_1234:  push   r0
-0x1236                wmem   .mem_0F70 0x0016
-0x1239                wmem   .mem_0F71 0x0000
-0x123C                wmem   .mem_0F72 0x0000
+0x1236                wmem   mem_0F70 0x0016
+0x1239                wmem   mem_0F71 0x0000
+0x123C                wmem   mem_0F72 0x0000
 0x123F                wmem   mem_0F73 0x0000
 0x1242                wmem   mem_0F74 0x0000
 0x1245                wmem   mem_0F75 0x0000
@@ -2208,9 +2215,9 @@
 0x125B                eq     r0 r0 0x7FFF
 0x125F                jnz    r0 jmp_126D
 0x1262                set    r0 0x68C8
-0x1265                call   .sub_05EE
-0x1267                wmem   .mem_0AAC 0x0A12
-0x126A                wmem   .mem_0AAD 0x0A12
+0x1265                call   sub_05EE
+0x1267                wmem   mem_0AAC 0x0A12
+0x126A                wmem   mem_0AAD 0x0A12
 0x126D     jmp_126D:  pop    r0
 0x126F                ret    
 0x1270                push   r0
@@ -2223,7 +2230,7 @@
 0x127E                set    r0 0x6ED1
 0x1281                set    r1 0x05FB
 0x1284                add    r2 0x4A6E 0x047C
-0x1288                call   .sub_05B2
+0x1288                call   sub_05B2
 0x128A                pop    r2
 0x128C                pop    r1
 0x128E                pop    r0
@@ -2231,14 +2238,14 @@
 0x1293                set    r1 0x650A
 0x1296                set    r2 0x7FFF
 0x1299                set    r3 0x6EED
-0x129C                call   .sub_0731
+0x129C                call   sub_0731
 0x129E                push   r0
 0x12A0                push   r1
 0x12A2                push   r2
 0x12A4                set    r0 0x6EF1
 0x12A7                set    r1 0x05FB
 0x12AA                add    r2 0x282C 0x3E53
-0x12AE                call   .sub_05B2
+0x12AE                call   sub_05B2
 0x12B0                pop    r2
 0x12B2                pop    r1
 0x12B4                pop    r0
@@ -2263,7 +2270,7 @@
 0x12E6                set    r0 0x6F25
 0x12E9                set    r1 0x05FB
 0x12EC                add    r2 0x197A 0x1FEA
-0x12F0                call   .sub_05B2
+0x12F0                call   sub_05B2
 0x12F2                pop    r2
 0x12F4                pop    r1
 0x12F6                pop    r0
@@ -2274,7 +2281,7 @@
 0x1300                set    r0 0x6F5E
 0x1303                set    r1 0x05FB
 0x1306                add    r2 0x075C 0x178B
-0x130A                call   .sub_05B2
+0x130A                call   sub_05B2
 0x130C                pop    r2
 0x130E                pop    r1
 0x1310                pop    r0
@@ -2291,11 +2298,11 @@
 0x132B                set    r0 0x6F99
 0x132E                set    r1 0x05FB
 0x1331                add    r2 0x0B99 0x26D7
-0x1335                call   .sub_05B2
+0x1335                call   sub_05B2
 0x1337                pop    r2
 0x1339                pop    r1
 0x133B                pop    r0
-0x133D                wmem   .mem_0AAD 0x0000
+0x133D                wmem   mem_0AAD 0x0000
 0x1340                pop    r0
 0x1342                ret    
 0x1343                push   r0
@@ -2309,16 +2316,16 @@
 0x1359                set    r0 0x6FB3
 0x135C                set    r1 0x05FB
 0x135F                add    r2 0x0863 0x159A
-0x1363                call   .sub_05B2
+0x1363                call   sub_05B2
 0x1365                pop    r2
 0x1367                pop    r1
 0x1369                pop    r0
-0x136B                wmem   .mem_0AAD 0x0000
+0x136B                wmem   mem_0AAD 0x0000
 0x136E                pop    r0
 0x1370                ret    
 0x1371     sub_1371:  push   r2
 0x1373                push   r3
-0x1375                rmem   r2 .mem_0AAC
+0x1375                rmem   r2 mem_0AAC
 0x1378                eq     r2 r2 0x0999
 0x137C                jnz    r2 jmp_1399
 0x137F                push   r0
@@ -2327,14 +2334,14 @@
 0x1385                set    r0 0x6FCD
 0x1388                set    r1 0x05FB
 0x138B                add    r2 0x0C90 0x245C
-0x138F                call   .sub_05B2
+0x138F                call   sub_05B2
 0x1391                pop    r2
 0x1393                pop    r1
 0x1395                pop    r0
 0x1397                jmp    jmp_14D8
 0x1399     jmp_1399:  add    r2 r0 0x0002
 0x139D                wmem   r2 0x7FFF
-0x13A0                rmem   r2 .mem_099E
+0x13A0                rmem   r2 mem_099E
 0x13A3                add    r2 r2 0x69D7
 0x13A7                add    r2 r2 0x0001
 0x13AB                rmem   r2 r2
@@ -2343,7 +2350,7 @@
 0x13B5                add    r3 r3 r2
 0x13B9                add    r2 r1 '0'
 0x13BD                wmem   r3 r2
-0x13C0                rmem   r2 .mem_099E
+0x13C0                rmem   r2 mem_099E
 0x13C3                add    r2 r2 0x69DD
 0x13C7                add    r2 r2 0x0001
 0x13CB                wmem   r2 r1
@@ -2354,7 +2361,7 @@
 0x13D6                set    r0 0x6FF8
 0x13D9                set    r1 0x05FB
 0x13DC                add    r2 0x48D7 0x1410
-0x13E0                call   .sub_05B2
+0x13E0                call   sub_05B2
 0x13E2                pop    r2
 0x13E4                pop    r1
 0x13E6                pop    r0
@@ -2362,7 +2369,7 @@
 0x13EA                push   r0
 0x13EC                add    r2 r0 0x0000
 0x13F0                rmem   r0 r2
-0x13F3                call   .sub_05EE
+0x13F3                call   sub_05EE
 0x13F5                pop    r0
 0x13F7                push   r0
 0x13F9                push   r0
@@ -2371,14 +2378,14 @@
 0x13FF                set    r0 0x7007
 0x1402                set    r1 0x05FB
 0x1405                add    r2 0x19C4 0x552E
-0x1409                call   .sub_05B2
+0x1409                call   sub_05B2
 0x140B                pop    r2
 0x140D                pop    r1
 0x140F                pop    r0
 0x1411                pop    r0
-0x1413                rmem   r2 .mem_099E
+0x1413                rmem   r2 mem_099E
 0x1416                add    r2 r2 0x0001
-0x141A                wmem   .mem_099E r2
+0x141A                wmem   mem_099E r2
 0x141D                rmem   r3 mem_69DD
 0x1420                eq     r3 r2 r3
 0x1424                jz     r3 jmp_14D8
@@ -2414,17 +2421,17 @@
 0x1491                wmem   r2 0x0999
 0x1494                add    r2 0x0A90 0x0002
 0x1498                wmem   r2 0x0999
-0x149B                wmem   .mem_099E 0x0000
+0x149B                wmem   mem_099E 0x0000
 0x149E                set    r0 0x69D7
 0x14A1                set    r1 0x14DD
-0x14A4                call   .sub_05B2
+0x14A4                call   sub_05B2
 0x14A6                push   r0
 0x14A8                push   r1
 0x14AA                push   r2
 0x14AC                set    r0 0x7026
 0x14AF                set    r1 0x05FB
 0x14B2                add    r2 0x4CE1 0x1A18
-0x14B6                call   .sub_05B2
+0x14B6                call   sub_05B2
 0x14B8                pop    r2
 0x14BA                pop    r1
 0x14BC                pop    r0
@@ -2435,7 +2442,7 @@
 0x14C6                set    r0 0x7069
 0x14C9                set    r1 0x05FB
 0x14CC                add    r2 0x07F1 0x1685
-0x14D0                call   .sub_05B2
+0x14D0                call   sub_05B2
 0x14D2                pop    r2
 0x14D4                pop    r1
 0x14D6                pop    r0
@@ -2461,7 +2468,7 @@
 0x1503                push   r1
 0x1505                set    r0 0x0A84
 0x1508                set    r1 0x0003
-0x150B                call   .sub_1371
+0x150B                call   sub_1371
 0x150D                pop    r1
 0x150F                pop    r0
 0x1511                ret    
@@ -2469,7 +2476,7 @@
 0x1514                push   r1
 0x1516                set    r0 0x0A88
 0x1519                set    r1 0x0005
-0x151C                call   .sub_1371
+0x151C                call   sub_1371
 0x151E                pop    r1
 0x1520                pop    r0
 0x1522                ret    
@@ -2477,7 +2484,7 @@
 0x1525                push   r1
 0x1527                set    r0 0x0A8C
 0x152A                set    r1 0x0007
-0x152D                call   .sub_1371
+0x152D                call   sub_1371
 0x152F                pop    r1
 0x1531                pop    r0
 0x1533                ret    
@@ -2485,7 +2492,7 @@
 0x1536                push   r1
 0x1538                set    r0 0x0A90
 0x153B                set    r1 0x0009
-0x153E                call   .sub_1371
+0x153E                call   sub_1371
 0x1540                pop    r1
 0x1542                pop    r0
 0x1544                ret    
@@ -2499,7 +2506,7 @@
 0x1554                set    r0 0x70AC
 0x1557                set    r1 0x05FB
 0x155A                add    r2 0x0E74 0x217B
-0x155E                call   .sub_05B2
+0x155E                call   sub_05B2
 0x1560                pop    r2
 0x1562                pop    r1
 0x1564                pop    r0
@@ -2517,7 +2524,7 @@
 0x1580                set    r0 0x7156
 0x1583                set    r1 0x05FB
 0x1586                add    r2 0x0A8A 0x30DC
-0x158A                call   .sub_05B2
+0x158A                call   sub_05B2
 0x158C                pop    r2
 0x158E                pop    r1
 0x1590                pop    r0
@@ -2526,7 +2533,7 @@
 0x1598                set    r2 0x7FFF
 0x159B                push   r3
 0x159D                set    r3 0x7239
-0x15A0                call   .sub_0731
+0x15A0                call   sub_0731
 0x15A2                pop    r3
 0x15A4                push   r0
 0x15A6                push   r1
@@ -2534,12 +2541,12 @@
 0x15AA                set    r0 0x723D
 0x15AD                set    r1 0x05FB
 0x15B0                add    r2 0x0A75 0x4904
-0x15B4                call   .sub_05B2
+0x15B4                call   sub_05B2
 0x15B6                pop    r2
 0x15B8                pop    r1
 0x15BA                pop    r0
-0x15BC                wmem   .mem_0AAC 0x09C2
-0x15BF                wmem   .mem_0AAD 0x0000
+0x15BC                wmem   mem_0AAC 0x09C2
+0x15BF                wmem   mem_0AAD 0x0000
 0x15C2                add    r1 0x0A94 0x0002
 0x15C6                wmem   r1 0x7FFF
 0x15C9                jmp    jmp_1652
@@ -2549,7 +2556,7 @@
 0x15D1                set    r0 0x72D8
 0x15D4                set    r1 0x05FB
 0x15D7                add    r2 0x0372 0x6889
-0x15DB                call   .sub_05B2
+0x15DB                call   sub_05B2
 0x15DD                pop    r2
 0x15DF                pop    r1
 0x15E1                pop    r0
@@ -2560,7 +2567,7 @@
 0x15EB                set    r0 0x7369
 0x15EE                set    r1 0x05FB
 0x15F1                add    r2 0x1FA0 0x3949
-0x15F5                call   .sub_05B2
+0x15F5                call   sub_05B2
 0x15F7                pop    r2
 0x15F9                pop    r1
 0x15FB                pop    r0
@@ -2569,7 +2576,7 @@
 0x1604     jmp_1604:  rmem   r1 r2
 0x1607                add    r0 r0 r1
 0x160B                mul    r0 r0 0x7BAC
-0x160F                call   .sub_084D
+0x160F                call   sub_084D
 0x1611                rmem   r1 mem_69DD
 0x1614                add    r1 r1 0x69DD
 0x1618                add    r2 r2 0x0001
@@ -2579,7 +2586,7 @@
 0x1626                set    r2 0x7FFF
 0x1629                push   r3
 0x162B                set    r3 0x73DF
-0x162E                call   .sub_0731
+0x162E                call   sub_0731
 0x1630                pop    r3
 0x1632                push   r0
 0x1634                push   r1
@@ -2587,12 +2594,12 @@
 0x1638                set    r0 0x73E3
 0x163B                set    r1 0x05FB
 0x163E                add    r2 0x12BD 0x1CA4
-0x1642                call   .sub_05B2
+0x1642                call   sub_05B2
 0x1644                pop    r2
 0x1646                pop    r1
 0x1648                pop    r0
-0x164A                wmem   .mem_0AAC 0x09B8
-0x164D                wmem   .mem_0AAD 0x0000
+0x164A                wmem   mem_0AAC 0x09B8
+0x164D                wmem   mem_0AAD 0x0000
 0x1650                jmp    jmp_1652
 0x1652     jmp_1652:  pop    r2
 0x1654                pop    r1
@@ -2608,20 +2615,20 @@
 0x1667                set    r0 0x743D
 0x166A                set    r1 0x05FB
 0x166D                add    r2 0x1F64 0x1800
-0x1671                call   .sub_05B2
+0x1671                call   sub_05B2
 0x1673                pop    r2
 0x1675                pop    r1
 0x1677                pop    r0
-0x1679                rmem   r0 .mem_0F73
-0x167C                rmem   r1 .mem_0F74
-0x167F                call   .sub_084D
-0x1681                rmem   r1 .mem_0F75
-0x1684                call   .sub_084D
+0x1679                rmem   r0 mem_0F73
+0x167C                rmem   r1 mem_0F74
+0x167F                call   sub_084D
+0x1681                rmem   r1 mem_0F75
+0x1684                call   sub_084D
 0x1686                set    r1 0x653F
 0x1689                set    r2 0x0004
 0x168C                push   r3
 0x168E                set    r3 0x74F6
-0x1691                call   .sub_0731
+0x1691                call   sub_0731
 0x1693                pop    r3
 0x1695                push   r0
 0x1697                push   r1
@@ -2629,7 +2636,7 @@
 0x169B                set    r0 0x74FA
 0x169E                set    r1 0x05FB
 0x16A1                add    r2 0x3B94 0x1CD8
-0x16A5                call   .sub_05B2
+0x16A5                call   sub_05B2
 0x16A7                pop    r2
 0x16A9                pop    r1
 0x16AB                pop    r0
@@ -2640,7 +2647,7 @@
 0x16B5                ret    
 0x16B6     sub_16B6:  out    '-'
 0x16B8                out    ' '
-0x16BA                call   .sub_05EE
+0x16BA                call   sub_05EE
 0x16BC                out    '\n'
 0x16BE                ret    
 0x16BF     sub_16BF:  push   r1
@@ -2648,14 +2655,14 @@
 0x16C3                set    r0 0x6AF5
 0x16C6                set    r1 0x16D6
 0x16C9                set    r2 0x0000
-0x16CC                call   .sub_05B2
+0x16CC                call   sub_05B2
 0x16CE                set    r0 r2
 0x16D1                pop    r2
 0x16D3                pop    r1
 0x16D5                ret    
 0x16D6                push   r3
 0x16D8                push   r4
-0x16DA                rmem   r3 .mem_0AAC
+0x16DA                rmem   r3 mem_0AAC
 0x16DD                add    r4 r0 0x0002
 0x16E1                rmem   r4 r4
 0x16E4                eq     r3 r3 r4
@@ -2668,7 +2675,7 @@
 0x16F6                push   r1
 0x16F8                set    r0 0x6AF5
 0x16FB                set    r1 0x1705
-0x16FE                call   .sub_05B2
+0x16FE                call   sub_05B2
 0x1700                pop    r1
 0x1702                pop    r0
 0x1704                ret    
@@ -2687,7 +2694,7 @@
 0x1725                set    r2 r0
 0x1728                set    r0 0x6AF5
 0x172B                set    r1 0x174C
-0x172E                call   .sub_0607
+0x172E                call   sub_0607
 0x1730                eq     r1 r0 0x7FFF
 0x1734                jnz    r1 jmp_1744
 0x1737                add    r1 0x6AF5 r0
@@ -2702,7 +2709,7 @@
 0x174E                set    r1 r2
 0x1751                add    r0 r0 0x0000
 0x1755                rmem   r0 r0
-0x1758                call   .sub_0683
+0x1758                call   sub_0683
 0x175A                pop    r1
 0x175C                jz     r0 jmp_1765
 0x175F                set    r2 r1
@@ -2713,7 +2720,7 @@
 0x176A                add    r0 r0 0x0002
 0x176E                rmem   r0 r0
 0x1771                jz     r0 jmp_1783
-0x1774                rmem   r1 .mem_0AAC
+0x1774                rmem   r1 mem_0AAC
 0x1777                eq     r1 r0 r1
 0x177B                jnz    r1 jmp_1783
 0x177E                set    r0 0x0000
@@ -2728,15 +2735,15 @@
 0x1793     jmp_1793:  jnz    r1 jmp_17A0
 0x1796                add    r0 r0 0x7FFF
 0x179A                set    r1 r7
-0x179D                call   .sub_178B
+0x179D                call   sub_178B
 0x179F                ret    
 0x17A0     jmp_17A0:  push   r0
 0x17A2                add    r1 r1 0x7FFF
-0x17A6                call   .sub_178B
+0x17A6                call   sub_178B
 0x17A8                set    r1 r0
 0x17AB                pop    r0
 0x17AD                add    r0 r0 0x7FFF
-0x17B1                call   .sub_178B
+0x17B1                call   sub_178B
 0x17B3                ret    
 0x17B4     mem_17B4:  db     0x17cf
 0x17B5                db     0x44d9
