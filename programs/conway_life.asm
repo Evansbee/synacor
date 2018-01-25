@@ -1,19 +1,10 @@
-
-
-init: 	
-		call .update
-		call .print
+init: 	out 'LETS GET STARTED'
+		call update
+		call print
 		add r0 r0 1
-		out 'h'
-		out 'e'
-		out 'l'
-		out 'l'
-		out 'o'
-		out '\n'
-		jmp .init
+		out 'hello\n'
+		jmp init
 		halt
-
-
 
 update: push r0
 		push r1
@@ -25,15 +16,9 @@ update: push r0
 		push r7
 		set r0 0
 upd_loop:	
-		
-		
-		
-		
-		
 		add r0 r0 1
-		eq r1 r0 000F
-		jz r1 .upd_loop
-		
+		eq r1 r0 0x000F
+		jz r1 upd_loop
     	pop r7
 		pop r6
 		pop r5
@@ -46,11 +31,9 @@ upd_loop:
 
 		
 cls:   push r0
-		set r0 001B
+		set r0 0x001B
 		pop r0
 		ret
-		
-		
 
 print: push r0
 		push r1
@@ -60,25 +43,25 @@ print: push r0
 		push r5
 		push r6
 		push r7
-		call .cls
+		call cls
 		set r0 0
-p_ol:	add r3 r0 .row1
+p_ol:	add r3 r0 row1
 		rmem r4 r3 ;has the row in r4 
 		set r1 1
 p_il:		
 		and r5 r1 r4
 		eq r5 r5 0
-		jz r5 .p_0
-		jmp .printed
-p_0:  nop  ;out '0'		
+		jz r5 p_0
+		jmp printed
+p_0:  	nop  ;out '0'		
 printed:
 		mul r1 r1 2
-		eq r2 r1 8000
-		jz r2 .p_il
+		eq r2 r1 0x8000
+		jz r2 p_il
 
 		add r0 r0 1
-		eq r1 r0 000F
-		jz r1 .p_ol
+		eq r1 r0 0x000F
+		jz r1 p_ol
 
 p_done:	pop r7
 		pop r6

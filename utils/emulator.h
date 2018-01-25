@@ -25,8 +25,8 @@ typedef struct  {
 	uint64_t cycles;
 
 	char input_buffer[TEXT_BUFFER_SIZE];
-   uint16_t input_buffer_write_pointer;
-   char output_buffer[TEXT_BUFFER_SIZE];
+   	uint16_t input_buffer_write_pointer;
+   	char output_buffer[TEXT_BUFFER_SIZE];
 
 	int halted;
 	int program_loaded;

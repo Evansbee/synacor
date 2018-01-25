@@ -16,7 +16,7 @@ OPCODES = {
 	'jnz'  : 7,
 	'jz'   : 8,
 	'add'  : 9,
-	'mult' : 10,
+	'mul' : 10,
 	'mod'  : 11,
 	'and'  : 12,
 	'or'   : 13,
@@ -79,9 +79,9 @@ def t_LABEL(t):
 	return t
 
 def t_REGISTER(t):
-	r'r[0-7]'
+    r'r[0-7]'
     t.value = REGISTERS[t.value]
-	return t
+    return t
 
 def t_REFERENCE(t):
 	r'[a-zA-Z][a-zA-Z0-9_]{,9}(\.[a-zA-Z][a-zA-Z0-9_]{,8})?|\.[a-zA-Z][a-zA-Z0-9_]{,8}|\@f|\@b|\@r'
@@ -184,9 +184,10 @@ class Program(object):
         current_location = 0
         for line in self.lines:
             if line.placement > current_location:
-                data.extend(array('H',[21] * line.placement - current_location))
+                data.extend(array('H',[21] * (line.placement - current_location)))
                 current_location = line.placement
             data.extend(line.assemble(current_location, self.labels, self.anon_labels))
+            current_location += line.size
         return data
 
     def pretty(self, verbose = False):
@@ -276,7 +277,6 @@ class Operation(object):
     def assemble(self, current_location, labels = {}, anon_labels = []):
         data = array('H')
         if self.op == 'db':
-            print(self.args)
             for a in self.args:
                 data.extend(a.assemble(current_location,labels,anon_labels))
         elif self.op != 'out':
@@ -299,16 +299,15 @@ class Operation(object):
         return ret	
 
 class Register(object):
-    def __init__(self, id):
-        self.name = id
+    def __init__(self, r_value):
+        self.reg = r_value
         self.size = 1
-        
-
+    
     def assemble(self, current_location, labels = {}, anon_labels = []):
-        return array('H',[id])
+        return array('H',[self.reg])
 
     def pretty(self):
-        return REV_REGISTERS[self.id]	
+        return REV_REGISTERS[self.reg]	
 
 class Expression(object):
     def __init__(self, arg_a, op, arg_b):
@@ -471,7 +470,7 @@ def p_operation(p):
 	          | JNZ args
 	          | JZ args
 	          | ADD args
-	          | MULT args
+	          | MUL args
 	          | MOD args
 	          | AND args
 	          | OR args
@@ -576,7 +575,7 @@ def parse(text):
 def parse_file(filename):
     text = ""
     with open(filename) as f:
-        text = fp.read()
+        text = f.read()
     return parse(text)
 
 def Pretty(text, verbose = False):
@@ -667,6 +666,7 @@ def Disassemble(data, verbose = False):
     disassembly = OrderedDict()
     file_size = len(data)
     addr = 0
+    lines = []
     labels = {0:'init'}
     while addr < file_size:
         token = dict()
@@ -724,7 +724,7 @@ def Disassemble(data, verbose = False):
 
 
             #check valid
-            if Computer.valid_instruction(actual_values):
+            if valid_instruction(actual_values):
                 disassembly[token['start_address']] = token
             else:
                 print("DROPPING",token)

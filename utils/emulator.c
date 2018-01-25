@@ -108,8 +108,7 @@ void load(virtual_machine* vm, uint16_t* program, uint32_t length)
 
 void run_n(virtual_machine* vm, uint32_t n)
 {
-   printf("Running %d times\n",n);
-   for(int i = 0; i < n; ++i)
+   for(int i = 0; i < n && !vm->halted; ++i)
    {
       do_instruction(vm);
       if(vm->waiting_for_input || vm->halted || vm->output_buffer_full)
@@ -131,12 +130,11 @@ void run_n(virtual_machine* vm, uint32_t n)
 
 void run(virtual_machine* vm)
 {
-      while(true)
+      while(!vm->halted)
       {
             do_instruction(vm);
             if(vm->waiting_for_input || vm->halted || vm->output_buffer_full)
             {
-                  
                   return;
             }
             vm->at_breakpoint = false;
@@ -221,8 +219,8 @@ void do_instruction(virtual_machine *vm)
       
 	if(opcode > 21)
 	{
-         printf("Invalid opcode: %d\n",opcode);
-      vm->halted = true;
+            printf("Invalid opcode: %d at pc = %d\n",opcode,vm->pc-1);
+            vm->halted = true;
 		return;
 	}
 
@@ -315,7 +313,6 @@ void do_instruction(virtual_machine *vm)
 			vm->pc = vm->stack[vm->stack_write_pointer];
                   return;
             case 19:
-                  
                   len = strlen(vm->output_buffer);
                   if(len < TEXT_BUFFER_SIZE - 1)
                   {
