@@ -7,6 +7,8 @@ from .assembler import (
     DisassembleFile,
     Pretty,
     PrettyFile,
+    Parse,
+    ParseFile
 )
 
 from .emulator import (

@@ -7,13 +7,13 @@
 # In[1]:
 
 import sys
-from computer import Computer
+
 from pathlib import Path
 from array import array
 import wx
 import time
 
-from vm import AssembleFile, VirtualMachine, DisassembleFile, PrettyFile
+from vm import AssembleFile, VirtualMachine, DisassembleFile, PrettyFile, ParseFile, Benchmark
 
 class emuWindow(wx.Frame):
     def __init__(self, *args, **kwargs):
@@ -203,31 +203,15 @@ if __name__ == '__main__':
     elif len(sys.argv) == 4 and sys.argv[1] == 'assemble':
         input_file = Path(sys.argv[2])
         output_file = Path(sys.argv[3])
-        breakpoint_file = output_file.with_suffix('.bp')
 
-        bindata, breakpoints = Computer.AssembleFile(input_file) 
+
+        bindata = AssembleFile(input_file) 
         with output_file.open('wb') as f:
             bindata.tofile(f)
 
-        with breakpoint_file.open('wb') as f:
-            breakpoints.tofile(f)
-
     elif len(sys.argv) == 2 and sys.argv[1] == 'benchmark':
-        c = Computer()
-        c.load_program_from_file('programs/conway_life.bin')
-        start = time.time()
-        c.run_n_times(1000000)
-        end = time.time()
-        print("OLD Executed {} cycles in {:.2f}s".format(c.cycles,end-start))
-        print("OLD Roughly {:.1f} KHz".format((c.cycles/(end-start))/1000.0))
-    
-        c = Computer2()
-        c.load_program_from_file('programs/conway_life.bin')
-        start = time.time()
-        c.run_n(1000000)
-        end = time.time()
-        print("NEW Executed {} cycles in {:.2f}s".format(c.cycles,end-start))
-        print("NEW Roughly {:.1f} KHz".format((c.cycles/(end-start))/1000.0))
+        Benchmark('programs/conway_life.asm', 10.0, 1000000)
+
     elif len(sys.argv) == 3 and sys.argv[1] == 'run':
         
         sys.stdout.write(" [ ] Creating Virtual Machine...")
