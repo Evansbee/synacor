@@ -66,13 +66,12 @@ class VirtualMachine(object):
         dll.run(byref(self.emu))
         self.Output += self.emu.output_buffer.decode('UTF-8')
         self.emu.output_buffer = ''.encode('UTF-8')
-
         if self.emu.waiting_for_input or self.emu.halted or self.emu.at_breakpoint:
             return
 
         
 
-    def Run_N(self, times, supress_output = False):
+    def RunNTimes(self, times, supress_output = False):
         start_cycles = self.cycles
         while self.cycles < start_cycles + times:
             dll.run_n(byref(self.emu), start_cycles + times - self.cycles)
@@ -91,7 +90,7 @@ class VirtualMachine(object):
 
     def __setattr__(self, name, value):
         if name == 'Input':
-            print("appending input buffer")
+            #print("appending input buffer")
             current = self.emu.input_buffer.decode('UTF-8')
             current += value
             self.emu.input_buffer = current[:2047].encode('UTF-8')

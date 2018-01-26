@@ -113,7 +113,6 @@ void run_n(virtual_machine* vm, uint32_t n)
       do_instruction(vm);
       if(vm->waiting_for_input || vm->halted || vm->output_buffer_full)
       {
-            printf("%d %d %d",vm->waiting_for_input, vm->halted, vm->output_buffer_full);
             return;
       }
       vm->at_breakpoint = false;

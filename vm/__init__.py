@@ -18,3 +18,7 @@ from .emulator import (
 from .benchmark import (
     Benchmark
 )
+
+from .views import (
+    SynacorWorkspace
+)
