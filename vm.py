@@ -18,7 +18,7 @@ from vm import AssembleFile, VirtualMachine, DisassembleFile, PrettyFile, ParseF
 class emuWindow(wx.Frame):
     def __init__(self, *args, **kwargs):
         super(emuWindow,self).__init__(*args,**kwargs)
-        self.computer = Computer()
+        self.computer = VirtualMachine()
         self.setupMenuBar()
         self.setupButtonPanel()
         self.setupOutputPanel()
