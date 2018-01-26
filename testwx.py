@@ -31,3 +31,12 @@ if __name__ == '__main__':
     ex = wx.App()
     Emulator(None)
     ex.MainLoop()
+
+
+
+
+
+
+
+
+    
