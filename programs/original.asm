@@ -1338,7 +1338,7 @@
 0x0A6B                db     0x0e75
 0x0A6C                db     0x468e
 0x0A6D                db     0x4695
-0x0A6E                db     0x090d
+0x0A6E                db     0x090d ;tablet
 0x0A6F                db     0x1270
 0x0A70                db     0x471e
 0x0A71                db     0x472c
@@ -1378,7 +1378,7 @@
 0x0A93                db     0x1534
 0x0A94                db     0x4a55
 0x0A95                db     0x4a60
-0x0A96                db     0x099f
+0x0A96                db     0x099f   ;teleporter
 0x0A97                db     0x1545
 0x0A98                db     0x4aa9
 0x0A99                db     0x4ab7

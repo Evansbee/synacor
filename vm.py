@@ -12,6 +12,7 @@ from pathlib import Path
 from array import array
 
 import time
+import wx
 
 from vm import AssembleFile, VirtualMachine, DisassembleFile, PrettyFile, ParseFile, Benchmark, SynacorWorkspace
 

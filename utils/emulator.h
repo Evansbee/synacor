@@ -16,7 +16,7 @@ typedef struct  {
 	uint16_t pc;
 	uint16_t registers[8];
 	uint16_t memory[MEMORY_SIZE];
-
+	uint16_t stored_memory[MEMORY_SIZE];
 	uint16_t breakpoints[NUM_BREAKPOINTS];
 	uint16_t breakpoint_write_pointer;
 	uint16_t stack[STACK_SIZE];

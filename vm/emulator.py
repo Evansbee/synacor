@@ -11,6 +11,7 @@ class cEmulator(Structure):
         ('pc', c_ushort),
         ('registers', c_ushort * 8),
         ('memory', c_ushort * 0x7FFF),
+        ('stored_memory', c_ushort * 0x7FFF),
         ('breakpoints', c_ushort * 64),
         ('breakpoint_write_pointer',c_ushort),
         ('stack', c_ushort * 1000),
@@ -71,7 +72,8 @@ class VirtualMachine(object):
         if self.emu.waiting_for_input or self.emu.halted or self.emu.at_breakpoint:
             return
 
-        
+    def ClearMemoryHistory(self):
+        dll.clear_memory_history(byref(self.emu))
 
     def RunNTimes(self, times, supress_output = False):
         start_cycles = self.cycles
