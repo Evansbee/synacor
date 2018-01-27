@@ -34,13 +34,16 @@ typedef struct  {
 	int output_buffer_full;
 	int stack_overflow;
 	int at_breakpoint;
-
+	
+	uint32_t memory_read_history[MEMORY_SIZE];
+	uint32_t memory_write_history[MEMORY_SIZE];
 } virtual_machine;
 
 void reset(virtual_machine* vm);
 void load(virtual_machine* vm, uint16_t* program, uint32_t length);
 void run_n(virtual_machine* vm, uint32_t n);
 void run(virtual_machine* vm);
+void clear_memory_history(virtual_machine* vm);
 //void add_breakpoint(virtual_machine *vm, uint16_t breakpoint);
 //void remove_breakpoint(virtual_machine *vm, uint16_t breakpoint);
 //void clear_breakpoints(virtual_machine *vm);

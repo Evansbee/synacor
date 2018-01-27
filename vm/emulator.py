@@ -25,6 +25,8 @@ class cEmulator(Structure):
         ('output_buffer_full', c_int),
         ('stack_overflow', c_int),
         ('at_breakpoint', c_int),
+        ('memory_read_history', c_ulong * 0x7FFF),
+        ('memory_write_history', c_ulong * 0x7FFF),
     ]
 
 FIELDS = set(x[0] for x in cEmulator._fields_)

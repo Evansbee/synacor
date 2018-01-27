@@ -50,6 +50,8 @@ void reset(virtual_machine* vm)
       vm->registers[i] = 0;
    }
 
+   clear_memory_history(vm);
+
    vm->halted = false;
    vm->at_breakpoint = false;
    vm->waiting_for_input = false;
@@ -294,9 +296,11 @@ void do_instruction(virtual_machine *vm)
                   return;
             case 15: //rmem
                   vm->registers[reg_number(args[0])] = vm->memory[get_value(vm, args[1])];
+                  vm->memory_read_history[get_value(vm, args[1])]++;
                   return;
             case 16:
                   vm->memory[get_value(vm, args[0])] = get_value(vm, args[1]);
+                  vm->memory_write_history[get_value(vm, args[0])]++;
                   return;
             case 17:
                   push_value_to_stack(vm, vm->pc);
@@ -351,4 +355,13 @@ void do_instruction(virtual_machine *vm)
             case 21:
                   return;
 	}
+}
+
+void clear_memory_history(virtual_machine* vm)
+{
+      for(int i=0; i < MEMORY_SIZE; ++i)
+      {
+            vm->memory_read_history[i] = 0;
+            vm->memory_write_history[i] = 0;
+      }
 }
