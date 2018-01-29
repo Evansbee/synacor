@@ -751,6 +751,9 @@
 0x067C                set    r2 r1
 0x067F                set    r1 0x7FFF
 0x0682     jmp_0682:  ret    
+
+;magical decoder ring
+
 0x0683     sub_0683:  push   r1
 0x0685                push   r2
 0x0687                push   r3
@@ -800,7 +803,7 @@
 0x06EF                push   r5
 0x06F1                add    r2 r1 r0             ; set r2 to last writable location
 0x06F5                set    r0 r1                ; r0 = write pointer
-0x06F8                set    r5 0x0000            ; r5 = is the size.
+0x06F8                set    r5 0x0000            ; r5 = is the size
 0x06FB     @@:        add    r0 r0 0x0001
 0x06FF                gt     r3 r0 r2
 0x0703                jnz    r3 @f

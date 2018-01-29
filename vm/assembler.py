@@ -71,14 +71,16 @@ t_RPAREN = r'\)'
 t_COMMENT = r';.*'
 
 def t_LABEL(t):
-	r'[a-zA-Z][a-zA-Z0-9_]{,9}:|\.[a-zA-Z][a-zA-Z0-9_]{,8}:|\@\@:'
-	t.lexer.placement = False
-	if t.value[0] != '.':
-		t.lexer.label_prefix = t.value[:-1]
-		t.value = t.value[:-1]
-	else:
-		t.value = t.lexer.label_prefix + t.value[:-1]
-	return t
+    r'[a-zA-Z][a-zA-Z0-9_]{,9}:|\.[a-zA-Z][a-zA-Z0-9_]{,8}:|\@\@:'
+    t.lexer.placement = False
+    if t.value[0] != '.' and t.value != '@@:': #don't change prefix for anon
+        t.lexer.label_prefix = t.value[:-1]
+        t.value = t.value[:-1]
+    elif t.value[0] != '.':
+        t.value = t.value[:-1]
+    else:
+        t.value = t.lexer.label_prefix + t.value[:-1]
+    return t
 
 def t_REGISTER(t):
     r'r[0-7]'
