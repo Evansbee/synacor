@@ -42,6 +42,12 @@ class VirtualMachine(object):
     def Reset(self):
         dll.reset(byref(self.emu))
 
+    def AddBreakpoint(self, val):
+        dll.add_breakpoint(byref(self.emu),val)
+
+        
+    def RemoveBreakpoint(self, val):
+        dll.remove_breakpoint(byref(self.emu),val)
 
     def LoadProgramFromData(self, bindata):
         program_len = len(bindata)

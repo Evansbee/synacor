@@ -221,6 +221,14 @@ class Line(object):
             return self.operation.assemble(current_location,labels,anon_labels)
         else:
             return array('H')
+    def __str__(self):
+        out = "line:{} -> {}".format(self.line_number,self.pretty())
+        return out
+    
+    def __repr__(self):
+        out = "line:{} -> {}".format(self.line_number,self.pretty())  
+        return out
+
 
     def pretty(self):
         placement = ""
@@ -595,19 +603,19 @@ def ParseFile(filename):
 
 def Pretty(text, verbose = False):
     prog = Parse(text)
-    return prog.pretty(verbose)
+    return (prog.pretty(verbose), prog)
 
 def PrettyFile(filename, verbose = False):
     prog = ParseFile(filename)
-    return prog.pretty(verbose)
+    return (prog.pretty(verbose), prog)
 
 def Assemble(text):
     prog = Parse(text)
-    return prog.assemble()
+    return (prog.assemble(), prog)
 
 def AssembleFile(filename):
     prog = ParseFile(filename)
-    return prog.assemble()
+    return (prog.assemble(), prog)
 
 
 

@@ -2,6 +2,8 @@
 
 import wx
 import wx.grid as gridlib
+import wx.stc as stc
+from wx.stc import StyledTextCtrl
 from .assembler import Assemble, Disassemble, Pretty, Parse
 from .emulator import VirtualMachine
 import string
@@ -47,6 +49,16 @@ class RegisterData(gridlib.GridTableBase):
 
     def GetRowLabelValue(self, row):
         return 'Registers'
+
+class RegisterView(gridlib.Grid):
+    def __init__(self, parent,  vm):
+        gridlib.Grid.__init__(self, parent)
+        self.vm = vm
+        self.SetTable(RegisterData(self.vm),True)
+        for i in range(9):
+
+            self.SetColSize(i,60)
+
 
 
 class MemoryData(gridlib.GridTableBase):
@@ -106,14 +118,83 @@ class MemoryData(gridlib.GridTableBase):
         return attr
 
 
+class MemoryView(gridlib.Grid):
+    def __init__(self, parent,  vm):
+        gridlib.Grid.__init__(self, parent)
+        self.vm = vm
+        self.SetTable(MemoryData(self.vm),True)
+        for i in range(16):
+            self.SetColSize(i,60)
+
+class Editor(StyledTextCtrl):
+    def __init__(self, parent, ID, vm):
+        self.breakpoint_lines = []
+        StyledTextCtrl.__init__(self,parent, ID)
+        self.SetKeyWords(0, "nop set halt add eq mod push pop jnz gt jz jmp call in out")
+        
+        faces = { 'times': 'Times New Roman',
+              'mono' : 'Consolas',
+              'helv' : 'Arial',
+              'other': 'Comic Sans MS',
+              'size' : 12,
+              'size2': 10,
+             }
+        self.StyleSetSpec(stc.STC_STYLE_DEFAULT,     "face:%(mono)s,size:%(size)d" % faces)
+        self.StyleClearAll()  # Reset all to be like the default
+    
+        self.SetMarginType(0, stc.STC_MARGIN_NUMBER)
+        self.SetMarginWidth(0, 40)
+        self.StyleSetSpec(stc.STC_STYLE_LINENUMBER, "size:%d,face:%s" % (10, 'mono'))
+
+
+        self.SetMarginType(1, stc.STC_MARGIN_SYMBOL)
+        self.MarkerDefine(0, stc.STC_MARK_ROUNDRECT, "#CCFF00", "RED")
+
+        self.SetMarginSensitive(1, True)
+
+        self.Bind(stc.EVT_STC_MARGINCLICK, self.onSetRemoveBreakpoint)
+    
+    
+    def GetLineFromPosition(self, pos):
+        for i in range(self.GetLineCount()):
+            line_end = self.GetLineEndPosition(i)
+            if pos <= line_end:
+                return i
+
+    
+    def onSetRemoveBreakpoint(self, e):
+        line = self.GetLineFromPosition(e.GetPosition())
+        if line in self.breakpoint_lines:
+            self.GetParent().RemBreakpointAtLine(line)
+            self.MarkerDelete(line,1)
+            self.breakpoint_lines.remove(line)
+        else:
+            self.GetParent().AddBreakpointAtLine(line)
+            self.MarkerAdd(line,1)
+            self.breakpoint_lines.append(line)
+
+    def HighlightLine(self,line):
+        end = self.GetLineEndPosition(line)
+        if line > 0:
+            start = self.GetLineEndPosition(line - 1)
+        else:
+            start = 0
+        self.SetSelection(start, end)
+
+
 class SynacorWorkspace(wx.Frame):
     def __init__(self, *args, **kwargs):
         super(SynacorWorkspace,self).__init__(*args,**kwargs)
         
+
         self.vm = VirtualMachine()
         self.current_program_status = 'Not Loaded'
         self.loaded_filename = None
-        self.editor = wx.TextCtrl(self, -1, "", style = wx.TE_MULTILINE | wx.TE_RICH2)
+        self.editor = Editor(self, -1, self.vm)
+
+
+        self.mem_to_line = {}
+        self.line_to_mem = {}
 
         self.output =  wx.TextCtrl(self, -1, "", style = wx.TE_MULTILINE | wx.TE_READONLY| wx.TE_RICH2)
         self.output.SetBackgroundColour( (0,0,0) )
@@ -124,21 +205,9 @@ class SynacorWorkspace(wx.Frame):
         self.Bind(wx.EVT_TEXT_ENTER, self.OnInput, self.input)
         self.setupTimers()
 
-        self.register_map = gridlib.Grid(self)
-        self.register_map.SetTable(RegisterData(self.vm),True)
-
-        self.memory_map = gridlib.Grid(self)
-        self.memory_map.SetTable(MemoryData(self.vm),True)
+        self.register_map = RegisterView(self, self.vm)
+        self.memory_map = MemoryView(self, self.vm)
         
-        #for i in range(0x7ffff//16 + 1):
-        #    self.memory_map.SetRowLabelValue(i, '{:04X}'.format(i * 16))
-
-        for i in range(9):
-            self.register_map.SetColSize(i,50)
-
-        for i in range(16):
-            self.memory_map.SetColSize(i,60)
-         #   self.memory_map.SetColLabelValue(i,'{:X}'.format(i))
 
         
         rightPane = wx.BoxSizer(wx.VERTICAL)
@@ -160,11 +229,59 @@ class SynacorWorkspace(wx.Frame):
 
         self.SetSizer(layout)
         self.SetAutoLayout(True)
+        self.setupToolbar()
         self.setupMenuBar()
         self.setupTimers()
+        self.setupStatusBar()
         self.Show()
 
     
+    def setupStatusBar(self):
+        self.status_bar = wx.StatusBar(self, -1)
+        self.status_bar.SetFieldsCount(2)
+        self.status_bar.SetStatusText("Not Running", 0)
+        self.status_bar.SetStatusText("0 Cycles", 1)
+        self.SetStatusBar(self.status_bar)
+
+
+    def setupToolbar(self):
+        tsize = (24,24)
+
+        open_bmp = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR, tsize)
+        compile_bmp = wx.ArtProvider.GetBitmap(wx.ART_LIST_VIEW, wx.ART_TOOLBAR, tsize)
+        run_bmp = wx.ArtProvider.GetBitmap(wx.ART_GO_FORWARD, wx.ART_TOOLBAR, tsize)
+        step_bmp = wx.ArtProvider.GetBitmap(wx.ART_GOTO_LAST, wx.ART_TOOLBAR, tsize)
+
+
+        tb = self.CreateToolBar()
+        opentool = tb.AddTool(wx.ID_ANY, 'Open', open_bmp)
+        compiletool  = tb.AddTool(wx.ID_ANY, 'Compile', compile_bmp)
+        runtool  = tb.AddTool(wx.ID_ANY, 'Run', run_bmp)
+        steptool  = tb.AddTool(wx.ID_ANY, 'Step', step_bmp)
+
+        tb.Realize()
+        self.Bind(wx.EVT_TOOL, self.onLoad, opentool)
+        self.Bind(wx.EVT_TOOL, self.onAssemble, compiletool)
+        self.Bind(wx.EVT_TOOL, self.OnRunTool, runtool)
+        self.Bind(wx.EVT_TOOL, self.onStep, steptool)
+    
+
+    def OnRunTool(self, e):
+        self.editor.SetReadOnly(True)
+        self.startProgramRun()
+
+    def onAssemble(self, e):
+        data, prog = Assemble(self.editor.GetValue())
+        for line in prog.lines:
+           #the line numbers coming in from the assembler are all fucked up, they're 1 based, the control is 0 based.
+            if line.line_number > 0 and line.placement:
+                self.line_to_mem[line.line_number-1] = line.placement
+                self.mem_to_line[line.placement] = line.line_number-1
+        self.vm.LoadProgramFromData(data)
+
+    def onStep(self,e):
+        self.Step()
+
     def setupMenuBar(self):
         menuBar = wx.MenuBar()
         fileMenu = wx.Menu()
@@ -196,7 +313,7 @@ class SynacorWorkspace(wx.Frame):
         menuBar.Append(breakMenu,'Breakpoints')
 
         self.SetMenuBar(menuBar)
-        self.Bind(wx.EVT_MENU, self.onRun, self.runButton)
+        #self.Bind(wx.EVT_MENU, self.onRun, self.runButton)
         self.Bind(wx.EVT_MENU, self.onQuit, quitButton)
         self.Bind(wx.EVT_MENU, self.onLoad, openButton)
         #self.Bind(gridlib.EVT_GRID_CELL_CHANGED, self.onCellChange)
@@ -219,11 +336,6 @@ class SynacorWorkspace(wx.Frame):
             except:
                 print('Error')
 
-    def onRun(self, e):
-        data = Assemble(self.editor.GetValue())
-        self.vm.LoadProgramFromData(data)
-        #TODO FIND A WAY TO POP A DIALOG FOR THIS.
-        self.startProgramRun()
 
     def onQuit(self, e):
         self.Close()
@@ -247,20 +359,47 @@ class SynacorWorkspace(wx.Frame):
     def onClearMemoryHistory(self, e):
         self.vm.ClearMemoryHistory()
 
+    def updateUIElements(self):
+        if not self.editor.GetLineVisible(self.mem_to_line[self.vm.pc]):
+            self.editor.ScrollToLine(self.mem_to_line[self.vm.pc])
+        self.editor.HighlightLine(self.mem_to_line[self.vm.pc])
+        self.memory_map.ForceRefresh()
+        self.register_map.ForceRefresh()
+        if self.vm.halted:
+            self.status_bar.SetStatusText("Halted", 0)
+        if self.vm.at_breakpoint:
+            self.status_bar.SetStatusText("Breakpoint", 0)
+        if self.vm.waiting_for_input:
+            self.status_bar.SetStatusText("Waiting for input", 0)
+
+        self.status_bar.SetStatusText("{} Cycles".format(self.vm.cycles, 1))
+
+    def Step(self):
+        self.vm.RunNTimes(1)
+        self.output.AppendText(self.vm.Output) 
+        self.vm.Output = ""  
+        self.updateUIElements()
+        if self.vm.waiting_for_input:
+            self.input.SetFocus()
+
+    def AddBreakpointAtLine(self, line):
+        print("adding breakpoint to line")
+        self.vm.AddBreakpoint(self.line_to_mem[line])
+    
+    def RemBreakpointAtLine(self, line):
+        self.vm.RemoveBreakpoint(self.line_to_mem[line])
+
     def runTick(self,e):
         self.vm.RunNTimes(100000)
         self.output.AppendText(self.vm.Output) 
         self.vm.Output = ""  
         if self.vm.halted:
-            self.memory_map.ForceRefresh()
-            self.register_map.ForceRefresh()
+            self.updateUIElements()
             self.runTimer.Stop()
         if self.vm.at_breakpoint:
-            self.memory_map.ForceRefresh()
-            self.register_map.ForceRefresh()
+            self.updateUIElements()
             self.runTimer.Stop()
         if self.vm.waiting_for_input:
-            self.memory_map.ForceRefresh()
-            self.register_map.ForceRefresh()
+            self.updateUIElements()
             self.runTimer.Stop()
             self.input.SetFocus()
