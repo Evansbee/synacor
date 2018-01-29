@@ -798,9 +798,9 @@
 0x06EB                push   r3
 0x06ED                push   r4
 0x06EF                push   r5
-0x06F1                add    r2 r1 r0
-0x06F5                set    r0 r1
-0x06F8                set    r5 0x0000
+0x06F1                add    r2 r1 r0             ; set r2 to last writable location
+0x06F5                set    r0 r1                ; r0 = write pointer
+0x06F8                set    r5 0x0000            ; r5 = is the size.
 0x06FB     @@:        add    r0 r0 0x0001
 0x06FF                gt     r3 r0 r2
 0x0703                jnz    r3 @f
@@ -811,7 +811,7 @@
 0x0712                add    r5 r5 0x0001
 0x0716                jmp    @b
 0x0718     @@:        wmem   r1 r5
-0x071B     @@:        eq     r3 r4 '\n'
+0x071B     @@:        eq     r3 r4 '\n'    ;eat off everything above the max number of characters
 0x071F                jnz    r3 @f
 0x0722                in     r4
 0x0724                jmp    @b
