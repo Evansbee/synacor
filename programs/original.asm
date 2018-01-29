@@ -2508,7 +2508,7 @@
 0x1545                push   r0
 0x1547                push   r1
 0x1549                push   r2
-0x154B                jz     r7 jmp_15E5
+0x154B                jz     r7 tele_0    ;now go figure out how to make the teleporter work...
 0x154E                push   r0
 0x1550                push   r1
 0x1552                push   r2
@@ -2570,7 +2570,7 @@
 0x15DF                pop    r1
 0x15E1                pop    r0
 0x15E3                jmp    jmp_1652
-0x15E5     jmp_15E5:  push   r0
+0x15E5     tele_0:    push   r0
 0x15E7                push   r1
 0x15E9                push   r2
 0x15EB                set    r0 0x7369

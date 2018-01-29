@@ -352,7 +352,7 @@ class SynacorWorkspace(wx.Frame):
 
 
     def OnInput(self, e):
-        self.vm.Input = self.input.GetValue() + '\n'
+        self.vm.Input = self.input.GetValue().replace('\\n','\n') + '\n'
         self.output.AppendText(self.input.GetValue() + '\n') 
         self.input.SetValue('')
         if self.vm.waiting_for_input:
