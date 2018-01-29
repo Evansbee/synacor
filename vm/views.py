@@ -78,15 +78,21 @@ class MemoryData(gridlib.GridTableBase):
         return 0x7FFF//16
 
     def GetNumberCols(self):
-        return 16
+        return 17
 
     def IsEmptyCell(self, row, col):
         return False
 
+    def CanSetValueAs(self, row, col, name):
+        return col != 16
+
     def GetValue(self, row, col):
-        if chr(self.vm.memory[row*16 + col]) in string.printable:
-            return "{:04X} ('{}')".format(self.vm.memory[row*16 + col],chr(self.vm.memory[row*16 + col]))
-        return "{:04X}".format(self.vm.memory[row*16 + col])
+        if col < 16:
+            return "{:04X}".format(self.vm.memory[row*16 + col])
+        else:
+            return "".join([chr(x) if chr(x) in string.printable else ' ' for x in self.vm.memory[row*16:row*16+17]])
+
+
 
     def SetValue(self, row, col, value):
         try:
@@ -95,7 +101,10 @@ class MemoryData(gridlib.GridTableBase):
             print("Error Setting Value")
 
     def GetColLabelValue(self, col):
-        return '{:X}'.format(col)
+        if col < 16:
+            return '{:X}'.format(col)
+        else:
+            return 'string'
 
     def GetRowLabelValue(self, row):
         return '{:04X}'.format(row*16)
@@ -123,8 +132,10 @@ class MemoryView(gridlib.Grid):
         gridlib.Grid.__init__(self, parent)
         self.vm = vm
         self.SetTable(MemoryData(self.vm),True)
+        self.SetGridLineColour(wx.WHITE)
         for i in range(16):
-            self.SetColSize(i,60)
+            self.SetColSize(i,35)
+        self.SetColSize(16,80)
 
 class Editor(StyledTextCtrl):
     def __init__(self, parent, ID, vm):
@@ -143,11 +154,12 @@ class Editor(StyledTextCtrl):
         self.StyleClearAll()  # Reset all to be like the default
     
         self.SetMarginType(0, stc.STC_MARGIN_NUMBER)
-        self.SetMarginWidth(0, 40)
+        self.SetMarginWidth(0, 50)
         self.StyleSetSpec(stc.STC_STYLE_LINENUMBER, "size:%d,face:%s" % (10, 'mono'))
 
 
         self.SetMarginType(1, stc.STC_MARGIN_SYMBOL)
+        self.SetMarginWidth(1,70)
         self.MarkerDefine(0, stc.STC_MARK_ROUNDRECT, "#CCFF00", "RED")
 
         self.SetMarginSensitive(1, True)
@@ -166,11 +178,11 @@ class Editor(StyledTextCtrl):
         line = self.GetLineFromPosition(e.GetPosition())
         if line in self.breakpoint_lines:
             self.GetParent().RemBreakpointAtLine(line)
-            self.MarkerDelete(line,1)
+            self.MarkerDelete(line,0)
             self.breakpoint_lines.remove(line)
         else:
             self.GetParent().AddBreakpointAtLine(line)
-            self.MarkerAdd(line,1)
+            self.MarkerAdd(line,0)
             self.breakpoint_lines.append(line)
 
     def HighlightLine(self,line):
@@ -364,13 +376,13 @@ class SynacorWorkspace(wx.Frame):
         self.memory_map.ForceRefresh()
         self.register_map.ForceRefresh()
         if self.vm.halted:
-            self.status_bar.SetStatusText("Halted", 0)
+            self.status_bar.SetStatusText("Halted", 1)
         if self.vm.at_breakpoint:
-            self.status_bar.SetStatusText("Breakpoint", 0)
+            self.status_bar.SetStatusText("Breakpoint", 1)
         if self.vm.waiting_for_input:
-            self.status_bar.SetStatusText("Waiting for input", 0)
+            self.status_bar.SetStatusText("Waiting for input", 1)
 
-        self.status_bar.SetStatusText("{} Cycles".format(self.vm.cycles, 1))
+        self.status_bar.SetStatusText("{} Cycles".format(self.vm.cycles, 2))
 
     def Step(self):
         self.vm.RunNTimes(1)

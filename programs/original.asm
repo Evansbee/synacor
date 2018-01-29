@@ -789,8 +789,11 @@
 0x06DF                jz     r0 jmp_06C2
 0x06E2                pop    r1
 0x06E4                pop    r0
-0x06E6                ret    
-0x06E7     sub_06E7:  push   r0
+0x06E6                ret   
+
+;SUBROUTINE GetInput(size,writeAddress)
+
+0x06E7     GetInput:  push   r0
 0x06E9                push   r2
 0x06EB                push   r3
 0x06ED                push   r4
@@ -798,26 +801,29 @@
 0x06F1                add    r2 r1 r0
 0x06F5                set    r0 r1
 0x06F8                set    r5 0x0000
-0x06FB     jmp_06FB:  add    r0 r0 0x0001
+0x06FB     @@:        add    r0 r0 0x0001
 0x06FF                gt     r3 r0 r2
-0x0703                jnz    r3 jmp_0718
+0x0703                jnz    r3 @f
 0x0706                in     r4
-0x0708                eq     r3 r4 0x000A
-0x070C                jnz    r3 jmp_0718
+0x0708                eq     r3 r4 '\n'
+0x070C                jnz    r3 @f
 0x070F                wmem   r0 r4
 0x0712                add    r5 r5 0x0001
-0x0716                jmp    jmp_06FB
-0x0718     jmp_0718:  wmem   r1 r5
-0x071B     jmp_071B:  eq     r3 r4 0x000A
-0x071F                jnz    r3 jmp_0726
+0x0716                jmp    @b
+0x0718     @@:        wmem   r1 r5
+0x071B     @@:        eq     r3 r4 '\n'
+0x071F                jnz    r3 @f
 0x0722                in     r4
-0x0724                jmp    jmp_071B
-0x0726     jmp_0726:  pop    r5
+0x0724                jmp    @b
+0x0726     @@:        pop    r5
 0x0728                pop    r4
 0x072A                pop    r3
 0x072C                pop    r2
 0x072E                pop    r0
-0x0730                ret    
+0x0730                ret 
+
+;END SUB ROUTINE
+
 0x0731     sub_0731:  push   r3
 0x0733                push   r4
 0x0735                push   r5
@@ -1435,7 +1441,7 @@
 0x0B00                pop    r0
 0x0B02                set    r0 0x0020
 0x0B05                set    r1 0x6576
-0x0B08                call   sub_06E7
+0x0B08                call   GetInput
 0x0B0A                out    '\n'
 0x0B0C                out    '\n'
 0x0B0E                set    r0 0x6576
