@@ -174,11 +174,9 @@ class Editor(StyledTextCtrl):
             self.breakpoint_lines.append(line)
 
     def HighlightLine(self,line):
+        self.GotoLine(line)
+        start = self.GetCurrentPos()
         end = self.GetLineEndPosition(line)
-        if line > 0:
-            start = self.GetLineEndPosition(line - 1)
-        else:
-            start = 0
         self.SetSelection(start, end)
 
 
@@ -360,8 +358,8 @@ class SynacorWorkspace(wx.Frame):
         self.vm.ClearMemoryHistory()
 
     def updateUIElements(self):
-        if not self.editor.GetLineVisible(self.mem_to_line[self.vm.pc]):
-            self.editor.ScrollToLine(self.mem_to_line[self.vm.pc])
+
+        self.editor.GotoLine(self.mem_to_line[self.vm.pc])
         self.editor.HighlightLine(self.mem_to_line[self.vm.pc])
         self.memory_map.ForceRefresh()
         self.register_map.ForceRefresh()
