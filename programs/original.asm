@@ -2515,7 +2515,7 @@
 0x1554                set    r0 0x70AC
 0x1557                set    r1 0x05FB
 0x155A                add    r2 0x0E74 0x217B
-0x155E                call   sub_05B2
+0x155E                call   sub_05B2    ;prints the error message
 0x1560                pop    r2
 0x1562                pop    r1
 0x1564                pop    r0
@@ -2524,7 +2524,7 @@
 
 0x156B                set    r0 0x0004
 0x156E                set    r1 0x0001
-0x1571                call   sub_178B
+0x1571                call   sub_178B    ;long runner.  Should we just delete it?
 0x1573                eq     r1 r0 0x0006
 0x1577                jz     r1 jmp_15CB
 0x157A                push   r0
@@ -2738,6 +2738,9 @@
 0x1786     jmp_1786:  pop    r2
 0x1788                pop    r1
 0x178A                ret    
+
+;this is a critcial sub to calculate the transporter
+
 0x178B     sub_178B:  jnz    r0 jmp_1793
 0x178E                add    r0 r1 0x0001
 0x1792                ret    
@@ -2754,6 +2757,11 @@
 0x17AD                add    r0 r0 0x7FFF
 0x17B1                call   sub_178B
 0x17B3                ret    
+
+
+
+
+
 0x17B4     mem_17B4:  db     0x17cf
 0x17B5                db     0x44d9
 0x17B6                db     0x7455
