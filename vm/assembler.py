@@ -42,7 +42,7 @@ REGISTERS = {
 	'r6' : 32774,
 	'r7' : 32775
 }
-
+REV_OPCODES = dict((v,k) for k,v in OPCODES.items())
 MNEUMONICS = dict((v,k) for k,v in OPCODES.items())
 REV_REGISTERS = dict((v,k) for k,v in REGISTERS.items())
 ARGCOUNT = array('B', [0,2,1,1,3,3,1,2,2,3,3,3,3,3,2,2,2,1,0,1,1,0])   
