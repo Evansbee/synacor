@@ -2519,12 +2519,18 @@
 0x1560                pop    r2
 0x1562                pop    r1
 0x1564                pop    r0
-
                      ; -- nop --
+
+
+                        ;set r7 0x6486
+                        ;set r0 0x0006
 
 0x156B                set    r0 0x0004
 0x156E                set    r1 0x0001
 0x1571                call   sub_178B    ;long runner.  Should we just delete it?
+
+
+
 0x1573                eq     r1 r0 0x0006
 0x1577                jz     r1 jmp_15CB
 0x157A                push   r0
@@ -2740,6 +2746,7 @@
 0x178A                ret    
 
 ;this is a critcial sub to calculate the transporter
+;question is, what value of r7 makes r0 = 6?
 
 0x178B     sub_178B:  jnz    r0 jmp_1793
 0x178E                add    r0 r1 0x0001
