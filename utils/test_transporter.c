@@ -111,20 +111,6 @@ inline void sub4()
 void sub()
 {
     uint16_t stored;
-    if (r0 == 0)
-    {
-        r0 = (r1 + 1) & 0x7FFF;
-        return;
-    }
-
-    if (r1 == 0)
-    {
-        r0 = (r0 - 1) & 0x7FFF;
-        r1 = r7;
-        sub2();
-        return;
-    }
-
     stored = r0;
     r1 = (r1 - 1) & 0x7FFF;
     sub3();
@@ -137,22 +123,17 @@ void sub()
 void sub2()
 {
     uint16_t stored;
+
+    r0 = (r0 - 1) & 0x7FFF;
+
     if (r0 == 0)
     {
-        r0 = (r1 + 1) & 0x7FFF;
-        return;
-    }
-
-    if (r1 == 0)
-    {
-        r0 = (r0 - 1) & 0x7FFF;
-        r1 = r7;
-        sub2();
+        r0 = (r7 + 1) & 0x7FFF;
         return;
     }
 
     stored = r0;
-    r1 = (r1 - 1) & 0x7FFF;
+    r1 = (r7 - 1) & 0x7FFF;
     sub3();
     r1 = r0;
     r0 = stored;
@@ -172,8 +153,6 @@ void sub3()
 
     if (r1 == 0)
     {
-        r0 = (r0 - 1) & 0x7FFF;
-        r1 = r7;
         sub2();
         return;
     }
@@ -187,7 +166,7 @@ void sub3()
     sub4();
 } 
 
-void sub3()
+void sub4()
 {
     uint16_t stored;
     if (r0 == 0)
@@ -198,8 +177,6 @@ void sub3()
 
     if (r1 == 0)
     {
-        r0 = (r0 - 1) & 0x7FFF;
-        r1 = r7;
         sub2();
         return;
     }
